@@ -1,6 +1,7 @@
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from Controllers.ProfissionaisLoginController import LoginController
+from Controllers.ProfissionaisController import ProfissionaisControler
 from kivymd.uix.menu import MDDropdownMenu
 from Banco import Banco
 from Helpers import Requerimentos
@@ -194,22 +195,31 @@ class MyApp(MDApp):
         self.root.get_screen("CadastroProfissional2").ids.List_EscolasText.text = text_item
 
     def formatar_cpf(self, instance):
-        texto = instance.text
-        tamanho = len(texto)
+        puro = "".join(ch for ch in instance.text if ch.isdigit())
+        puro = puro[:11]
 
-        if tamanho == 3 or tamanho == 7:
-            texto += '.'
-        elif tamanho == 11:
-            texto += '-'
-
-        # Atualiza o texto
-        instance.text = texto
-
-        # Agende a movimentação do cursor para o próximo ciclo
-        Clock.schedule_once(lambda dt: self.mover_cursor(instance))
+        novo = ""
+        for i, d in enumerate(puro):
+            novo += d
+            if i == 2 or i == 5:
+                if len(puro) > i + 1:
+                    novo += '.'
+            if i == 8:
+                if len(puro) > i + 1:
+                    novo += '-'
+        if instance.text != novo:
+            instance.text = novo
+            Clock.schedule_once(lambda dt: self.mover_cursor(instance))
 
     def mover_cursor(self, instance):
-        # Move o cursor para o final do texto
         instance.do_cursor_movement('cursor_end')
+
+    def CadatrarProfissionais_Click(self):
+        if self.root:
+            self.controle = ProfissionaisControler(self.root)
+            if self.controle.Cadastar():
+                self.root.current = "LoginProfissional"
+        else:
+            print("root ainda não existe")
 
 MyApp().run()

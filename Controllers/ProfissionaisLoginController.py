@@ -14,7 +14,7 @@ class LoginController:
             Usuario = Login(self.getLogin())
             return Usuario.Logar()
         except Exception as e:
-            print(e)
+            return e
 
     def Desconectar(self):
-        return 'Escolh'
+        return
