@@ -14,17 +14,15 @@ class Profissionais:
         self.Escola = dados[7]
         self.Senha = dados[8]
         self.Biografia = dados[9]
-        self.Favorito = dados[10]
-        self.Rua = dados[11]
-        self.Bairro = dados[12]
-        self.FotoPerfil = dados[13]
+        self.Rua = dados[10]
+        self.Bairro = dados[11]
+        self.FotoPerfil = dados[12]
 
     def Salvar(self):
         print("== Iniciando Salvar ==")
         print("Dados recebidos:", self.CPF, self.Nome, self.Usuario, self.Profissao,
               self.DataNascimento, self.UF, self.Cidade, self.Escola, self.Senha)
-        '''
-        if not self.CPF:
+        if not self.CPF or not self.Nome:
             print("Erro: CPF obrigatório!")
             self.TE.SetErro('CPF obrigatório!')
         else:
@@ -33,7 +31,7 @@ class Profissionais:
                 self.TE.SetErro('CPF com quantidade de digitos invalido!')
             elif self.CPF == self.CPF[0] * 11:
                 print("Erro: CPF com todos os dígitos iguais")
-                self.TE.SetErro('CPF invalido! Digitos diferentes')
+                self.TE.SetErro('CPF invalido! Digitos iguais')
             else:
                 soma1 = sum(int(self.CPF[i]) * (10 - i) for i in range(9))
                 digito1 = 11 - (soma1 % 11)
@@ -46,47 +44,40 @@ class Profissionais:
                 print("CPF:", self.CPF, "-> dígitos calculados:", digito1, digito2)
                 print("CPF dígitos informados:", self.CPF[9], self.CPF[10])
 
-                if digito1 != int(self.CPF[9]) and digito2 != int(self.CPF[10]):
+                if digito1 != int(self.CPF[9]) or digito2 != int(self.CPF[10]):
                     print("Erro: dígitos verificadores não batem")
                     self.TE.SetErro('CPF invalido!')
                 else:
                     print('passou')
-        '''
 
-        if not self.Nome:
+        if not self.Nome or not self.Nome.strip():
             print("Erro: Nome vazio")
             self.TE.SetErro('Nome vazio!')
 
-        if not self.Usuario:
+        if not self.Usuario or not self.Usuario.strip():
             print("Erro: Usuario vazio")
             self.TE.SetErro('Usuario vazio!')
-        else:
-            resultado_consulta = Banco.consultar('USUARIO', 'PROFISSIONAIS', f'USUARIO = {self.Usuario}')
-            print("Consulta usuário existente retornou:", resultado_consulta)
-            if resultado_consulta == self.Usuario:
-                print("Erro: usuário já existe")
-                self.TE.SetErro('Usuario existente!')
 
-        if not self.Profissao:
+        if not self.Profissao or not self.Profissao.strip():
             print("Erro: Profissão vazio")
             self.TE.SetErro('Profissão vazio!')
 
-        if not self.UF:
+        if not self.UF or not self.UF.strip():
             print("Erro: UF vazia")
             self.TE.SetErro('UF vazia!')
         elif len(self.UF) != 2:
             print("Erro: UF inválida, comprimento != 2")
             self.TE.SetErro('UF invalida!')
 
-        if not self.Cidade:
+        if not self.Cidade or not self.Cidade.strip():
             print("Erro: Cidade vazia")
             self.TE.SetErro('Cidade vazia!')
 
-        if not self.Escola:
+        if not self.Escola or not self.Escola.strip():
             print("Erro: Escola vazia")
             self.TE.SetErro('Escola vazia!')
 
-        if not self.Senha:
+        if not self.Senha or not self.Senha.strip():
             print("Erro: Senha vazia")
             self.TE.SetErro('Senha vazia!')
 
@@ -98,17 +89,24 @@ class Profissionais:
 
         try:
             print("Tentando inserir no banco...")
+            colunas = "CPF,Nome,Usuario,Profissao,DataNascimento,UF,Cidade,Escola,Senha,Biografia,Rua,Bairro,FotoPerfil"
             valores = [
-                self.CPF, self.Nome, self.Usuario, self.Profissao, self.DataNascimento,
-                self.UF, self.Cidade, self.Escola, self.Senha, self.Biografia,
-                self.Favorito, self.Rua, self.Bairro, self.FotoPerfil
+                self.CPF,
+                self.Nome,
+                self.Usuario,
+                self.Profissao,
+                self.DataNascimento,  # pode ser None
+                self.UF,
+                self.Cidade,
+                self.Escola,
+                self.Senha,
+                self.Biografia,
+                self.Rua,
+                self.Bairro,
+                self.FotoPerfil
             ]
-            print("Valores para inserção:", valores)
-            Banco.inserir(
-                'PROFISSIONAIS',
-                'CPF,Nome,Usuario,Profissao,DataNascimento,UF,Cidade,Escola,Senha,Biografia,Favorito,Rua,Bairro,FotoPerfil',
-                valores
-            )
+            print(valores)
+            Banco.inserir("PROFISSIONAIS", colunas, valores)
             print("Inserção bem-sucedida")
             return True
         except Exception as e:
