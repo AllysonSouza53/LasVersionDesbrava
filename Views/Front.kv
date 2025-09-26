@@ -601,7 +601,9 @@ MDScreenManager:
 
 
 <TelaPerfilProfissional@MDScreen>:
-    MDFloatLayout:
+    MDBoxLayout:
+        orientation: "vertical"
+        cols:2
         canvas.before:
             # Desenha o fundo
             Color:
@@ -611,11 +613,20 @@ MDScreenManager:
                 size: self.size
                 pos: self.pos
 
+            # Desenha o retângulo com bordas arredondadas
+            Color:
+                rgba: 0, 0, 0, 0.5
+            RoundedRectangle:
+                size: self.width * 0.3, self.height * 0.68
+                pos: self.center_x - self.width * 0.47, self.center_y - self.height * 0.38
+                radius: [20]
+
         canvas:
             # Desenha o logo
             Color:
                 rgba: 1, 1, 1, 1
             Rectangle:
                 source: 'Imagens/Logo.png'
-                size: 150, 150
-                pos: self.center_x - self.width * 0.48, self.center_y - self.height * -0.27
+                size: 130,130
+                pos: self.center_x - self.width * 0.48, self.center_y - self.height * -0.32
+
