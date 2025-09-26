@@ -601,9 +601,7 @@ MDScreenManager:
 
 
 <TelaPerfilProfissional@MDScreen>:
-    MDBoxLayout:
-        orientation: "vertical"
-        cols:2
+    MDFloatLayout:
         canvas.before:
             # Desenha o fundo
             Color:
@@ -613,20 +611,35 @@ MDScreenManager:
                 size: self.size
                 pos: self.pos
 
-            # Desenha o retângulo com bordas arredondadas
-            Color:
-                rgba: 0, 0, 0, 0.5
-            RoundedRectangle:
-                size: self.width * 0.3, self.height * 0.68
-                pos: self.center_x - self.width * 0.47, self.center_y - self.height * 0.38
-                radius: [20]
+    MDGridLayout:
+        cols: 2
+        rows: 2
+        cols_minimum: {0: dp(100), 1: dp(150), 2: dp(200)}
+        rows_minimum: {0: dp(50), 1: dp(75)}
+        padding: dp(10)
+        spacing: dp(10)
 
-        canvas:
-            # Desenha o logo
-            Color:
-                rgba: 1, 1, 1, 1
-            Rectangle:
-                source: 'Imagens/Logo.png'
-                size: 130,130
-                pos: self.center_x - self.width * 0.48, self.center_y - self.height * -0.32
+        MDRaisedButton:
+            text: 'Cadastrar'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            size_hint: None, None
+            size: dp(200), dp(50)
+            md_bg_color: 0.0, 0.4, 0.0, 1
+            font_size: "18sp"
+            bold: True
+            line_color: 1, 1, 1, 1
+            on_release: app.CadatrarProfissionais_Click()
+
+        MDRaisedButton:
+            text: 'Cadastrar'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+            size_hint_x: 0.06
+            size_hint_y: 0.06
+            md_bg_color: 0.0, 0.4, 0.0, 1
+            font_size: "18sp"
+            bold: True
+            line_color: 1, 1, 1,
+            on_release: app.CadatrarProfissionais_Click()
+
+
 
