@@ -602,6 +602,7 @@ MDScreenManager:
 
 <TelaPerfilProfissional@MDScreen>:
     MDFloatLayout:
+        #fundo da tela
         canvas.before:
             # Desenha o fundo
             Color:
@@ -611,35 +612,147 @@ MDScreenManager:
                 size: self.size
                 pos: self.pos
 
-    MDGridLayout:
-        cols: 2
-        rows: 2
-        cols_minimum: {0: dp(100), 1: dp(150), 2: dp(200)}
-        rows_minimum: {0: dp(50), 1: dp(75)}
-        padding: dp(10)
-        spacing: dp(10)
+        # container do perfil
+        FloatLayout:
+            size_hint: 0.35, 0.8
+            pos_hint: {"center_x": 0.2, "center_y": 0.45}  # posição relativa à tela
 
-        MDRaisedButton:
-            text: 'Cadastrar'
-            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-            size_hint: None, None
-            size: dp(200), dp(50)
-            md_bg_color: 0.0, 0.4, 0.0, 1
-            font_size: "18sp"
-            bold: True
-            line_color: 1, 1, 1, 1
-            on_release: app.CadatrarProfissionais_Click()
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.5
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [20]
 
-        MDRaisedButton:
-            text: 'Cadastrar'
-            pos_hint: {'center_x': 0.5, 'center_y': 0.2}
-            size_hint_x: 0.06
-            size_hint_y: 0.06
-            md_bg_color: 0.0, 0.4, 0.0, 1
-            font_size: "18sp"
-            bold: True
-            line_color: 1, 1, 1,
-            on_release: app.CadatrarProfissionais_Click()
+            # imagem de perfil
+            Image:
+                source: 'Imagens/ImagemPerfil.png'
+                size_hint: None, None
+                size: dp(150), dp(150)
+                pos_hint: {"center_x": 0.5, "center_y": 0.8}  # centraliza dentro do container
 
+            MDLabel:
+                text: "@Usuario"
+                valign: "middle"
+                size_hint: None, None
+                pos_hint: {"center_x": 0.52, "center_y": 0.62}
+                font_size: "18sp"
+                bold: True
+                color:1,1,1,1
 
+            MDLabel:
+                text: "CPF:"
+                valign: "middle"
+                size_hint: None, None
+                pos_hint: {"center_x": 0.25, "center_y": 0.53}
+                font_size: "18sp"
+                bold: True
+                color:1,1,1,1
 
+            MDLabel:
+                text: "Nome:"
+                valign: "middle"
+                size_hint: None, None
+                pos_hint: {"center_x": 0.25, "center_y": 0.48}
+                font_size: "18sp"
+                bold: True
+                color:1,1,1,1
+
+            MDLabel:
+                text: "Profissão:"
+                valign: "middle"
+                size_hint: None, None
+                pos_hint: {"center_x": 0.25, "center_y": 0.43}
+                font_size: "18sp"
+                bold: True
+                color:1,1,1,1
+
+            MDLabel:
+                text: "Biografia:"
+                valign: "middle"
+                size_hint: None, None
+                pos_hint: {"center_x": 0.25, "center_y": 0.38}
+                font_size: "18sp"
+                bold: True
+                color:1,1,1,1
+
+            MDRaisedButton:
+                text: 'Alteral Perfil'
+                pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+                size_hint_x: 0.06
+                size_hint_y: 0.06
+                md_bg_color: 0.0, 0.4, 0.0, 1
+                font_size: "18sp"
+                bold: True
+                line_color: 1, 1, 1,
+                on_release: app.CadatrarProfissionais_Click()
+
+        MDFloatLayout:
+            canvas:
+                # Desenha o logo
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    source: 'Imagens/Logo.png'
+                    size: 100, 100
+                    pos: self.center_x - self.width * 0.48, self.center_y - self.height * -0.36
+
+            MDTextButton:
+                text: "Perfil"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.label_clicado()
+                font_size: "18sp"
+                bold: True
+                pos_hint: {'center_x': 0.5, 'center_y': 0.92}
+
+            MDTextButton:
+                text: "Alunos"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.label_clicado()
+                font_size: "18sp"
+                bold: True
+                pos_hint: {'center_x': 0.55, 'center_y': 0.92}
+
+            MDTextButton:
+                text: "Jogos"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.label_clicado()
+                font_size: "18sp"
+                bold: True
+                pos_hint: {'center_x': 0.6, 'center_y': 0.92}
+
+            MDTextButton:
+                text: "Comunidade"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                on_release: app.label_clicado()
+                font_size: "18sp"
+                bold: True
+                pos_hint: {'center_x': 0.665, 'center_y': 0.92}
+
+            MDIconButton:
+                icon: "star"
+                text:"Favoritos"
+                pos_hint: {"center_x": 0.9, "center_y": 0.85}
+                user_font_size: "60sp"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 0, 1
+                on_release: app.on_star_press()
+
+        BoxLayout:
+            size_hint: 0.5, 0.8
+            pos_hint: {"center_x": 0.65, "center_y": 0.45}  # posição relativa à tela
+
+            ScrollView:
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: 0, 0, 0, 0.5
+                        RoundedRectangle:
+                            size: self.size
+                            pos: self.pos
+                            radius: [20]
