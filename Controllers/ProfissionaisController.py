@@ -1,4 +1,5 @@
 from Models.Profissionais import Profissionais
+from Helpers.TratamentoErros import Erros as E
 
 class ProfissionaisControler:
     def __init__(self, app):
@@ -17,6 +18,7 @@ class ProfissionaisControler:
         self.Rua = ''
         self.Bairro = ''
         self.FotoPerfil = ''
+        self.Erros = E()
 
     def getUsuario(self):
         return [
@@ -34,6 +36,13 @@ class ProfissionaisControler:
             self.Bairro,
             self.FotoPerfil
         ]
+    def index(self, condicao):
+        try:
+            Profissional = Profissionais(None)
+            return Profissional.Pesquisar("*",condicao)
+        except Exception as e:
+            self.Erros.SetErro(str(e))
+            return self.Erros.GetErros()
 
     def Cadastar(self):
         try:

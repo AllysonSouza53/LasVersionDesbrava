@@ -1,11 +1,14 @@
 from kivy.lang import Builder
 from kivymd.app import MDApp
+from kivymd.uix.fitimage import FitImage
+from kivymd.uix.label import MDLabel
 from Controllers.ProfissionaisLoginController import LoginController
 from Controllers.ProfissionaisController import ProfissionaisControler
 from kivymd.uix.menu import MDDropdownMenu
 from Banco import Banco
 from Helpers import Requerimentos
 from kivy.clock import Clock
+from Controllers.ProfissionaisController import ProfissionaisControler
 
 class MyApp(MDApp):
     def build(self):
@@ -33,9 +36,39 @@ class MyApp(MDApp):
             self.root.current = "CadastroProfissional1"
 
     def LoginProfissionais_Click(self):
+        PC = ProfissionaisControler(self.root)
+        Sessao = LoginController(self.root)
         if self.root:
             self.controle = LoginController(self.root)
             if self.controle.Sessao():
+                PostView = self.root.get_screen("PerfilProfissional").ids.datagrid
+                DadosPerfil = self.root.get_screen("PerfilProfissional").ids
+                dados = [
+                    ("Imagens/ImagemPerfil.png", "João"),
+                    ("Imagens/ImagemPerfil.png", "Maria"),
+                    ("Imagens/ImagemPerfil.png", "Carlos"),
+                ]
+
+                DadosPerfil["lbl_UsuarioPerfil"].text = "@"+Sessao.getLogin()[0]
+                for imagem, legenda in dados:
+                    # 1ª linha: imagem
+                    PostView.add_widget(
+                        FitImage(
+                            source=imagem,
+                            size_hint_y=None,
+                            height=100
+                        )
+                    )
+
+                    # 2ª linha: legenda
+                    PostView.add_widget(
+                        MDLabel(
+                            text=legenda,
+                            halign="center",
+                            size_hint_y=None,
+                            height=40
+                        )
+                    )
                 self.root.current = "PerfilProfissional"
         else:
             print("root ainda não existe")

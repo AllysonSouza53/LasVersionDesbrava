@@ -627,12 +627,14 @@ MDScreenManager:
 
             # imagem de perfil
             Image:
+                id:PerfilImagem
                 source: 'Imagens/ImagemPerfil.png'
                 size_hint: None, None
                 size: dp(150), dp(150)
                 pos_hint: {"center_x": 0.5, "center_y": 0.8}  # centraliza dentro do container
 
             MDLabel:
+                id:lbl_UsuarioPerfil
                 text: "@Usuario"
                 valign: "middle"
                 size_hint: None, None
@@ -642,6 +644,7 @@ MDScreenManager:
                 color:1,1,1,1
 
             MDLabel:
+                id:lbl_CPFPerfil
                 text: "CPF:"
                 valign: "middle"
                 size_hint: None, None
@@ -651,6 +654,7 @@ MDScreenManager:
                 color:1,1,1,1
 
             MDLabel:
+                id:lbl_NomePerfil
                 text: "Nome:"
                 valign: "middle"
                 size_hint: None, None
@@ -660,6 +664,7 @@ MDScreenManager:
                 color:1,1,1,1
 
             MDLabel:
+                id:lbl_ProfissaoPerfil
                 text: "Profissão:"
                 valign: "middle"
                 size_hint: None, None
@@ -669,6 +674,7 @@ MDScreenManager:
                 color:1,1,1,1
 
             MDLabel:
+                id:lbl_BiografiaPerfil
                 text: "Biografia:"
                 valign: "middle"
                 size_hint: None, None
@@ -678,11 +684,11 @@ MDScreenManager:
                 color:1,1,1,1
 
             MDRaisedButton:
-                text: 'Alteral Perfil'
+                text: 'Alterar Perfil'
                 pos_hint: {'center_x': 0.5, 'center_y': 0.2}
                 size_hint_x: 0.06
                 size_hint_y: 0.06
-                md_bg_color: 0.0, 0.4, 0.0, 1
+                md_bg_color: 0.0, 0.0, 0.0, 0
                 font_size: "18sp"
                 bold: True
                 line_color: 1, 1, 1,
@@ -745,14 +751,24 @@ MDScreenManager:
 
         BoxLayout:
             size_hint: 0.5, 0.8
-            pos_hint: {"center_x": 0.65, "center_y": 0.45}  # posição relativa à tela
+            pos_hint: {"center_x": 0.70, "center_y": 0.30}  # posição relativa à tela
 
             ScrollView:
-                BoxLayout:
-                    canvas.before:
-                        Color:
-                            rgba: 0, 0, 0, 0.5
-                        RoundedRectangle:
-                            size: self.size
-                            pos: self.pos
-                            radius: [20]
+                do_scroll_x: False
+                do_scroll_y: True
+
+                MDBoxLayout:
+                    id: conteudo_scroll
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(10)
+                    padding: dp(10)
+                    GridLayout:
+                        id: datagrid
+                        cols: 3
+                        size_hint_y: None
+                        height: self.minimum_height
+                        row_default_height: dp(40)
+                        spacing: dp(5)
+                        padding: dp(5)
