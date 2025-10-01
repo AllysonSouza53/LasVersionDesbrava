@@ -633,22 +633,32 @@ MDScreenManager:
                 size: dp(150), dp(150)
                 pos_hint: {"center_x": 0.5, "center_y": 0.8}  # centraliza dentro do container
 
-            MDLabel:
-                id:lbl_UsuarioPerfil
-                text: "@Usuario"
-                valign: "middle"
-                size_hint: None, None
-                pos_hint: {"center_x": 0.52, "center_y": 0.62}
-                font_size: "18sp"
-                bold: True
-                color:1,1,1,1
+            AnchorLayout:
+                anchor_x: "center"
+                anchor_y: "center"
+                size_hint: 1, None
+                height: dp(30)  # altura fixa
+                pos_hint: {"center_x": 0.5, "center_y": 0.62}
+
+                MDLabel:
+                    id: lbl_UsuarioPerfil
+                    text: "Allyson Souza da Silva"
+                    halign: "center"
+                    valign: "middle"
+                    size_hint: None, None
+                    size: self.texture_size
+                    text_size: None, None
+                    font_size: "18sp"
+                    bold: True
+                    color: 1, 1, 1, 1
 
             MDLabel:
                 id:lbl_CPFPerfil
                 text: "CPF:"
                 valign: "middle"
                 size_hint: None, None
-                pos_hint: {"center_x": 0.25, "center_y": 0.53}
+                size_hint_x: 0.3
+                pos_hint: {"center_x": 0.25, "center_y": 0.54}
                 font_size: "18sp"
                 bold: True
                 color:1,1,1,1
@@ -658,6 +668,7 @@ MDScreenManager:
                 text: "Nome:"
                 valign: "middle"
                 size_hint: None, None
+                size_hint_x: 0.3
                 pos_hint: {"center_x": 0.25, "center_y": 0.48}
                 font_size: "18sp"
                 bold: True
@@ -668,7 +679,8 @@ MDScreenManager:
                 text: "Profissão:"
                 valign: "middle"
                 size_hint: None, None
-                pos_hint: {"center_x": 0.25, "center_y": 0.43}
+                size_hint_x: 0.3
+                pos_hint: {"center_x": 0.25, "center_y": 0.42}
                 font_size: "18sp"
                 bold: True
                 color:1,1,1,1
@@ -678,6 +690,7 @@ MDScreenManager:
                 text: "Biografia:"
                 valign: "middle"
                 size_hint: None, None
+                size_hint_x: 0.3
                 pos_hint: {"center_x": 0.25, "center_y": 0.38}
                 font_size: "18sp"
                 bold: True

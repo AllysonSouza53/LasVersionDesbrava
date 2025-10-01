@@ -3,6 +3,7 @@ from Helpers.TratamentoErros import Erros as E
 
 class ProfissionaisControler:
     def __init__(self, app):
+        self.Profissionais = None
         self.CPF = app.get_screen("CadastroProfissional1").ids.lbl_CPFCadastroProfissional.text.replace('.', '').replace('-', '')
         self.Nome= app.get_screen("CadastroProfissional1").ids.lbl_NomeCadastroProfissional.text
         self.Usuario = app.get_screen("CadastroProfissional1").ids.lbl_UsuarioCadastroProfissional.text
@@ -36,13 +37,9 @@ class ProfissionaisControler:
             self.Bairro,
             self.FotoPerfil
         ]
-    def index(self, condicao):
-        try:
-            Profissional = Profissionais(None)
-            return Profissional.Pesquisar("*",condicao)
-        except Exception as e:
-            self.Erros.SetErro(str(e))
-            return self.Erros.GetErros()
+    def CarregarUsuario(self, condicao):
+        self.Profissionais = Profissionais(self.getUsuario())
+        return self.Profissionais.Pesquisar("*",condicao)
 
     def Cadastar(self):
         try:

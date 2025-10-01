@@ -48,8 +48,16 @@ class MyApp(MDApp):
                     ("Imagens/ImagemPerfil.png", "Maria"),
                     ("Imagens/ImagemPerfil.png", "Carlos"),
                 ]
+                self.Profissional = PC.CarregarUsuario(f"USUARIO ='{Sessao.usuario}'")
+                DadosPerfil['lbl_UsuarioPerfil'].text = '@'+self.Profissional[0][2]
+                DadosPerfil['lbl_CPFPerfil'].text = f"CPF:{self.Profissional[0][0]}"
+                DadosPerfil['lbl_NomePerfil'].text = f"Nome:{self.Profissional[0][1]}"
+                DadosPerfil['lbl_ProfissaoPerfil'].text = f"Profissão:{self.Profissional[0][3]}"
+                if DadosPerfil['lbl_BiografiaPerfil'].text == '':
+                    DadosPerfil['lbl_BiografiaPerfil'].text = f"Biografia:Conte mais sobre você"
+                else:
+                    DadosPerfil['lbl_BiografiaPerfil'].text = f"Biografia:{self.Profissional[0][9]}"
 
-                DadosPerfil["lbl_UsuarioPerfil"].text = "@"+Sessao.getLogin()[0]
                 for imagem, legenda in dados:
                     # 1ª linha: imagem
                     PostView.add_widget(
