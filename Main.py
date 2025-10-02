@@ -6,9 +6,12 @@ from Controllers.ProfissionaisLoginController import LoginController
 from Controllers.ProfissionaisController import ProfissionaisControler
 from kivymd.uix.menu import MDDropdownMenu
 from Banco import Banco
+from Helpers.Requerimentos import Escolas,Perfis,Posts
 from Helpers import Requerimentos
 from kivy.clock import Clock
 from Controllers.ProfissionaisController import ProfissionaisControler
+import base64
+
 
 class MyApp(MDApp):
     def build(self):
@@ -43,21 +46,34 @@ class MyApp(MDApp):
             if self.controle.Sessao():
                 PostView = self.root.get_screen("PerfilProfissional").ids.datagrid
                 DadosPerfil = self.root.get_screen("PerfilProfissional").ids
-                dados = [
-                    ("Imagens/ImagemPerfil.png", "João"),
-                    ("Imagens/ImagemPerfil.png", "Maria"),
-                    ("Imagens/ImagemPerfil.png", "Carlos"),
+                '''
+                    Posts = Posts.GetPorUsuario()
+                imagens = [
+                    {
+                        'imagem': Post[Post][3]
+                    }for Post in Posts
                 ]
+                '''
+                FotoPerfil = ClassePerfis.GetPorUsuario(Sessao.usuario)
+                print(FotoPerfil)
                 self.Profissional = PC.CarregarUsuario(f"USUARIO ='{Sessao.usuario}'")
+                if FotoPerfil == None:
+                    img_bytes = base64.b64decode(ClassePerfis.GetPorUsuario('padrao')['imagem'])
+                    print(img_bytes)
+                else:
+                    img_bytes = base64.b64decode(FotoPerfil['imagem'])
+
+                with open("Imagens/FotoPerfil.png", "wb") as f:
+                    f.write(img_bytes)
                 DadosPerfil['lbl_UsuarioPerfil'].text = '@'+self.Profissional[0][2]
                 DadosPerfil['lbl_CPFPerfil'].text = f"CPF:{self.Profissional[0][0]}"
                 DadosPerfil['lbl_NomePerfil'].text = f"Nome:{self.Profissional[0][1]}"
                 DadosPerfil['lbl_ProfissaoPerfil'].text = f"Profissão:{self.Profissional[0][3]}"
-                if DadosPerfil['lbl_BiografiaPerfil'].text == '':
+                if not DadosPerfil['lbl_BiografiaPerfil'].text:
                     DadosPerfil['lbl_BiografiaPerfil'].text = f"Biografia:Conte mais sobre você"
                 else:
                     DadosPerfil['lbl_BiografiaPerfil'].text = f"Biografia:{self.Profissional[0][9]}"
-
+                '''
                 for imagem, legenda in dados:
                     # 1ª linha: imagem
                     PostView.add_widget(
@@ -77,6 +93,7 @@ class MyApp(MDApp):
                             height=40
                         )
                     )
+                '''
                 self.root.current = "PerfilProfissional"
         else:
             print("root ainda não existe")
@@ -263,4 +280,5 @@ class MyApp(MDApp):
         else:
             print("root ainda não existe")
 
+ClassePerfis = Perfis()
 MyApp().run()
