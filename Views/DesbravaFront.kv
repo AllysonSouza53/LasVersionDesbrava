@@ -1,0 +1,170 @@
+<Gerenciador>:
+    TelaEscolha:
+        name: "Escolha"
+    TelaLoginProfissionais:
+        name: "LoginProfissional"
+    TelaLoginAluno:
+        name: "LoginAluno"
+
+<TelaEscolha>:
+    MDFloatLayout:
+        canvas.before:
+            # Desenha o fundo
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.png'
+                size: self.size
+                pos: self.pos
+
+            # Desenha o retângulo com bordas arredondadas
+            Color:
+                rgba: 0, 0, 0, app.resp.Transp_Back
+            RoundedRectangle:
+                size: self.width * 0.3, self.width * 0.3
+                pos: self.center_x - self.width * 0.15, self.center_y - self.width * 0.15
+                radius: [20]
+
+        canvas:
+            # Desenha o logo
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Logo.png'
+                size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                pos: self.center_x - self.width * 0.48, self.center_y - self.height * -0.27
+
+        MDRaisedButton:
+            text: 'Aluno'
+            pos_hint: {'center_x': app.resp.Pos_x_btn1, 'center_y': app.resp.Pos_y_btn1}
+            size_hint_x: 0.1
+            size_hint_y: 0.08
+            md_bg_color: 0.0, 0.4, 0.0, 1
+            font_size: app.resp.FontSize
+            bold: True
+            on_release: root.irLoginAluno()
+            line_color: 1, 1, 1, 1  # Cor da borda (verde)
+
+        MDRaisedButton:
+            text: 'Profissional'
+            pos_hint: {'center_x': app.resp.Pos_x_btn2, 'center_y': app.resp.Pos_y_btn2}
+            size_hint_x: 0.1
+            size_hint_y: 0.08
+            md_bg_color: 0.0, 0.4, 0.0, 1
+            font_size: app.resp.FontSize
+            bold: True
+            on_release: root.irLoginProfissional()
+            line_color: 1, 1, 1, 1
+
+<TelaLoginProfissionais>:
+    MDFloatLayout:
+        canvas.before:
+            # Desenha o fundo
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.png'
+                size: self.size
+                pos: self.pos
+
+            # Desenha o retângulo com bordas arredondadas
+            Color:
+                rgba: 0, 0, 0, 0.5
+            RoundedRectangle:
+                size: self.width * 0.3, self.height * 0.5
+                pos: self.center_x - self.width * 0.15, self.center_y - self.height * 0.25
+                radius: [20]
+
+        canvas:
+            # Desenha o logo
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Logo.png'
+                size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                pos: self.center_x - self.width * 0.48, self.center_y - self.height * -0.27
+
+        MDRectangleFlatIconButton:
+            text: "Voltar"
+            icon: "arrow-left"
+            md_bg_color: 0.0, 0.4, 0.0, 1
+            font_size: "18sp"
+            bold: True
+            on_release: app.irEscolha()
+            size_hint: None, None
+            size: "200dp", "50dp"
+            pos_hint: {"right": 0.98, "top": 0.98}
+            text_color: 1, 1, 1, 1
+            icon_color: 1, 1, 1, 1
+            line_color: 1, 1, 1, 1
+
+        MDLabel:
+            text:app.resp.Text_Title
+            color:1,1,1,1
+            font_size: app.resp.FontSize_Title
+            bold: True
+            halign: 'center'
+            pos_hint: {"center_y": 0.7}
+
+        MDLabel:
+            text:'Usuario:'
+            color:1,1,1,1
+            font_size: "16sp"
+            bold: True
+            pos_hint: {'center_x': 0.88, 'center_y': app.resp.Pos_Label}
+
+        MDTextField:
+            id: lbl_ProfissionalUsuario
+            hint_text: "Digite Seu Usuario"
+            mode: "round"
+            size_hint_x: 0.25
+            pos_hint: {"center_x":0.5, 'center_y':0.6}
+            line_color_normal: 0, 0, 0, 0.5
+            line_color_focus: 0.72, 0.53, 0.04, 1
+            text_color_normal:0,0,0,1
+            text_color_focus:0,0,0,1
+            cursor_color:0,0,0,1
+
+        MDLabel:
+            text:'Senha:'
+            color:1,1,1,1
+            font_size: "16sp"
+            bold: True
+            pos_hint: {'center_x': 0.88, 'center_y': 0.532}
+
+        MDTextField:
+            id: lbl_ProfissionalSenha
+            hint_text: "Digite sua Senha"
+            mode: "round"
+            size_hint_x: 0.25
+            pos_hint: {"center_x":0.5, 'center_y':0.5}
+            line_color_normal: 0, 0, 0, 0.5
+            line_color_focus: 0.72, 0.53, 0.04, 1
+            text_color_normal:0,0,0,1
+            text_color_focus:0,0,0,1
+            cursor_color:0,0,0,1
+
+        MDRaisedButton:
+            text: 'Sem conta ainda! Cadastra-se'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+            size_hint_x: 0.06
+            size_hint_y: 0.06
+            md_bg_color: 0, 0, 0, 0
+            font_size: "12sp"
+            on_release: app.irCadastroProfissional1()
+
+        MDRaisedButton:
+            text: 'Entrar'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            size_hint_x: 0.06
+            size_hint_y: 0.06
+            md_bg_color: 0.0, 0.4, 0.0, 1
+            font_size: "18sp"
+            bold: True
+            on_release: app.LoginProfissionais_Click()
+            line_color: 1, 1, 1, 1
+
+<TelaLoginAluno>:
+    MDLabel:
+        text: 'Tela de Login'
+        halign: 'center'

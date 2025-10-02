@@ -2,7 +2,7 @@ from kivy.lang import Builder
 from kivymd.tools.hotreload.app import MDApp
 
 class MainApp(MDApp):
-    KV_FILES = ["Views/Front.kv"]
+    KV_FILES = ["Views/DesbravaFront.kv"]
     DEBUG = True
     def build_app(self):
         return Builder.load_file(self.KV_FILES[0])
