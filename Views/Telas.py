@@ -1,7 +1,7 @@
 from kivymd.uix.screen import MDScreen
 
 class TelaEscolha(MDScreen):
-    def irLoginProfissional(self):
+    def EscolhaProfissionalButton_Click(self):
         if self.manager:
             self.manager.current = "LoginProfissional"
 
@@ -10,7 +10,18 @@ class TelaEscolha(MDScreen):
             self.manager.current = "LoginAluno"
 
 class TelaLoginProfissionais(MDScreen):
-    pass
+    def VoltarEscolhaButton_Click(self):
+        if self.manager:
+            self.manager.current = "Escolha"
 
-class TelaLoginAluno(MDScreen):
-    pass
+    def ParaCadastroProfissionaisButton_Click(self):
+        if self.manager:
+            self.manager.current = "CadastroProfissional"
+
+    def EntrarButton_Click(self):
+        pass
+
+class TelaCadastroProfissional(MDScreen):
+    def VoltarEscolhaButton_Click(self):
+        if self.manager:
+            self.manager.current = "Escolha"
