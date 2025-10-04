@@ -1,28 +1,34 @@
 import requests
 import pandas as pd
 
-def get_cidades_por_uf(uf = None):
-    print("(:")
-    uf = uf.strip().upper()
-    url = f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios"
-    resp = requests.get(url, timeout=10)
-    resp.raise_for_status()  # lança exceção se HTTP != 200
-    municipios = resp.json()  # lista de objetos
-    # extrair só os nomes
-    nomes = [m['nome'] for m in municipios]
-    return nomes
+class Cidades:
+    def __init__(self):
+        pass
 
-def get_codigo_municipio(uf: str, nome_cidade: str):
-    uf = uf.strip().upper()
-    nome_cidade = nome_cidade.strip().lower()
-    url = f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios"
-    resp = requests.get(url, timeout=10)
-    resp.raise_for_status()
-    municipios = resp.json()
-    for m in municipios:
-        if m['nome'].strip().lower() == nome_cidade:
-            return m['id']
-    return None
+    def get_cidades_por_uf(self, uf):
+        print("DEBUG - Valor recebido de UF:", repr(uf))
+        if not uf:  # se for None ou vazio
+            print("UF não informada!")
+            return []
+
+        uf = uf.strip().upper()
+        url = f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios"
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        municipios = resp.json()
+        return [m['nome'] for m in municipios]
+
+    def get_codigo_municipio(self,uf: str, nome_cidade: str):
+        uf = uf.strip().upper()
+        nome_cidade = nome_cidade.strip().lower()
+        url = f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios"
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        municipios = resp.json()
+        for m in municipios:
+            if m['nome'].strip().lower() == nome_cidade:
+                return m['id']
+        return None
 
 
 class Escolas:
@@ -32,7 +38,9 @@ class Escolas:
     def Get(self, uf, cidade):
         try:
             resp = requests.get(f'{self.url}/{uf.upper().strip()}/municipios/{cidade.upper().strip()}/escolas', timeout=10)
-            return resp.json()
+            if resp.status_code == 200:
+                return resp.json()
+            return []
         except requests.exceptions.RequestException as e:
             print("Erro ao buscar escolas:", e)
             return None
@@ -40,10 +48,12 @@ class Escolas:
     def GetPorEscola(self, uf, cidade, escola):
         try:
             resp = requests.get(f'{self.url}/{uf.upper().strip()}/municipios/{cidade.upper().strip()}/escolas/{escola.upper().strip()}', timeout=10)
-            return resp.json()
+            if resp.status_code == 200:
+                return resp.json()
+            return []
         except requests.exceptions.RequestException as e:
             print("Erro ao buscar escola:", e)
-            return None
+            return []
 
     def Post(self, id, uf, cidade, escola):
         novaescola = {

@@ -1,27 +1,29 @@
 from Banco import Banco
+from Helpers.TratamentoErros import Erros
 
 class Login:
     def __init__(self,login):
         self.usuario = login[0]
         self.senha = login[1]
+        self.Erros = Erros()
 
     def Logar(self):
         try:
             if not self.usuario:
-                return print('Usuario obrigatório')
+                self.Erros.SetErro('Usuario obrigatório')
             elif self.usuario != Banco.consultar('USUARIO', 'PROFISSIONAIS', f"USUARIO ='{self.usuario}'")[0][0]:
-                print(Banco.consultar('USUARIO', 'PROFISSIONAIS', f"USUARIO ='{self.usuario}'"))
-                return print('Usuario não cadastrado! Cadastra-se')
-            else:
-                pass
+                self.Erros.SetErro('Usuario não cadastrado! Cadastra-se')
 
             if not self .senha:
-                return print('Senha obrigatória')
+                self.Erros.SetErro('Senha obrigatória!')
             elif self.senha != Banco.consultar('SENHA', 'PROFISSIONAIS', f"SENHA ='{self.senha}'")[0][0]:
-                return print('Senha incorreta')
-            else:
-                pass
+                self.Erros.SetErro('Senha incorreta')
 
-            return True
+            if self.Erros.TemErros():
+                return False
+            else:
+                return True
+
         except Exception as e:
-            print(f'Erro ao logar:{e}')
+            self.Erros.SetErro(f'Error:{e}')
+            return False

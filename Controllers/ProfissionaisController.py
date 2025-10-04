@@ -4,16 +4,16 @@ from Helpers.TratamentoErros import Erros as E
 class ProfissionaisControler:
     def __init__(self, app):
         self.Profissionais = None
-        self.CPF = app.get_screen("CadastroProfissional1").ids.lbl_CPFCadastroProfissional.text.replace('.', '').replace('-', '')
-        self.Nome= app.get_screen("CadastroProfissional1").ids.lbl_NomeCadastroProfissional.text
-        self.Usuario = app.get_screen("CadastroProfissional1").ids.lbl_UsuarioCadastroProfissional.text
-        self.Profissao = app.get_screen("CadastroProfissional1").ids.List_ProfissoesText.text
+        self.CPF = app.get_screen("CadastroProfissional1").ids.CPFCadastroTextField.text.replace('.', '').replace('-', '')
+        self.Nome= app.get_screen("CadastroProfissional1").ids.NomeCompletoCadastroTextFild.text
+        self.Usuario = app.get_screen("CadastroProfissional1").ids.UsuarioCadastroTextField.text
+        self.Profissao = app.get_screen("CadastroProfissional1").ids.ProsissaoCadastroTextField.text
         self.DataNascimento = None
-        self.UF = app.get_screen("CadastroProfissional2").ids.List_UFText.text
-        self.Cidade = app.get_screen("CadastroProfissional2").ids.List_CidadesText.text
-        self.Escola = app.get_screen("CadastroProfissional2").ids.List_EscolasText.text
-        self.Senha = app.get_screen("CadastroProfissional2").ids.lbl_SenhaProfissional.text
-        self.ConfirmacaoSenha = app.get_screen("CadastroProfissional2").ids.lbl_ConfirmarSenhaProfissional.text
+        self.UF = app.get_screen("CadastroProfissional2").ids.UFCadastroProfissionaisTextField.text
+        self.Cidade = app.get_screen("CadastroProfissional2").ids.CidadeCadastroProfissionalTextField.text
+        self.Escola = app.get_screen("CadastroProfissional2").ids.EscolaCadastroProfissionalTextField.text
+        self.Senha = app.get_screen("CadastroProfissional2").ids.SenhaCadastroProfissionaisTextField.text
+        self.ConfirmacaoSenha = app.get_screen("CadastroProfissional2").ids.ConfirmarSenhaCadastroProfissionaisTextFild.text
         self.Biografia = ''
         self.NumeroCasa  = ''
         self.Rua = ''

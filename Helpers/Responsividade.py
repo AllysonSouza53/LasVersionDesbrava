@@ -24,9 +24,20 @@ class Responsividade(EventDispatcher):
     Size_x_TextInput = NumericProperty(0.0)
     Size_x_Fundo_1 = NumericProperty(0.0)
     Pos_x_Fundo_1 = NumericProperty(0.0)
-    Pos_x_CPFCadastroLabel = NumericProperty(0.0)
+    Pos_x_CadastroLabel = NumericProperty(0.0)
     Pos_y_CPFCadastroLabel = NumericProperty(0.0)
-    Pos_x_List_ProfissoesBotao = NumericProperty(0.0)
+    Pos_x_List_Botao = NumericProperty(0.0)
+    Pos_y_NomeCompletoLabel = NumericProperty(0.0)
+    Pos_y_NomeCompletoCadastroLabel = NumericProperty(0.0)
+    Pos_y_UsuarioCadastroLabel = NumericProperty(0.0)
+    Pos_y_ProsissaoCadastroLabel = NumericProperty(0.0)
+    Size_x_FundoCadastroProfissional = NumericProperty(0.0)
+    Pos_x_FundoCadastroProfissional = NumericProperty(0.0)
+    Pos_y_EscolaCadastroProfissionalLabel = NumericProperty(0.0)
+    Pos_y_CidadeCadastroProfissionaisLabel = NumericProperty(0.0)
+    Pos_y_UFCadastroProfissionaisLabel = NumericProperty(0.0)
+    Pos_y_SenhaCadastroProfissionaisLabel = NumericProperty(0.0)
+    Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = NumericProperty(0.0)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,8 +64,10 @@ class Responsividade(EventDispatcher):
             self.Pos_x_Label_2 = 0.7
             self.Size_x_Fundo_1 = 0.7
             self.Pos_x_Fundo_1 = 0.35
-            self.Pos_x_CPFCadastroLabel = 0.7
-            self.Pos_x_List_ProfissoesBotao = 0.75
+            self.Pos_x_CadastroLabel = 0.7
+            self.Pos_x_List_Botao = 0.75
+            self.Size_x_FundoCadastroProfissional = 0.7
+            self.Pos_x_FundoCadastroProfissional = 0.35
 
         elif width < 1200:
         # tablet
@@ -75,8 +88,10 @@ class Responsividade(EventDispatcher):
             self.Pos_x_Label_2 = 0.83
             self.Size_x_Fundo_1 = 0.40
             self.Pos_x_Fundo_1 = 0.20
-            self.Pos_x_CPFCadastroLabel = 0.83
-            self.Pos_x_List_ProfissoesBotao = 0.65
+            self.Pos_x_CadastroLabel = 0.83
+            self.Pos_x_List_Botao = 0.65
+            self.Size_x_FundoCadastroProfissional = 0.4
+            self.Pos_x_FundoCadastroProfissional = 0.20
 
         else:
         # desktop
@@ -97,15 +112,33 @@ class Responsividade(EventDispatcher):
             self.Pos_x_Label_2 = 0.88
             self.Size_x_Fundo_1 = 0.30
             self.Pos_x_Fundo_1 = 0.15
-            self.Pos_x_CPFCadastroLabel = 0.88
-            self.Pos_x_List_ProfissoesBotao = 0.61
+            self.Pos_x_CadastroLabel = 0.88
+            self.Pos_x_List_Botao = 0.61
+            self.Size_x_FundoCadastroProfissional = 0.3
+            self.Pos_x_FundoCadastroProfissional = 0.15
 
 
         if height < 700:
             self.Pos_y_Label_1 = 0.64
             self.Pos_y_Label_2 = 0.54
             self.Pos_y_CPFCadastroLabel = 0.71
+            self.Pos_y_NomeCompletoCadastroLabel = 0.61
+            self.Pos_y_UsuarioCadastroLabel = 0.51
+            self.Pos_y_ProsissaoCadastroLabel = 0.41
+            self.Pos_y_EscolaCadastroProfissionalLabel = 0.51
+            self.Pos_y_CidadeCadastroProfissionaisLabel = 0.61
+            self.Pos_y_UFCadastroProfissionaisLabel = 0.71
+            self.Pos_y_SenhaCadastroProfissionaisLabel = 0.41
+            self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.31
         else:
             self.Pos_y_Label_1 = 0.635
             self.Pos_y_Label_2 = 0.535
             self.Pos_y_CPFCadastroLabel = 0.7
+            self.Pos_y_NomeCompletoCadastroLabel = 0.6
+            self.Pos_y_UsuarioCadastroLabel = 0.5
+            self.Pos_y_ProsissaoCadastroLabel = 0.4
+            self.Pos_y_EscolaCadastroProfissionalLabel = 0.5
+            self.Pos_y_CidadeCadastroProfissionaisLabel = 0.6
+            self.Pos_y_UFCadastroProfissionaisLabel = 0.7
+            self.Pos_y_SenhaCadastroProfissionaisLabel = 0.4
+            self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.3
