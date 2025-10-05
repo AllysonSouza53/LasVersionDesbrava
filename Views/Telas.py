@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivy.lang import Builder
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 from kivy.clock import Clock
@@ -6,6 +7,7 @@ from Controllers.ProfissionaisController import ProfissionaisControler
 from Controllers.ProfissionaisLoginController import LoginController
 from Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
 from Banco import Banco
+from kivy.core.window import Window
 
 #-------------------------------------------------------------------
 class TelaEscolha(MDScreen):
@@ -28,10 +30,10 @@ class TelaLoginProfissionais(MDScreen):
             self.manager.current = "CadastroProfissional1"
 
     def EntrarButton_Click(self):
-        Sessao = LoginController(self.manager)
+        Sessao = LoginController()
+        Sessao.setLogin(self.manager)
         if self.manager:
             if Sessao.Sessao():
-
                 self.manager.current = "PerfilProfissional"
 
 #--------------------------------------------------------------------
@@ -231,11 +233,166 @@ class TelaCadastroProfissional2(MDScreen):
 
     def CadastrarProfissionalButton_Click(self):
         if self.manager:
-            self.controle = ProfissionaisControler(self.manager)
-            if self.controle.Cadastar():
+            controle = ProfissionaisControler()
+            controle.setCadastro(self.manager)
+            if controle.Cadastar():
                 self.manager.current = "LoginProfissional"
         else:
             print("root ainda não existe")
 
+#-------------------------------------------------------------------------------------------------------
 class TelaPerfilProfissional(MDScreen):
-    pass
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_resize=self.Atualizar)
+
+    def on_enter(self, *args):
+        self.Gerar()
+
+    def Gerar(self):
+        self.Sessao = LoginController()
+        self.Sessao.setLogin(self.manager)
+        self.Profissional = ProfissionaisControler()
+        self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
+        Orientacao = "horizontal" if Window.width > 700 else "vertical"
+        Padding = 70 if Window.width > 700 else 10
+        Altura = 'self.minimum_height' if Window.width < 700 else 0
+        Tamanho_y = None if Window.width < 700 else 1
+        TelaPerfil = (f'''
+MDFloatLayout:
+    canvas.before:
+        # Desenha o fundo
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            source: 'Imagens/Fundo.png'
+            size: self.size
+            pos: self.pos
+    BoxLayout:
+        orientation: "vertical"
+        cols:2
+        BoxLayout:
+            size_hint: 1, None
+            orientation: "horizontal"
+            BoxLayout:
+                canvas:
+                    # Desenha o logo
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        source: 'Imagens/Logo.png'
+                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                        pos: self.center_x - self.width * 0.48, self.center_y - self.height * app.resp.Pos_y_Image_Perfil
+            BoxLayout:
+                orientation: "horizontal"
+                MDTextButton:
+                    text: "Perfil"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    on_release: app.label_clicado()
+                    font_size: "18sp"
+                    bold: True
+                    pos_hint: {{"center_x": 0.5, "center_y": 0.5}}
+                
+        MDBoxLayout:
+            orientation: "{Orientacao}"
+            MDBoxLayout:
+                spacing: 0
+                padding: {Padding}
+                orientation:"vertical"
+                size_hint_y: {Tamanho_y}          
+                height: {Altura}             
+                
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 0.5  # cor do fundo (RGBA)
+                    RoundedRectangle:
+                        pos: self.x + self.padding[0] - 10, self.y + self.padding[1] - 10
+                        size: self.width + 20 - (self.padding[0] + self.padding[2]), self.height + 20- (self.padding[1] + self.padding[3])
+                
+                MDBoxLayout:
+                    orientation: "vertical"
+                    Image:
+                        id:PerfilImagem
+                        source: 'Imagens/FotoPerfil.png'
+                        size_hint: None, None
+                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                        pos_hint: {{"center_x": 0.5}}
+                      
+                    MDLabel:
+                        text: "@{self.Profissional.Usuario}"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1      # permite definir altura manualmente
+                        height: self.texture_size[1]   # ajusta altura conforme o texto
+                        text_size: self.width, None    # define limite de quebra de linha
+                        font_size: app.resp.FontSize_Title
+                    
+                    MDLabel:
+                        text: "Nome:{self.Profissional.Nome}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1        # permite definir altura manualmente
+                        height: self.texture_size[1]   # ajusta altura conforme o texto
+                        text_size: self.width, None    # define limite de quebra de linha
+                        font_size: app.resp.FontSize_Title
+                    
+                    MDLabel:
+                        text: "CPF:{self.Profissional.CPF}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1        # permite definir altura manualmente
+                        height: self.texture_size[1]   # ajusta altura conforme o texto
+                        text_size: self.width, None    # define limite de quebra de linha
+                        font_size: app.resp.FontSize_Title
+                    
+                    MDLabel:
+                        text: "Profissão:{self.Profissional.Profissao}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1          # permite definir altura manualmente
+                        height: self.texture_size[1]   # ajusta altura conforme o texto
+                        text_size: self.width, None    # define limite de quebra de linha
+                        font_size: app.resp.FontSize_Title
+                        
+                    MDLabel:
+                        text: "Escola:{self.Profissional.Escola}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1            # permite definir altura manualmente
+                        height: self.texture_size[1]   # ajusta altura conforme o texto
+                        text_size: self.width, None    # define limite de quebra de linha
+                        font_size: app.resp.FontSize_Title
+                        
+                    MDLabel:
+                        text: "Biografia:{self.Profissional.Biografia}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1           # permite definir altura manualmente
+                        height: self.texture_size[1]   # ajusta altura conforme o texto
+                        text_size: self.width, None    # define limite de quebra de linha
+                        font_size: app.resp.FontSize_Title
+                
+                BoxLayout:
+                    MDRaisedButton:
+                        text: 'Alterar Perfil'
+                        pos_hint: {{'center_x': 0.5}}
+                        md_bg_color: 0.0, 0.4, 0.0, 1
+                        font_size: "18sp"
+                        bold: True
+                        line_color: 1, 1, 1, 1
+                        on_release: app.CadatrarProfissionais_Click()
+    
+            BoxLayout:
+                MDLabel:
+                    text: "foi?"
+                    halign: "center"
+                    valign: "center"
+                    text_size: self.size
+''')
+
+        layout = Builder.load_string(TelaPerfil)
+        self.add_widget(layout)
+
+    def Atualizar(self, *args):
+        self.Gerar()

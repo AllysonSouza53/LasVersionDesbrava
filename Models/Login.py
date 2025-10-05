@@ -2,6 +2,9 @@ from Banco import Banco
 from Helpers.TratamentoErros import Erros
 
 class Login:
+    usuario = None
+    senha = None
+
     def __init__(self,login):
         self.usuario = login[0]
         self.senha = login[1]

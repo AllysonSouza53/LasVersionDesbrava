@@ -38,6 +38,12 @@ class Responsividade(EventDispatcher):
     Pos_y_UFCadastroProfissionaisLabel = NumericProperty(0.0)
     Pos_y_SenhaCadastroProfissionaisLabel = NumericProperty(0.0)
     Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = NumericProperty(0.0)
+    Size_x_Logo_inter = NumericProperty(0.0)
+    Size_y_Logo_inter = NumericProperty(0.0)
+    Size_x_Image_Perfil = NumericProperty(0.0)
+    Size_y_Image_Perfil = NumericProperty(0.0)
+    Pos_y_Image_Perfil = NumericProperty(0.0)
+    FontSize_PerfilText = NumericProperty(0.0)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -68,6 +74,11 @@ class Responsividade(EventDispatcher):
             self.Pos_x_List_Botao = 0.75
             self.Size_x_FundoCadastroProfissional = 0.7
             self.Pos_x_FundoCadastroProfissional = 0.35
+            self.Size_x_Logo_inter = 95
+            self.Size_y_Logo_inter = 95
+            self.Size_x_Image_Perfil = dp(90)
+            self.Size_y_Image_Perfil = dp(90)
+            self.FontSize_PerfilText = dp(12)
 
         elif width < 1200:
         # tablet
@@ -92,10 +103,15 @@ class Responsividade(EventDispatcher):
             self.Pos_x_List_Botao = 0.65
             self.Size_x_FundoCadastroProfissional = 0.4
             self.Pos_x_FundoCadastroProfissional = 0.20
+            self.Size_x_Logo_inter = 95
+            self.Size_y_Logo_inter = 95
+            self.Size_x_Image_Perfil = dp(110)
+            self.Size_y_Image_Perfil = dp(110)
+            self.FontSize_PerfilText = dp(20)
 
         else:
         # desktop
-            self.FontSize = sp(16)
+            self.FontSize = sp(18)
             self.Pos_x_btn1 = 0.44
             self.Pos_x_btn2 = 0.55
             self.Pos_y_btn1 = 0.5
@@ -103,7 +119,7 @@ class Responsividade(EventDispatcher):
             self.Transp_Back = 0.5
             self.Size_x_Logo = 150
             self.Size_y_Logo = 150
-            self.FontSize_Title = sp(20)
+            self.FontSize_Title = sp(19)
             self.Text_Title = "Bem Vindo(a) Profissional!"
             self.Pos_Title = 0.8
             self.Text_SubLabel = 'Sem cadastro! Se conecte!'
@@ -116,6 +132,11 @@ class Responsividade(EventDispatcher):
             self.Pos_x_List_Botao = 0.61
             self.Size_x_FundoCadastroProfissional = 0.3
             self.Pos_x_FundoCadastroProfissional = 0.15
+            self.Size_x_Logo_inter = 110
+            self.Size_y_Logo_inter = 110
+            self.Size_x_Image_Perfil = dp(140)
+            self.Size_y_Image_Perfil = dp(140)
+            self.FontSize_PerfilText = dp(20)
 
 
         if height < 700:
@@ -130,6 +151,7 @@ class Responsividade(EventDispatcher):
             self.Pos_y_UFCadastroProfissionaisLabel = 0.71
             self.Pos_y_SenhaCadastroProfissionaisLabel = 0.41
             self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.31
+            self.Pos_y_Image_Perfil = 0.5
         else:
             self.Pos_y_Label_1 = 0.635
             self.Pos_y_Label_2 = 0.535
@@ -142,3 +164,5 @@ class Responsividade(EventDispatcher):
             self.Pos_y_UFCadastroProfissionaisLabel = 0.7
             self.Pos_y_SenhaCadastroProfissionaisLabel = 0.4
             self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.3
+            self.Pos_y_Image_Perfil = 0.8
+

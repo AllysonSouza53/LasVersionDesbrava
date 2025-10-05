@@ -1,7 +1,10 @@
 from Models.Login import Login
 
 class LoginController:
-    def __init__(self,app):
+    usuario = None
+    senha = None
+
+    def setLogin(self,app):
         self.usuario = app.get_screen("LoginProfissional").ids.lbl_ProfissionalUsuario.text
         self.senha = app.get_screen("LoginProfissional").ids.lbl_ProfissionalSenha.text
 

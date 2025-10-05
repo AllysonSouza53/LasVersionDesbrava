@@ -2,8 +2,24 @@ from Banco import Banco
 from Helpers.TratamentoErros import Erros
 
 class Profissionais:
-    def __init__(self, dados):
+    CPF = None
+    Nome = None
+    Usuario = None
+    Profissao = None
+    DataNascimento = None
+    UF = None
+    Cidade = None
+    Escola = None
+    Senha = None
+    Biografia = None
+    Rua = None
+    Bairro = None
+    FotoPerfil = None
+
+    def __init__(self):
         self.TE = Erros()
+
+    def setProfissional(self, dados):
         self.CPF = dados[0]
         self.Nome = dados[1]
         self.Usuario = dados[2]
@@ -128,4 +144,38 @@ class Profissionais:
         except Exception as e:
             self.TE.SetErro(f'Não foi possivel encontar. Erro:{e}')
             return False
+
+    def getUsuario(self, condicao):
+        Resultado = Banco.consultar('*',"PROFISSIONAIS", condicao)
+
+        # Se não houver resultado ou vier False, evita erro
+        if not Resultado or Resultado is False:
+            print("Nenhum usuário encontrado ou erro na consulta.")
+            return False
+
+        try:
+            self.CPF = Resultado[0][0]
+            self.Nome = Resultado[0][1]
+            self.Usuario = Resultado[0][2]
+            self.Profissao = Resultado[0][3]
+            self.DataNascimento = Resultado[0][4]
+            self.UF = Resultado[0][5]
+            self.Cidade = Resultado[0][6]
+            self.Escola = Resultado[0][7]
+            self.Senha = Resultado[0][8]
+            self.Biografia = Resultado[0][9]
+            self.Rua = Resultado[0][10]
+            self.Bairro = Resultado[0][11]
+            self.FotoPerfil = Resultado[0][12]
+
+            return [
+                self.CPF, self.Nome, self.Usuario, self.Profissao, self.DataNascimento,
+                self.UF, self.Cidade, self.Escola, self.Senha, self.Biografia,
+                self.Rua, self.Bairro, self.FotoPerfil
+            ]
+
+        except Exception as e:
+            print(f"Erro ao extrair dados do usuário: {e}")
+            return False
+
 
