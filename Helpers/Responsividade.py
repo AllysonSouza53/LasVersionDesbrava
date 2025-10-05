@@ -44,6 +44,8 @@ class Responsividade(EventDispatcher):
     Size_y_Image_Perfil = NumericProperty(0.0)
     Pos_y_Image_Perfil = NumericProperty(0.0)
     FontSize_PerfilText = NumericProperty(0.0)
+    Pos_x_Logo_inter = NumericProperty(0.0)
+    Pos_y_Logo_inter = NumericProperty(0.0)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -79,6 +81,8 @@ class Responsividade(EventDispatcher):
             self.Size_x_Image_Perfil = dp(90)
             self.Size_y_Image_Perfil = dp(90)
             self.FontSize_PerfilText = dp(12)
+            self.Pos_y_Logo_inter = 0.5
+            self.Pos_y_Logo_inter = 0.5
 
         elif width < 1200:
         # tablet
@@ -103,11 +107,12 @@ class Responsividade(EventDispatcher):
             self.Pos_x_List_Botao = 0.65
             self.Size_x_FundoCadastroProfissional = 0.4
             self.Pos_x_FundoCadastroProfissional = 0.20
-            self.Size_x_Logo_inter = 95
-            self.Size_y_Logo_inter = 95
+            self.Size_x_Logo_inter = 80
+            self.Size_y_Logo_inter = 80
             self.Size_x_Image_Perfil = dp(110)
             self.Size_y_Image_Perfil = dp(110)
             self.FontSize_PerfilText = dp(20)
+            self.Pos_y_Logo_inter = 1.8
 
         else:
         # desktop
@@ -137,6 +142,7 @@ class Responsividade(EventDispatcher):
             self.Size_x_Image_Perfil = dp(140)
             self.Size_y_Image_Perfil = dp(140)
             self.FontSize_PerfilText = dp(20)
+            self.Pos_y_Logo_inter = dp(0)
 
 
         if height < 700:

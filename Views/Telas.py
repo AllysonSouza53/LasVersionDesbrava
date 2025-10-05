@@ -255,140 +255,172 @@ class TelaPerfilProfissional(MDScreen):
         self.Profissional = ProfissionaisControler()
         self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
         Orientacao = "horizontal" if Window.width > 700 else "vertical"
-        Padding = 70 if Window.width > 700 else 10
+
+        if Window.width < 700:
+            Padding = 0
+        elif Window.width <1200:
+            Padding = 60
+        else:
+            Padding = 70
         Altura = 'self.minimum_height' if Window.width < 700 else 0
         Tamanho_y = None if Window.width < 700 else 1
+        if Window.width > 1200:
+            DistanciaLetras = 28
+        elif Window.width > 1200:
+            DistanciaLetras = 20
+        else:
+            DistanciaLetras = 30
         TelaPerfil = (f'''
 MDFloatLayout:
     canvas.before:
-        # Desenha o fundo
         Color:
             rgba: 1, 1, 1, 1
         Rectangle:
             source: 'Imagens/Fundo.png'
             size: self.size
             pos: self.pos
+
     BoxLayout:
         orientation: "vertical"
-        cols:2
+        size_hint_y: None
+        height: self.minimum_height
+
+        # Cabeçalho com logo e botão "Perfil"
         BoxLayout:
-            size_hint: 1, None
+            size_hint_y: None
+            height: dp(80)
             orientation: "horizontal"
+            padding: dp(10), dp(10)
+
             BoxLayout:
                 canvas:
-                    # Desenha o logo
                     Color:
                         rgba: 1, 1, 1, 1
                     Rectangle:
                         source: 'Imagens/Logo.png'
                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                        pos: self.center_x - self.width * 0.48, self.center_y - self.height * app.resp.Pos_y_Image_Perfil
+                        pos: self.center_x - self.width * 0.48, self.center_y - self.height * app.resp.Pos_y_Logo_inter
+
             BoxLayout:
-                orientation: "horizontal"
                 MDTextButton:
                     text: "Perfil"
                     theme_text_color: "Custom"
                     text_color: 1, 1, 1, 1
-                    on_release: app.label_clicado()
                     font_size: "18sp"
                     bold: True
-                    pos_hint: {{"center_x": 0.5, "center_y": 0.5}}
-                
+                    pos_hint: {{"center_x": 0.5, "center_y": -0.5}}
+                    on_release: app.label_clicado()
+        
+    
+        # Corpo principal do perfil
         MDBoxLayout:
-            orientation: "{Orientacao}"
+            orientation: "{Orientacao}"  # horizontal se desktop, vertical se celular
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: dp(10)
+    
+            # Card de informações
             MDBoxLayout:
-                spacing: 0
-                padding: {Padding}
-                orientation:"vertical"
-                size_hint_y: {Tamanho_y}          
-                height: {Altura}             
-                
+                orientation: "vertical"
+                padding: dp({Padding})
+                spacing: dp({DistanciaLetras})
+                size_hint_y: None
+                height: self.minimum_height
+    
                 canvas.before:
                     Color:
-                        rgba: 0, 0, 0, 0.5  # cor do fundo (RGBA)
+                        rgba: 0, 0, 0, 0.5
                     RoundedRectangle:
                         pos: self.x + self.padding[0] - 10, self.y + self.padding[1] - 10
-                        size: self.width + 20 - (self.padding[0] + self.padding[2]), self.height + 20- (self.padding[1] + self.padding[3])
-                
-                MDBoxLayout:
-                    orientation: "vertical"
-                    Image:
-                        id:PerfilImagem
-                        source: 'Imagens/FotoPerfil.png'
-                        size_hint: None, None
-                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                        pos_hint: {{"center_x": 0.5}}
-                      
-                    MDLabel:
-                        text: "@{self.Profissional.Usuario}"
-                        halign: "center"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1      # permite definir altura manualmente
-                        height: self.texture_size[1]   # ajusta altura conforme o texto
-                        text_size: self.width, None    # define limite de quebra de linha
-                        font_size: app.resp.FontSize_Title
-                    
-                    MDLabel:
-                        text: "Nome:{self.Profissional.Nome}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1        # permite definir altura manualmente
-                        height: self.texture_size[1]   # ajusta altura conforme o texto
-                        text_size: self.width, None    # define limite de quebra de linha
-                        font_size: app.resp.FontSize_Title
-                    
-                    MDLabel:
-                        text: "CPF:{self.Profissional.CPF}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1        # permite definir altura manualmente
-                        height: self.texture_size[1]   # ajusta altura conforme o texto
-                        text_size: self.width, None    # define limite de quebra de linha
-                        font_size: app.resp.FontSize_Title
-                    
-                    MDLabel:
-                        text: "Profissão:{self.Profissional.Profissao}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1          # permite definir altura manualmente
-                        height: self.texture_size[1]   # ajusta altura conforme o texto
-                        text_size: self.width, None    # define limite de quebra de linha
-                        font_size: app.resp.FontSize_Title
-                        
-                    MDLabel:
-                        text: "Escola:{self.Profissional.Escola}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1            # permite definir altura manualmente
-                        height: self.texture_size[1]   # ajusta altura conforme o texto
-                        text_size: self.width, None    # define limite de quebra de linha
-                        font_size: app.resp.FontSize_Title
-                        
-                    MDLabel:
-                        text: "Biografia:{self.Profissional.Biografia}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1           # permite definir altura manualmente
-                        height: self.texture_size[1]   # ajusta altura conforme o texto
-                        text_size: self.width, None    # define limite de quebra de linha
-                        font_size: app.resp.FontSize_Title
-                
-                BoxLayout:
-                    MDRaisedButton:
-                        text: 'Alterar Perfil'
-                        pos_hint: {{'center_x': 0.5}}
-                        md_bg_color: 0.0, 0.4, 0.0, 1
-                        font_size: "18sp"
-                        bold: True
-                        line_color: 1, 1, 1, 1
-                        on_release: app.CadatrarProfissionais_Click()
+                        size: self.width + 20 - (self.padding[0] + self.padding[2]), self.height + 20 - (self.padding[1] + self.padding[3])
     
-            BoxLayout:
+                # Conteúdo do card
+                Image:
+                    id: PerfilImagem
+                    source: 'Imagens/FotoPerfil.png'
+                    size_hint: None, None
+                    size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                    pos_hint: {{"center_x": 0.5}}
+    
                 MDLabel:
-                    text: "foi?"
+                    text: "@{self.Profissional.Usuario}"
                     halign: "center"
-                    valign: "center"
-                    text_size: self.size
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    font_size: app.resp.FontSize
+    
+                MDLabel:
+                    text: "Nome: {self.Profissional.Nome}"
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    font_size: app.resp.FontSize
+    
+                MDLabel:
+                    text: "CPF: {self.Profissional.CPF}"
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    font_size: app.resp.FontSize
+    
+                MDLabel:
+                    text: "Profissão: {self.Profissional.Profissao}"
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    font_size: app.resp.FontSize
+    
+                MDLabel:
+                    text: "Escola: {self.Profissional.Escola}"
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    font_size: app.resp.FontSize
+    
+                MDLabel:
+                    text: "Biografia: {self.Profissional.Biografia}"
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    font_size: app.resp.FontSize
+                    
+                # Botão sempre abaixo do conteúdo
+                MDRaisedButton:
+                    text: "Alterar Perfil"
+                    pos_hint: {{"center_x": 0.5}}
+                    md_bg_color: 0.0, 0.4, 0.0, 1
+                    font_size: "18sp"
+                    bold: True
+                    line_color: 1, 1, 1, 1
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: app.CadatrarProfissionais_Click()
+            
+            ScrollView:
+                MDBoxLayout:
+                    MDLabel:
+                        text: "foi?"
+                        halign: "center"
+                        valign: "center"
+                        text_size: self.size
 ''')
 
         layout = Builder.load_string(TelaPerfil)
