@@ -1,7 +1,7 @@
 from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
-from Views.Telas import TelaEscolha,TelaLoginProfissionais
 from Helpers.Responsividade import Responsividade
+from Views.Telas import *
 
 
 class Gerenciador(ScreenManager):

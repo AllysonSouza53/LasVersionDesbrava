@@ -8,6 +8,7 @@ from Controllers.ProfissionaisLoginController import LoginController
 from Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
 from Banco import Banco
 from kivy.core.window import Window
+import base64
 
 #-------------------------------------------------------------------
 class TelaEscolha(MDScreen):
@@ -249,15 +250,31 @@ class TelaPerfilProfissional(MDScreen):
     def on_enter(self, *args):
         self.Gerar()
 
+    def GetFotoPerfil(self, usuario):
+        Perfil = Perfis()
+        UsuarioPerfil = Perfil.GetPorUsuario(usuario)
+        if UsuarioPerfil is None:
+            UsuarioPerfilImagem = Perfil.GetPorUsuario('ADMIN')['imagem']
+            imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
+            with open("Imagens/FotoPerfil.png", "wb") as f:
+                f.write(imagem_bytes)
+        else:
+            UsuarioPerfilImagem = UsuarioPerfil['imagem']
+            imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
+            with open("Imagens/FotoPerfil.png", "wb") as f:
+                f.write(imagem_bytes)
+
+
     def Gerar(self):
         self.Sessao = LoginController()
         self.Sessao.setLogin(self.manager)
         self.Profissional = ProfissionaisControler()
         self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
         Orientacao = "horizontal" if Window.width > 700 else "vertical"
+        self.GetFotoPerfil(self.Sessao.usuario)
 
         if Window.width < 700:
-            Padding = 0
+            Padding = 20
         elif Window.width <1200:
             Padding = 60
         else:
@@ -308,7 +325,7 @@ MDFloatLayout:
                     text_color: 1, 1, 1, 1
                     font_size: "18sp"
                     bold: True
-                    pos_hint: {{"center_x": 0.5, "center_y": -0.5}}
+                    pos_hint: {{"center_x": 0.5, "center_y": app.resp.Pos_y_Menu}}
                     on_release: app.label_clicado()
         
     
@@ -415,12 +432,216 @@ MDFloatLayout:
                     on_release: app.CadatrarProfissionais_Click()
             
             ScrollView:
-                MDBoxLayout:
-                    MDLabel:
-                        text: "foi?"
-                        halign: "center"
-                        valign: "center"
-                        text_size: self.size
+                do_scroll_x: False
+                do_scroll_y: True
+            
+                MDGridLayout:
+                    id: feed_grid
+                    cols: 2                 # 2 cards por linha
+                    adaptive_height: True    # ajusta altura ao conteúdo
+                    padding: dp(20), dp(50), dp(20), dp(20)  # left, top, right, bottom
+                    spacing: dp(10)
+            
+                    # Cada post
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+            
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                    
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+            
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                    
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+            
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                    
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+            
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                    
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
+            
+                    MDCard:
+                        size_hint_y: None
+                        height: dp(200)
+                        padding: dp(10)
+                        orientation: "vertical"
+            
+                        MDLabel:
+                            text: "Nome do usuário"
+                            font_style: "H6"
+            
+                        Image:
+                            source: "Imagens/FotoPost.png"
+                            size_hint_y: None
+                            height: dp(120)
+            
+                        MDLabel:
+                            text: "Descrição ou legenda do post..."
+                            size_hint_y: None
+                            height: self.texture_size[1]
 ''')
 
         layout = Builder.load_string(TelaPerfil)
