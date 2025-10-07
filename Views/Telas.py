@@ -296,38 +296,37 @@ MDFloatLayout:
             source: 'Imagens/Fundo.png'
             size: self.size
             pos: self.pos
+            
+    # Cabeçalho com logo e botão "Perfil"
+    BoxLayout:
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: "horizontal"
+        padding: dp(10), dp(10)
+        pos_hint: {{"top": 0.9}}  # 🔥 fixa no topo
 
+        BoxLayout:
+            canvas:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    source: 'Imagens/Logo.png'
+                    size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                    pos: self.center_x - self.width * 0.48, self.center_y - self.height * app.resp.Pos_y_Logo_inter
+
+        BoxLayout:
+            MDTextButton:
+                text: "Perfil"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                font_size: "18sp"
+                bold: True
+                pos_hint: {{"center_x": 0.5, "center_y": app.resp.Pos_y_Menu}}
+                on_release: app.label_clicado()
     BoxLayout:
         orientation: "vertical"
         size_hint_y: None
         height: self.minimum_height
-
-        # Cabeçalho com logo e botão "Perfil"
-        BoxLayout:
-            size_hint_y: None
-            height: dp(80)
-            orientation: "horizontal"
-            padding: dp(10), dp(10)
-
-            BoxLayout:
-                canvas:
-                    Color:
-                        rgba: 1, 1, 1, 1
-                    Rectangle:
-                        source: 'Imagens/Logo.png'
-                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                        pos: self.center_x - self.width * 0.48, self.center_y - self.height * app.resp.Pos_y_Logo_inter
-
-            BoxLayout:
-                MDTextButton:
-                    text: "Perfil"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    font_size: "18sp"
-                    bold: True
-                    pos_hint: {{"center_x": 0.5, "center_y": app.resp.Pos_y_Menu}}
-                    on_release: app.label_clicado()
-        
     
         # Corpo principal do perfil
         MDBoxLayout:
