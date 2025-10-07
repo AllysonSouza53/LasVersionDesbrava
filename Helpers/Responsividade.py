@@ -114,7 +114,7 @@ class Responsividade(EventDispatcher):
             self.Size_x_Image_Perfil = dp(110)
             self.Size_y_Image_Perfil = dp(110)
             self.FontSize_PerfilText = dp(20)
-            self.Pos_y_Logo_inter = 1.8
+            self.Pos_y_Logo_inter = 1
             self.Pos_y_Menu = -0.2
 
         else:
@@ -144,7 +144,7 @@ class Responsividade(EventDispatcher):
             self.Size_x_Image_Perfil = dp(140)
             self.Size_y_Image_Perfil = dp(140)
             self.FontSize_PerfilText = dp(20)
-            self.Pos_y_Logo_inter = dp(0)
+            self.Pos_y_Logo_inter = 1.3
             self.Pos_y_Menu = 1.5
 
 
@@ -161,7 +161,7 @@ class Responsividade(EventDispatcher):
             self.Pos_y_SenhaCadastroProfissionaisLabel = 0.41
             self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.31
             self.Pos_y_Image_Perfil = 0.5
-            self.Size_y_Logo_inter = 50
+            self.Size_y_Logo_inter = 200
         elif height <900:
             self.Pos_y_Label_1 = 0.635
             self.Pos_y_Label_2 = 0.535
@@ -175,7 +175,7 @@ class Responsividade(EventDispatcher):
             self.Pos_y_SenhaCadastroProfissionaisLabel = 0.4
             self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.3
             self.Pos_y_Image_Perfil = 0.8
-            self.Size_y_Logo_inter = 90
+            self.Size_y_Logo_inter = 200
         else:
             self.Pos_y_Label_1 = 0.635
             self.Pos_y_Label_2 = 0.535
@@ -189,4 +189,4 @@ class Responsividade(EventDispatcher):
             self.Pos_y_SenhaCadastroProfissionaisLabel = 0.4
             self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.3
             self.Pos_y_Image_Perfil = 0.8
-            self.Size_y_Logo_inter = 50
+            self.Size_y_Logo_inter = 1.3

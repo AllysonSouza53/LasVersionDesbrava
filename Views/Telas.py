@@ -296,351 +296,358 @@ MDFloatLayout:
             source: 'Imagens/Fundo.png'
             size: self.size
             pos: self.pos
-            
-    # Cabeçalho com logo e botão "Perfil"
     BoxLayout:
-        size_hint_y: None
-        height: self.minimum_height
-        orientation: "horizontal"
-        padding: dp(10), dp(10)
-        pos_hint: {{"top": 0.9}}  # 🔥 fixa no topo
-
+        orientation:'vertical'
         BoxLayout:
-            canvas:
-                Color:
-                    rgba: 1, 1, 1, 1
-                Rectangle:
-                    source: 'Imagens/Logo.png'
-                    size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                    pos: self.center_x - self.width * 0.48, self.center_y - self.height * app.resp.Pos_y_Logo_inter
-
+            orientation:'horizontal'
+            size_hint_y: 0.25
+            BoxLayout:
+                canvas:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        source: 'Imagens/Logo.png'
+                        size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                        pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+            BoxLayout:
+                spacing:30
+                pos_hint:{{"center_y":0.55}}
+                orientation:'horizontal'
+                MDTextButton:
+                    text: "Perfil"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    font_size: "18sp"
+                    bold: True
+                    on_release: app.label_clicado()
+                
+                MDTextButton:
+                    text: "Alunos"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    font_size: "18sp"
+                    bold: True
+                    on_release: app.label_clicado()
+                
+                MDTextButton:
+                    text: "Jogos"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    font_size: "18sp"
+                    bold: True
+                    on_release: app.label_clicado()
+                
+                MDTextButton:
+                    text: "Comunidade"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    font_size: "18sp"
+                    bold: True
+                    on_release: app.label_clicado()
         BoxLayout:
-            MDTextButton:
-                text: "Perfil"
-                theme_text_color: "Custom"
-                text_color: 1, 1, 1, 1
-                font_size: "18sp"
-                bold: True
-                pos_hint: {{"center_x": 0.5, "center_y": app.resp.Pos_y_Menu}}
-                on_release: app.label_clicado()
-    BoxLayout:
-        orientation: "vertical"
-        size_hint_y: None
-        height: self.minimum_height
-    
-        # Corpo principal do perfil
-        MDBoxLayout:
-            orientation: "{Orientacao}"  # horizontal se desktop, vertical se celular
-            size_hint_y: None
-            height: self.minimum_height
-            spacing: dp(10)
-    
-            # Card de informações
-            MDBoxLayout:
-                orientation: "vertical"
-                padding: dp({Padding})
-                spacing: dp({DistanciaLetras})
-                size_hint_y: None
-                height: self.minimum_height
-    
+            orientation:'horizontal'
+            BoxLayout:
+                padding: dp(20)
                 canvas.before:
                     Color:
                         rgba: 0, 0, 0, 0.5
                     RoundedRectangle:
                         pos: self.x + self.padding[0] - 10, self.y + self.padding[1] - 10
                         size: self.width + 20 - (self.padding[0] + self.padding[2]), self.height + 20 - (self.padding[1] + self.padding[3])
+                BoxLayout:
+                    orientation:'vertical'
+                    Image:
+                        id: PerfilImagem
+                        source: 'Imagens/FotoPerfil.png'
+                        size_hint: None, None
+                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                        pos_hint: {{"center_x": 0.5}}
     
-                # Conteúdo do card
-                Image:
-                    id: PerfilImagem
-                    source: 'Imagens/FotoPerfil.png'
-                    size_hint: None, None
-                    size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                    pos_hint: {{"center_x": 0.5}}
+                    MDLabel:
+                        text: "@{self.Profissional.Usuario}"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.width, None
+                        font_size: app.resp.FontSize
     
-                MDLabel:
-                    text: "@{self.Profissional.Usuario}"
-                    halign: "center"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    text_size: self.width, None
-                    font_size: app.resp.FontSize
+                    MDLabel:
+                        text: "Nome: {self.Profissional.Nome}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.width, None
+                        font_size: app.resp.FontSize
     
-                MDLabel:
-                    text: "Nome: {self.Profissional.Nome}"
-                    halign: "left"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    text_size: self.width, None
-                    font_size: app.resp.FontSize
+                    MDLabel:
+                        text: "CPF: {self.Profissional.CPF}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.width, None
+                        font_size: app.resp.FontSize
     
-                MDLabel:
-                    text: "CPF: {self.Profissional.CPF}"
-                    halign: "left"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    text_size: self.width, None
-                    font_size: app.resp.FontSize
+                    MDLabel:
+                        text: "Profissão: {self.Profissional.Profissao}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.width, None
+                        font_size: app.resp.FontSize
     
-                MDLabel:
-                    text: "Profissão: {self.Profissional.Profissao}"
-                    halign: "left"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    text_size: self.width, None
-                    font_size: app.resp.FontSize
+                    MDLabel:
+                        text: "Escola: {self.Profissional.Escola}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.width, None
+                        font_size: app.resp.FontSize
     
-                MDLabel:
-                    text: "Escola: {self.Profissional.Escola}"
-                    halign: "left"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    text_size: self.width, None
-                    font_size: app.resp.FontSize
+                    MDLabel:
+                        text: "Biografia: {self.Profissional.Biografia}"
+                        halign: "left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.width, None
+                        font_size: app.resp.FontSize
     
-                MDLabel:
-                    text: "Biografia: {self.Profissional.Biografia}"
-                    halign: "left"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    text_size: self.width, None
-                    font_size: app.resp.FontSize
-                    
-                # Botão sempre abaixo do conteúdo
-                MDRaisedButton:
-                    text: "Alterar Perfil"
-                    pos_hint: {{"center_x": 0.5}}
-                    md_bg_color: 0.0, 0.4, 0.0, 1
-                    font_size: "18sp"
-                    bold: True
-                    line_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: dp(50)
-                    on_release: app.CadatrarProfissionais_Click()
-            
+                    # Botão sempre abaixo do conteúdo
+                    MDRaisedButton:
+                        text: "Alterar Perfil"
+                        pos_hint: {{"center_x": 0.5}}
+                        md_bg_color: 0.0, 0.4, 0.0, 1
+                        font_size: "18sp"
+                        bold: True
+                        line_color: 1, 1, 1, 1
+                        size_hint_y: None
+                        height: dp(50)
+                        on_release: app.CadatrarProfissionais_Click()
             ScrollView:
                 do_scroll_x: False
                 do_scroll_y: True
-            
+
                 MDGridLayout:
                     id: feed_grid
                     cols: 2                 # 2 cards por linha
                     adaptive_height: True    # ajusta altura ao conteúdo
                     padding: dp(20), dp(50), dp(20), dp(20)  # left, top, right, bottom
                     spacing: dp(10)
-            
+
                     # Cada post
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-            
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-                    
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-            
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-                    
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-            
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-                    
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-            
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-                    
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
-            
+
                     MDCard:
                         size_hint_y: None
                         height: dp(200)
                         padding: dp(10)
                         orientation: "vertical"
-            
+
                         MDLabel:
                             text: "Nome do usuário"
                             font_style: "H6"
-            
+
                         Image:
                             source: "Imagens/FotoPost.png"
                             size_hint_y: None
                             height: dp(120)
-            
+
                         MDLabel:
                             text: "Descrição ou legenda do post..."
                             size_hint_y: None
                             height: self.texture_size[1]
+        
+    
+    
 ''')
 
         layout = Builder.load_string(TelaPerfil)
