@@ -1,5 +1,5 @@
-from Models.Aluno import Aluno
-from Helpers.TratamentoErros import Erros
+from App.Models.Aluno import Aluno
+from App.Helpers.TratamentoErros import Erros
 
 
 class AlunoController:

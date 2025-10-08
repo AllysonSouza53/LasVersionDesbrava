@@ -1,5 +1,5 @@
-from Banco import Banco
-from Helpers.TratamentoErros import Erros
+from App.Banco import Banco
+from App.Helpers.TratamentoErros import Erros
 
 class Aluno:
     RE = None

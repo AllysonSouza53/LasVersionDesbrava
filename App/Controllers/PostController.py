@@ -1,5 +1,5 @@
-from Models.Post import Post
-from Helpers.TratamentoErros import Erros as E
+from App.Models.Post import Post
+from App.Helpers.TratamentoErros import Erros as E
 
 class PostController:
     ID = None

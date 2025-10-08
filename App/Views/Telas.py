@@ -1,7 +1,5 @@
 import io
 from kivy.uix.widget import Widget
-from kivy.app import App
-from kivy.lang import Builder
 from kivy.metrics import dp
 from kivymd.uix.card import MDCard
 from kivymd.uix.datatables import MDDataTable
@@ -12,13 +10,12 @@ from kivymd.uix.screen import MDScreen
 from kivy.clock import Clock
 from kivy.core.image import Image as CoreImage
 
-from Controllers.AlunosController import AlunoController
-from Controllers.PostController import PostController
-from Controllers.ProfissionalController import ProfissionalControler
-from Controllers.ProfissionaisLoginController import LoginController
-from Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
-from Banco import Banco
-from kivy.core.window import Window
+from App.Controllers.AlunosController import AlunoController
+from App.Controllers.PostController import PostController
+from App.Controllers.ProfissionalController import ProfissionalControler
+from App.Controllers.ProfissionaisLoginController import LoginController
+from App.Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
+from App.Banco import Banco
 import base64
 
 #-------------------------------------------------------------------
