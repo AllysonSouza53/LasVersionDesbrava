@@ -1,8 +1,8 @@
-from Models.Profissionais import Profissionais
+from Models.Profissional import Profissional
 from Helpers.TratamentoErros import Erros as E
 
-class ProfissionaisControler:
-    Profissionais = None
+class ProfissionalControler:
+    Profissional = None
     CPF = None
     Nome = None
     Usuario = None
@@ -15,8 +15,6 @@ class ProfissionaisControler:
     ConfirmacaoSenha = None
     Biografia = None
     NumeroCasa = None
-    Rua = None
-    Bairro = None
     FotoPerfil = None
 
     def __init__(self):
@@ -35,8 +33,6 @@ class ProfissionaisControler:
         self.ConfirmacaoSenha = app.get_screen("CadastroProfissional2").ids.ConfirmarSenhaCadastroProfissionaisTextFild.text
         self.Biografia = 'Fale um pouco sobre você'
         self.NumeroCasa = ''
-        self.Rua = ''
-        self.Bairro = ''
         self.FotoPerfil = ''
 
     def getUsuario(self):
@@ -51,14 +47,12 @@ class ProfissionaisControler:
             self.Escola,
             self.Senha,
             self.Biografia,
-            self.Rua,
-            self.Bairro,
             self.FotoPerfil
         ]
 
     def setUsuario(self, condicao):
-        self.Profissionais = Profissionais()
-        usuario = self.Profissionais.getUsuario(condicao)
+        self.Profissional = Profissional()
+        usuario = self.Profissional.getUsuario(condicao)
 
         if not usuario:
             print("⚠️ Nenhum usuário encontrado.")
@@ -75,17 +69,15 @@ class ProfissionaisControler:
             self.Escola,
             self.Senha,
             self.Biografia,
-            self.Rua,
-            self.Bairro,
             self.FotoPerfil
         ) = usuario
         return True
 
     def Cadastar(self):
         try:
-            self.Profissionais = Profissionais()
-            self.Profissionais.setProfissional(self.getUsuario())
-            resultado = self.Profissionais.Salvar()
+            self.Profissional = Profissional()
+            self.Profissional.setProfissional(self.getUsuario())
+            resultado = self.Profissional.Salvar()
             if resultado:
                 return True
             return False

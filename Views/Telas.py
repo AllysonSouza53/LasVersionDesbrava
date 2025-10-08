@@ -1,9 +1,20 @@
+import io
+from kivy.uix.widget import Widget
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.metrics import dp
+from kivymd.uix.card import MDCard
+from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.fitimage import FitImage
+from kivymd.uix.label import MDLabel
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 from kivy.clock import Clock
-from Controllers.ProfissionaisController import ProfissionaisControler
+from kivy.core.image import Image as CoreImage
+
+from Controllers.AlunosController import AlunoController
+from Controllers.PostController import PostController
+from Controllers.ProfissionalController import ProfissionalControler
 from Controllers.ProfissionaisLoginController import LoginController
 from Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
 from Banco import Banco
@@ -234,7 +245,7 @@ class TelaCadastroProfissional2(MDScreen):
 
     def CadastrarProfissionalButton_Click(self):
         if self.manager:
-            controle = ProfissionaisControler()
+            controle = ProfissionalControler()
             controle.setCadastro(self.manager)
             if controle.Cadastar():
                 self.manager.current = "LoginProfissional"
@@ -243,12 +254,15 @@ class TelaCadastroProfissional2(MDScreen):
 
 #-------------------------------------------------------------------------------------------------------
 class TelaPerfilProfissional(MDScreen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        Window.bind(on_resize=self.Atualizar)
 
     def on_enter(self, *args):
-        self.Gerar()
+        self.Sessao = LoginController()
+        self.Sessao.setLogin(self.manager)
+        self.Profissional = ProfissionalControler()
+        self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
+        self.GetFotoPerfil(self.Sessao.usuario)
+        self.MostrarDados()
+        self.ListarPosts()
 
     def GetFotoPerfil(self, usuario):
         Perfil = Perfis()
@@ -264,394 +278,174 @@ class TelaPerfilProfissional(MDScreen):
             with open("Imagens/FotoPerfil.png", "wb") as f:
                 f.write(imagem_bytes)
 
+    def GetArquivoPosts(self, usuario):
+        try:
+            ListaPosts = Posts()
+            UsuarioPerfil = ListaPosts.GetPorUsuario(usuario)
+            if not UsuarioPerfil:
+                return []
 
-    def Gerar(self):
-        self.Sessao = LoginController()
+            listaposts = []
+            for post in UsuarioPerfil:
+                imagem = post['imagem']
+
+                if imagem:
+                    try:
+                        # Converte Base64 para uma imagem utilizável no Kivy
+                        data = io.BytesIO(base64.b64decode(imagem))
+                        imagem = CoreImage(data, ext='png').texture
+                        listaposts.append({"imagem": imagem})
+                    except Exception as e:
+                        print(f"Erro ao decodificar imagem do post: {e}")
+
+            return listaposts
+
+        except Exception as e:
+            print(f"Erro ao decodificar imagem do post: {e}")
+            return []
+
+    def MostrarDados(self):
+        self.ids.UsuarioPerfilLabel.text = f'@{self.Profissional.Usuario}'
+        self.ids.NomePerfilLabel.text = f'Nome:{self.Profissional.Nome}'
+        self.ids.CPFPerfilLabel.text = f'CPF:{self.Profissional.CPF}'
+        self.ids.ProfissaoPerfilLabel.text = f'Profissão:{self.Profissional.Profissao}'
+        self.ids.EscolaPerfilLabel.text = f'Escola:{self.Profissional.Escola}'
+        self.ids.BiografiaPerfilLabel.text = f'Biografia:{self.Profissional.Biografia}'
+
+    def ListarPosts(self):
+        Post = PostController()
+        FeedPerfil = self.ids.feed_grid
+
+        resposta = Post.PesquisarPorUsuario(self.Profissional.Usuario)
+        imagens = self.GetArquivoPosts(self.Profissional.Usuario)
+
+        FeedPerfil.clear_widgets()
+
+        if not resposta or not imagens:
+            FeedPerfil.cols = 1
+            FeedPerfil.add_widget(
+                MDLabel(
+                    text='Sem posts. Poste algo!',
+                    font_style="H6",
+                    halign="center",
+                    theme_text_color="Custom",  # permite cor personalizada
+                    text_color=(1, 1, 1, 1)
+                )
+            )
+            return
+
+        FeedPerfil.cols = 2
+        for i, post in enumerate(resposta):
+            imagem = imagens[i]['imagem'] if i < len(imagens) else None
+
+            card = MDCard(
+                size_hint_y=None,
+                height=dp(250),
+                padding=dp(10),
+                orientation="vertical",
+                ripple_behavior=True
+            )
+
+            usuario = MDLabel(
+                text=f'@{self.Profissional.Usuario}',
+                font_style="H6"
+            )
+            card.add_widget(usuario)
+
+            if imagem:
+                imagem_widget = FitImage(texture=imagem, size_hint_y=0.8)
+                card.add_widget(imagem_widget)
+
+            legenda = MDLabel(
+                text=post.get('descricao', ''),
+                halign="center",
+                theme_text_color="Secondary"
+            )
+            card.add_widget(legenda)
+
+            FeedPerfil.add_widget(card)
+
+    def AlterarPerfilButton_Click(self):
+        if self.manager:
+            self.manager.current = "AlterarPerfilProfissional"
+
+    def FavoritosPerfilButton_Click(self):
+        if self.manager:
+            self.manager.current = "FavoritosProfissional"
+
+    def PerfilMDTextButton_Click(self):
+        pass
+
+    def AlunosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "AlunosProfissional"
+
+class TelaAlterarPerfilProfissional(MDScreen):
+    pass
+
+class TelaFavoritosProfissional(MDScreen):
+    pass
+
+class TelaAlunosProfissional(MDScreen):
+    Sessao = LoginController()
+    ProfissionalControle = ProfissionalControler()
+    AlunoControle = AlunoController()
+
+    def on_enter(self, *args):
         self.Sessao.setLogin(self.manager)
-        self.Profissional = ProfissionaisControler()
-        self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
-        Orientacao = "horizontal" if Window.width > 700 else "vertical"
-        self.GetFotoPerfil(self.Sessao.usuario)
+        self.ProfissionalControle.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
+        self.ListarAlunos()
 
-        if Window.width < 700:
-            Padding = 20
-        elif Window.width <1200:
-            Padding = 60
+    def ListarAlunos(self):
+        # Pega os alunos do profissional
+        ListaAlunos = self.AlunoControle.ListarAlunosPorProfissional(
+            self.ProfissionalControle.CPF
+        )
+        DataGrid = self.ids.AlunosDataGridBox
+        DataGrid.clear_widgets()  # Limpa widgets antigos
+
+        if not ListaAlunos:
+            # Caso não haja alunos
+            SemAluno = MDLabel(
+                text='Sem alunos.',
+                font_style="H6",
+                halign="center",
+                theme_text_color="Custom",
+                text_color=(1, 1, 1, 1)
+            )
+            DataGrid.add_widget(SemAluno)
         else:
-            Padding = 70
-        Altura = 'self.minimum_height' if Window.width < 700 else 0
-        Tamanho_y = None if Window.width < 700 else 1
-        if Window.width > 1200:
-            DistanciaLetras = 28
-        elif Window.width > 1200:
-            DistanciaLetras = 20
-        else:
-            DistanciaLetras = 30
-        TelaPerfil = (f'''
-MDFloatLayout:
-    canvas.before:
-        Color:
-            rgba: 1, 1, 1, 1
-        Rectangle:
-            source: 'Imagens/Fundo.png'
-            size: self.size
-            pos: self.pos
-    BoxLayout:
-        orientation:'vertical'
-        BoxLayout:
-            orientation:'horizontal'
-            size_hint_y: 0.25
-            BoxLayout:
-                canvas:
-                    Color:
-                        rgba: 1, 1, 1, 1
-                    Rectangle:
-                        source: 'Imagens/Logo.png'
-                        size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
-                        pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
-            BoxLayout:
-                spacing:30
-                pos_hint:{{"center_y":0.55}}
-                orientation:'horizontal'
-                MDTextButton:
-                    text: "Perfil"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    font_size: "18sp"
-                    bold: True
-                    on_release: app.label_clicado()
-                
-                MDTextButton:
-                    text: "Alunos"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    font_size: "18sp"
-                    bold: True
-                    on_release: app.label_clicado()
-                
-                MDTextButton:
-                    text: "Jogos"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    font_size: "18sp"
-                    bold: True
-                    on_release: app.label_clicado()
-                
-                MDTextButton:
-                    text: "Comunidade"
-                    theme_text_color: "Custom"
-                    text_color: 1, 1, 1, 1
-                    font_size: "18sp"
-                    bold: True
-                    on_release: app.label_clicado()
-        BoxLayout:
-            orientation:'horizontal'
-            BoxLayout:
-                padding: dp(20)
-                canvas.before:
-                    Color:
-                        rgba: 0, 0, 0, 0.5
-                    RoundedRectangle:
-                        pos: self.x + self.padding[0] - 10, self.y + self.padding[1] - 10
-                        size: self.width + 20 - (self.padding[0] + self.padding[2]), self.height + 20 - (self.padding[1] + self.padding[3])
-                BoxLayout:
-                    orientation:'vertical'
-                    Image:
-                        id: PerfilImagem
-                        source: 'Imagens/FotoPerfil.png'
-                        size_hint: None, None
-                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                        pos_hint: {{"center_x": 0.5}}
-    
-                    MDLabel:
-                        text: "@{self.Profissional.Usuario}"
-                        halign: "center"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1
-                        size_hint_y: None
-                        height: self.texture_size[1]
-                        text_size: self.width, None
-                        font_size: app.resp.FontSize
-    
-                    MDLabel:
-                        text: "Nome: {self.Profissional.Nome}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1
-                        size_hint_y: None
-                        height: self.texture_size[1]
-                        text_size: self.width, None
-                        font_size: app.resp.FontSize
-    
-                    MDLabel:
-                        text: "CPF: {self.Profissional.CPF}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1
-                        size_hint_y: None
-                        height: self.texture_size[1]
-                        text_size: self.width, None
-                        font_size: app.resp.FontSize
-    
-                    MDLabel:
-                        text: "Profissão: {self.Profissional.Profissao}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1
-                        size_hint_y: None
-                        height: self.texture_size[1]
-                        text_size: self.width, None
-                        font_size: app.resp.FontSize
-    
-                    MDLabel:
-                        text: "Escola: {self.Profissional.Escola}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1
-                        size_hint_y: None
-                        height: self.texture_size[1]
-                        text_size: self.width, None
-                        font_size: app.resp.FontSize
-    
-                    MDLabel:
-                        text: "Biografia: {self.Profissional.Biografia}"
-                        halign: "left"
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 1, 1
-                        size_hint_y: None
-                        height: self.texture_size[1]
-                        text_size: self.width, None
-                        font_size: app.resp.FontSize
-    
-                    # Botão sempre abaixo do conteúdo
-                    MDRaisedButton:
-                        text: "Alterar Perfil"
-                        pos_hint: {{"center_x": 0.5}}
-                        md_bg_color: 0.0, 0.4, 0.0, 1
-                        font_size: "18sp"
-                        bold: True
-                        line_color: 1, 1, 1, 1
-                        size_hint_y: None
-                        height: dp(50)
-                        on_release: app.CadatrarProfissionais_Click()
-            ScrollView:
-                do_scroll_x: False
-                do_scroll_y: True
+            # Monta dados da tabela
+            Dados = [
+                (
+                    aluno["RE"],
+                    aluno["Nome"],
+                    aluno["Usuario"],
+                    aluno["Escola"],
+                    aluno["Genero"],
+                    aluno["Turma"],
+                    aluno["Diagnostico"]
+                ) for aluno in ListaAlunos
+            ]
 
-                MDGridLayout:
-                    id: feed_grid
-                    cols: 2                 # 2 cards por linha
-                    adaptive_height: True    # ajusta altura ao conteúdo
-                    padding: dp(20), dp(50), dp(20), dp(20)  # left, top, right, bottom
-                    spacing: dp(10)
+            # Cria o MDDataTable
+            tabela = MDDataTable(
+                size_hint=(4.5, 1),
+                use_pagination=False,
+                rows_num=5,  # substitui rows_per_page
+                column_data=[
+                    ("RE", dp(30)),
+                    ("Nome", dp(30)),
+                    ("Usuario", dp(30)),
+                    ("Escola", dp(30)),
+                    ("Genero", dp(30)),
+                    ("Turma", dp(30)),
+                    ("Diagnostico", dp(30))
+                ],
+                row_data=Dados
+            )
 
-                    # Cada post
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
 
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                    MDCard:
-                        size_hint_y: None
-                        height: dp(200)
-                        padding: dp(10)
-                        orientation: "vertical"
-
-                        MDLabel:
-                            text: "Nome do usuário"
-                            font_style: "H6"
-
-                        Image:
-                            source: "Imagens/FotoPost.png"
-                            size_hint_y: None
-                            height: dp(120)
-
-                        MDLabel:
-                            text: "Descrição ou legenda do post..."
-                            size_hint_y: None
-                            height: self.texture_size[1]
-        
-    
-    
-''')
-
-        layout = Builder.load_string(TelaPerfil)
-        self.add_widget(layout)
-
-    def Atualizar(self, *args):
-        self.Gerar()
+            DataGrid.add_widget(Widget())
+            DataGrid.add_widget(tabela)
+            DataGrid.add_widget(Widget())

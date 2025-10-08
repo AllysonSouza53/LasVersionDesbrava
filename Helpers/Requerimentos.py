@@ -182,6 +182,15 @@ class Posts:
             print(f"Erro ao buscar posts do usuário {usuario}:", e)
             return None
 
+    def GetPorId(self, id):
+        try:
+            resp = requests.get(f'{self.url}/Posts/{id}', timeout=10)
+            resp.raise_for_status()
+            return resp.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Erro ao buscar posts do usuário {id}:", e)
+            return None
+
     def Post(self, id, usuario, imagem, legenda):
         post_data = {
             'id': id,

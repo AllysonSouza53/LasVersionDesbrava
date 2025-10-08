@@ -1,7 +1,7 @@
 from Banco import Banco
 from Helpers.TratamentoErros import Erros
 
-class Profissionais:
+class Profissional:
     CPF = None
     Nome = None
     Usuario = None
@@ -12,8 +12,6 @@ class Profissionais:
     Escola = None
     Senha = None
     Biografia = None
-    Rua = None
-    Bairro = None
     FotoPerfil = None
 
     def __init__(self):
@@ -30,9 +28,7 @@ class Profissionais:
         self.Escola = dados[7]
         self.Senha = dados[8]
         self.Biografia = dados[9]
-        self.Rua = dados[10]
-        self.Bairro = dados[11]
-        self.FotoPerfil = dados[12]
+        self.FotoPerfil = dados[10]
 
     def Salvar(self):
         print("== Iniciando Salvar ==")
@@ -105,7 +101,7 @@ class Profissionais:
 
         try:
             print("Tentando inserir no banco...")
-            colunas = "CPF,Nome,Usuario,Profissao,DataNascimento,UF,Cidade,Escola,Senha,Biografia,Rua,Bairro,FotoPerfil"
+            colunas = "CPF,Nome,Usuario,Profissao,DataNascimento,UF,Cidade,Escola,Senha,Biografia,FotoPerfil"
             valores = [
                 self.CPF,
                 self.Nome,
@@ -117,8 +113,6 @@ class Profissionais:
                 self.Escola,
                 self.Senha,
                 self.Biografia,
-                self.Rua,
-                self.Bairro,
                 self.FotoPerfil
             ]
             print(valores)
@@ -150,7 +144,7 @@ class Profissionais:
 
         # Se não houver resultado ou vier False, evita erro
         if not Resultado or Resultado is False:
-            print("Nenhum usuário encontrado ou erro na consulta.")
+            self.TE.SetErro(f'Não foi possivel encontar Aluno')
             return False
 
         try:
@@ -164,18 +158,15 @@ class Profissionais:
             self.Escola = Resultado[0][7]
             self.Senha = Resultado[0][8]
             self.Biografia = Resultado[0][9]
-            self.Rua = Resultado[0][10]
-            self.Bairro = Resultado[0][11]
-            self.FotoPerfil = Resultado[0][12]
+            self.FotoPerfil = Resultado[0][10]
 
             return [
                 self.CPF, self.Nome, self.Usuario, self.Profissao, self.DataNascimento,
-                self.UF, self.Cidade, self.Escola, self.Senha, self.Biografia,
-                self.Rua, self.Bairro, self.FotoPerfil
+                self.UF, self.Cidade, self.Escola, self.Senha, self.Biografia, self.FotoPerfil
             ]
 
         except Exception as e:
-            print(f"Erro ao extrair dados do usuário: {e}")
+            self.TE.SetErro(f'Não foi buscar aluno. Erro:{e}')
             return False
 
 

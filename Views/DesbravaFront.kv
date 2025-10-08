@@ -9,6 +9,12 @@
         name:"CadastroProfissional2"
     TelaPerfilProfissional:
         name:"PerfilProfissional"
+    TelaAlterarPerfilProfissional:
+        name:"AlterarPerfilProfissional"
+    TelaFavoritosProfissional:
+        name:"FavoritosProfissional"
+    TelaAlunosProfissional:
+        name:"AlunosProfissional"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -527,3 +533,256 @@
             on_release: root.CadastrarProfissionalButton_Click()
 
 <TelaPerfilProfissional>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.png'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.20
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+                BoxLayout:
+                    spacing:25
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    MDTextButton:
+                        text: "Perfil"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.PerfilMDTextButton_Click()
+
+                    MDTextButton:
+                        text: "Alunos"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.AlunosMDTextButton_Click()
+
+                    MDTextButton:
+                        text: "Jogos"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: app.label_clicado()
+
+                    MDTextButton:
+                        text: "Comunidade"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: app.label_clicado()
+
+                    MDIconButton:
+                        icon:'star'
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 0, 1
+                        pos_hint:{"center_y":0.1}
+                        on_release: root.FavoritosPerfilButton_Click()
+
+            BoxLayout:
+                orientation:'horizontal'
+                BoxLayout:
+                    orientation:'vertical'
+                    padding: dp(20)
+                    canvas.before:
+                        Color:
+                            rgba: 0, 0, 0, 0.5
+                        RoundedRectangle:
+                            pos: self.x + self.padding[0] - 10, self.y + self.padding[1] - 10
+                            size: self.width + 20 - (self.padding[0] + self.padding[2]), self.height + 20 - (self.padding[1] + self.padding[3])
+                    BoxLayout:
+                        orientation:'vertical'
+                        pos_hint:{"center_y":0.9}
+                        Image:
+                            id: PerfilImagem
+                            source: 'Imagens/FotoPerfil.png'
+                            size_hint: None, None
+                            size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                            pos_hint: {"center_x": 0.5}
+
+                        MDLabel:
+                            id: UsuarioPerfilLabel
+                            text: "@usuario"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                            text_size: self.width, None
+                            font_size: app.resp.FontSize
+
+                        MDLabel:
+                            id: NomePerfilLabel
+                            text: "Nome: Não encontrado"
+                            halign: "left"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                            text_size: self.width, None
+                            font_size: app.resp.FontSize
+
+                        MDLabel:
+                            id: CPFPerfilLabel
+                            text: "CPF: Não encontrado"
+                            halign: "left"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                            text_size: self.width, None
+                            font_size: app.resp.FontSize
+
+                        MDLabel:
+                            id: ProfissaoPerfilLabel
+                            text: "Profissão: Não encontrada"
+                            halign: "left"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                            text_size: self.width, None
+                            font_size: app.resp.FontSize
+
+                        MDLabel:
+                            id: EscolaPerfilLabel
+                            text: "Escola: Não encontrada"
+                            halign: "left"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                            text_size: self.width, None
+                            font_size: app.resp.FontSize
+
+                        MDLabel:
+                            id: BiografiaPerfilLabel
+                            text: "Biografia: Fale um pouco sobre você"
+                            halign: "left"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                            text_size: self.width, None
+                            font_size: app.resp.FontSize
+
+                    BoxLayout:
+                        orientation:'horizontal'
+
+                        Widget:
+
+                        MDRaisedButton:
+                            id: AlterarPerfilButton
+                            text: "Alterar Perfil"
+                            pos_hint: {"center_x": 1}
+                            md_bg_color: 0.0, 0.4, 0.0, 1
+                            font_size: "18sp"
+                            bold: True
+                            line_color: 1, 1, 1, 1
+                            size_hint_y: None
+                            height: dp(50)
+                            on_release: root.AlterarPerfilButton_Click()
+
+                        Widget:
+
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+
+                    MDGridLayout:
+                        id: feed_grid
+                        cols: 2                 # 2 cards por linha
+                        adaptive_height: True    # ajusta altura ao conteúdo
+                        padding: dp(20), dp(50), dp(20), dp(20)  # left, top, right, bottom
+                        spacing: dp(10)
+
+<TelaAlterarPerfilProfissional>:
+
+<TelaFavoritosPerfilProfissional>:
+
+<TelaAlunosProfissional>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.png'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.20
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+                BoxLayout:
+                    spacing:25
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    MDTextButton:
+                        text: "Perfil"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.PerfilMDTextButton_Click()
+
+                    MDTextButton:
+                        text: "Alunos"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.AlunosMDTextButton_Click()
+
+                    MDTextButton:
+                        text: "Jogos"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: app.label_clicado()
+
+                    MDTextButton:
+                        text: "Comunidade"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: app.label_clicado()
+
+            BoxLayout:
+                id: AlunosDataGridBox
+                orientation:'horizontal'
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 0  # transparente
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
