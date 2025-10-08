@@ -1,7 +1,10 @@
 import io
+
+from Demos.c_extension.setup import sources
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
 from kivymd.uix.card import MDCard
+from kivymd.uix.carousel import MDCarousel
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.fitimage import FitImage
 from kivymd.uix.label import MDLabel
@@ -9,7 +12,6 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 from kivy.clock import Clock
 from kivy.core.image import Image as CoreImage
-
 from App.Controllers.AlunosController import AlunoController
 from App.Controllers.PostController import PostController
 from App.Controllers.ProfissionalController import ProfissionalControler
@@ -377,6 +379,10 @@ class TelaPerfilProfissional(MDScreen):
         if self.manager:
             self.manager.current = "AlunosProfissional"
 
+    def JogosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "InformacoesJogosProfissionais"
+
 class TelaAlterarPerfilProfissional(MDScreen):
     pass
 
@@ -421,13 +427,14 @@ class TelaAlunosProfissional(MDScreen):
                     aluno["Escola"],
                     aluno["Genero"],
                     aluno["Turma"],
-                    aluno["Diagnostico"]
+                    aluno["Diagnostico"],
+                    aluno['DataNascimento']
                 ) for aluno in ListaAlunos
             ]
 
             # Cria o MDDataTable
             tabela = MDDataTable(
-                size_hint=(4.5, 1),
+                size_hint=(4, 1),
                 use_pagination=False,
                 rows_num=5,  # substitui rows_per_page
                 column_data=[
@@ -437,7 +444,8 @@ class TelaAlunosProfissional(MDScreen):
                     ("Escola", dp(30)),
                     ("Genero", dp(30)),
                     ("Turma", dp(30)),
-                    ("Diagnostico", dp(30))
+                    ("Diagnostico", dp(30)),
+                    ('DataNascimento', dp(30))
                 ],
                 row_data=Dados
             )
@@ -446,3 +454,112 @@ class TelaAlunosProfissional(MDScreen):
             DataGrid.add_widget(Widget())
             DataGrid.add_widget(tabela)
             DataGrid.add_widget(Widget())
+
+    def PerfilMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilProfissional"
+
+    def AlunosMDTextButton_Click(self):
+        pass
+
+    def JogosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "InformacoesJogosProfissionais"
+
+    def JogosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "InformacoesJogosProfissionais"
+
+class TelaInformacoesJogosProfissionais(MDScreen):
+    def on_enter(self, *args):
+        self.CarroselJogos()
+
+    def JogosMDDropDownItem_Click(self, instancia):
+        menu_items = [
+            {
+                "viewclass": "OneLineListItem",
+                "text": "Raciocínio",
+                "height": dp(40),
+                "width": dp(100),
+                "on_release": lambda x="Raciocínio": self.opcao_selecionada(x),
+            },
+            {
+                "viewclass": "OneLineListItem",
+                "text": "Palavras",
+                "height": dp(40),
+                "width": dp(100),
+                "on_release": lambda x="Palavras": self.opcao_selecionada(x),
+            },
+            {
+                "viewclass": "OneLineListItem",
+                "text": "Memória",
+                "height": dp(40),
+                "width": dp(100),
+                "on_release": lambda x="Memória": self.opcao_selecionada(x),
+            },
+        ]
+
+        # Cria o menu dropdown centralizado e logo abaixo do botão
+        self.menu = MDDropdownMenu(
+            caller=instancia,
+            items=menu_items,
+            width_mult=0,
+            background_color=(0.15, 0.15, 0.15, 1),
+            ver_growth="down",  # garante que o menu cresça para baixo
+            position="bottom",  # centraliza em relação ao botão
+        )
+
+        # Ajuste fino: empurra um pouco o menu para baixo
+        self.menu.open()
+
+    def opcao_selecionada(self, texto):
+        print(f"Opção selecionada: {texto}")
+        self.menu.dismiss()
+
+    def CarroselJogos(self):
+        BoxCarrossel = self.ids.CarrosselBox
+
+        # Cria o carrossel
+        carrosel = MDCarousel(direction='right', loop=True)
+
+        jogos = [
+            {"nome": "Jogo 1", "imagem": "Imagens/CapaJogo1.png"},
+            {"nome": "Jogo 2", "imagem": "Imagens/CapaJogo2.png"},
+            {"nome": "Jogo 3", "imagem": "Imagens/CapaJogo3.png"},
+            {"nome": "Jogo 4", "imagem": "Imagens/CapaJogo4.png"},
+            {"nome": "Jogo 5", "imagem": "Imagens/CapaJogo5.png"},
+            {"nome": "Jogo 6", "imagem": "Imagens/CapaJogo6.png"},
+        ]
+
+        for jogo in jogos:
+            card = MDCard(
+                size_hint=(None, None),
+                size=(dp(300), dp(250)),
+                pos_hint={"center_x": 0.5, "center_y": 0.5},
+                elevation=8,
+                radius=[15, 15, 15, 15]  # bordas arredondadas
+            )
+
+            # Imagem do jogo
+            img = FitImage(
+                source=jogo["imagem"],
+                size_hint=(1, 0.7),
+                allow_stretch=True,
+            )
+            card.add_widget(img)
+
+            # Nome do jogo
+            label = MDLabel(
+                text=jogo["nome"],
+                halign="center",
+                font_style="H5",  # tamanho maior
+                theme_text_color="Primary",
+                size_hint=(1, 0.3)
+            )
+            card.add_widget(label)
+
+            # Adiciona o card ao carrossel
+            carrosel.add_widget(card)
+
+        # Adiciona o carrossel ao layout
+        BoxCarrossel.add_widget(carrosel)
