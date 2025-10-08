@@ -518,9 +518,14 @@ class TelaInformacoesJogosProfissionais(MDScreen):
 
     def CarroselJogos(self):
         BoxCarrossel = self.ids.CarrosselBox
+        BoxCarrossel.clear_widgets()
 
         # Cria o carrossel
-        carrosel = MDCarousel(direction='right', loop=True)
+        carrosel = MDCarousel(
+            direction='right',
+            loop=True,
+            size_hint=(1, 1)  # ocupar todo o BoxCarrossel
+        )
 
         jogos = [
             {"nome": "Jogo 1", "imagem": "Imagens/CapaJogo1.png"},
@@ -532,33 +537,16 @@ class TelaInformacoesJogosProfissionais(MDScreen):
         ]
 
         for jogo in jogos:
-            card = MDCard(
-                size_hint=(None, None),
-                size=(dp(300), dp(250)),
-                pos_hint={"center_x": 0.5, "center_y": 0.5},
-                elevation=8,
-                radius=[15, 15, 15, 15]  # bordas arredondadas
-            )
+            card = MDCard(size_hint=(None, None), size=(dp(300), dp(250)), elevation=8, radius=[15] * 4)
+            card_layout = BoxLayout(orientation='vertical')
 
-            # Imagem do jogo
-            img = FitImage(
-                source=jogo["imagem"],
-                size_hint=(1, 0.7),
-                allow_stretch=True,
-            )
-            card.add_widget(img)
+            img = FitImage(source=jogo["imagem"], size_hint=(1, 0.7), keep_ratio=True)
+            label = MDLabel(text=jogo["nome"], halign="center", font_style="H5", size_hint=(1, 0.3))
 
-            # Nome do jogo
-            label = MDLabel(
-                text=jogo["nome"],
-                halign="center",
-                font_style="H5",  # tamanho maior
-                theme_text_color="Primary",
-                size_hint=(1, 0.3)
-            )
-            card.add_widget(label)
+            card_layout.add_widget(img)
+            card_layout.add_widget(label)
+            card.add_widget(card_layout)
 
-            # Adiciona o card ao carrossel
             carrosel.add_widget(card)
 
         # Adiciona o carrossel ao layout
