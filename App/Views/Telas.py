@@ -1,6 +1,5 @@
 import io
-
-from Demos.c_extension.setup import sources
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
 from kivymd.uix.card import MDCard
@@ -12,6 +11,8 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 from kivy.clock import Clock
 from kivy.core.image import Image as CoreImage
+from kivy.uix.image import Image
+from kivy.animation import Animation
 from App.Controllers.AlunosController import AlunoController
 from App.Controllers.PostController import PostController
 from App.Controllers.ProfissionalController import ProfissionalControler
@@ -383,12 +384,19 @@ class TelaPerfilProfissional(MDScreen):
         if self.manager:
             self.manager.current = "InformacoesJogosProfissionais"
 
+    def ComunidadeMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "ComunidadeProfissionais"
+
+#_________________________________________________________________________________________________________________________
 class TelaAlterarPerfilProfissional(MDScreen):
     pass
 
+#_________________________________________________________________________________________________________________________
 class TelaFavoritosProfissional(MDScreen):
     pass
 
+#_________________________________________________________________________________________________________________________
 class TelaAlunosProfissional(MDScreen):
     Sessao = LoginController()
     ProfissionalControle = ProfissionalControler()
@@ -470,9 +478,14 @@ class TelaAlunosProfissional(MDScreen):
         if self.manager:
             self.manager.current = "InformacoesJogosProfissionais"
 
+    def ComunidadeMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "ComunidadeProfissionais"
+
+#_________________________________________________________________________________________________________________________
 class TelaInformacoesJogosProfissionais(MDScreen):
     def on_enter(self, *args):
-        self.CarroselJogos()
+        pass
 
     def JogosMDDropDownItem_Click(self, instancia):
         menu_items = [
@@ -516,38 +529,46 @@ class TelaInformacoesJogosProfissionais(MDScreen):
         print(f"Opção selecionada: {texto}")
         self.menu.dismiss()
 
-    def CarroselJogos(self):
-        BoxCarrossel = self.ids.CarrosselBox
-        BoxCarrossel.clear_widgets()
+    def on_pre_enter(self):
+        self.ids.carrossel.bind(index=self.verificar_loop)
 
-        # Cria o carrossel
-        carrosel = MDCarousel(
-            direction='right',
-            loop=True,
-            size_hint=(1, 1)  # ocupar todo o BoxCarrossel
-        )
+    def verificar_loop(self, instance, value):
+        total = len(instance.slides)
+        # Se estiver no último e tentar avançar → volta ao primeiro
+        if value == total - 1 and instance.direction == "right":
+            instance.index = 0
+        # Se estiver no primeiro e tentar voltar → vai para o último
+        elif value == 0 and instance.direction == "left":
+            instance.index = total - 1
+        # Adicionando loop para o lado esquerdo quando arrasta do primeiro para trás
+        elif value < 0:
+            instance.index = total - 1
 
-        jogos = [
-            {"nome": "Jogo 1", "imagem": "Imagens/CapaJogo1.png"},
-            {"nome": "Jogo 2", "imagem": "Imagens/CapaJogo2.png"},
-            {"nome": "Jogo 3", "imagem": "Imagens/CapaJogo3.png"},
-            {"nome": "Jogo 4", "imagem": "Imagens/CapaJogo4.png"},
-            {"nome": "Jogo 5", "imagem": "Imagens/CapaJogo5.png"},
-            {"nome": "Jogo 6", "imagem": "Imagens/CapaJogo6.png"},
-        ]
+    def PerfilMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilProfissional"
 
-        for jogo in jogos:
-            card = MDCard(size_hint=(None, None), size=(dp(300), dp(250)), elevation=8, radius=[15] * 4)
-            card_layout = BoxLayout(orientation='vertical')
+    def AlunosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "AlunosProfissional"
 
-            img = FitImage(source=jogo["imagem"], size_hint=(1, 0.7), keep_ratio=True)
-            label = MDLabel(text=jogo["nome"], halign="center", font_style="H5", size_hint=(1, 0.3))
+    def ComunidadeMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "ComunidadeProfissionais"
 
-            card_layout.add_widget(img)
-            card_layout.add_widget(label)
-            card.add_widget(card_layout)
+#_________________________________________________________________________________________________________________________
+class TelaComunidadeProfissionais(MDScreen):
+    def PerfilMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilProfissional"
 
-            carrosel.add_widget(card)
+    def AlunosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "AlunosProfissional"
 
-        # Adiciona o carrossel ao layout
-        BoxCarrossel.add_widget(carrosel)
+    def JogosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "InformacoesJogosProfissionais"
+
+    def ComunidadeMDTextButton_Click(self):
+        pass

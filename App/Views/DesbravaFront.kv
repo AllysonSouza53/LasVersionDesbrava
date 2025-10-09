@@ -17,6 +17,8 @@
         name:"AlunosProfissional"
     TelaInformacoesJogosProfissionais:
         name:"InformacoesJogosProfissionais"
+    TelaComunidadeProfissionais:
+        name:"ComunidadeProfissionais"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -590,7 +592,7 @@
                         text_color: 1, 1, 1, 1
                         font_size: "18sp"
                         bold: True
-                        on_release: app.label_clicado()
+                        on_release: root.ComunidadeMDTextButton_Click()
 
                     MDIconButton:
                         icon:'star'
@@ -776,7 +778,7 @@
                         text_color: 1, 1, 1, 1
                         font_size: "18sp"
                         bold: True
-                        on_release: app.label_clicado()
+                        on_release: root.ComunidadeMDTextButton_Click()
             BoxLayout:
                 orientation:'horizontal'
                 size_hint_y:0.1
@@ -833,7 +835,7 @@
             orientation:'vertical'
             BoxLayout:
                 orientation:'horizontal'
-                size_hint_y: 0.20
+                size_hint_y: 0.2
                 BoxLayout:
                     canvas:
                         Color:
@@ -878,30 +880,415 @@
                         text_color: 1, 1, 1, 1
                         font_size: "18sp"
                         bold: True
-                        on_release: app.label_clicado()
+                        on_release: root.ComunidadeMDTextButton_Click()
             BoxLayout:
-                orientation:'vertical'
+                orientation: 'vertical'
+
+                Widget:   # Espaço vazio no topo
+                    size_hint_y: 0.1
                 MDLabel:
                     text: "Jogos Estimulativos"
                     halign: "center"
                     theme_text_color: "Custom"
                     text_color: 1, 1, 1, 1
+                    font_size: "50sp"
+                    bold: True
                     size_hint_y: None
                     height: self.texture_size[1]
-                    text_size: self.width, None
-                    font_size: "50sp"
-                    bold:True
 
                 MDLabel:
-                    text: "entenda um pouco de cada jogo e seus beneficios"
+                    text: "Entenda um pouco de cada jogo e seus benefícios"
                     halign: "center"
                     theme_text_color: "Custom"
                     text_color: 1, 1, 1, 1
+                    font_size: "18sp"
                     size_hint_y: None
                     height: self.texture_size[1]
-                    text_size: self.width, None
-                    font_size: "18sp"
 
                 BoxLayout:
-                    id: CarrosselBox
+                    size_hint_y: 0.5
+                    Widget:
+                        size_hint_x:0.05
+
+                    MDFloatingActionButton:
+                        icon: "chevron-left"
+                        md_bg_color: 1, 1, 1, 0.3
+                        icon_color: 1, 1, 1, 1
+                        size_hint_x:0.05
+                        pos_hint: {"center_y": 0.5}
+                        on_release: root.ids.carrossel.load_previous()
+
+                    BoxLayout:
+                        Carousel:
+                            id: carrossel
+                            direction: "right"
+                            size_hint_y: 0.5
+                            pos_hint: {"center_y": 0.6}
+                            BoxLayout:
+
+                                spacing: 10
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 1'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 2'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 3'
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 4'
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 5'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 6'
+
+                            BoxLayout:
+                                spacing: 10
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 2'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 3'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 4'
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 5'
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 6'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 1'
+
+                            BoxLayout:
+                                spacing: 10
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 3'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 4'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 5'
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 6'
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 1'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 2'
+
+                            BoxLayout:
+                                spacing: 10
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 4'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 5'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 6'
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 1'
+
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 2'
+
+                                MDCard:
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text:'Jogo 3'
+
+                    MDFloatingActionButton:
+                        icon: "chevron-right"
+                        md_bg_color: 1, 1, 1, 0.3
+                        icon_color: 1, 1, 1, 1
+                        size_hint_x:0.05
+                        pos_hint: {"center_y": 0.5}
+                        on_release: root.ids.carrossel.load_next()
+
+                    Widget:
+                        size_hint_x:0.05
+
+
+
+                Widget:
+                    size_hint_y:0.3
+
+<TelaComunidadeProfissionais>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.png'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.2
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+                BoxLayout:
+                    spacing:25
+                    pos_hint:{"center_y":0.9}
                     orientation:'horizontal'
+                    MDTextButton:
+                        text: "Perfil"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.PerfilMDTextButton_Click()
+
+                    MDTextButton:
+                        text: "Alunos"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.AlunosMDTextButton_Click()
+
+                    MDTextButton:
+                        id: JogosMDDropDownItem
+                        text: "Jogos"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.JogosMDTextButton_Click()
+
+
+                    MDTextButton:
+                        text: "Comunidade"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.ComunidadeMDTextButton_Click()
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                ScrollView:
+                    do_scroll_x: False  # desativa rolagem horizontal
+                    do_scroll_y: True   # ativa rolagem vertical
+
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        size_hint_y: None
+                        height: self.minimum_height  # ajusta a altura ao conteúdo interno
+                        padding: dp(20)
+                        spacing: dp(10)
+                        cols:2
+
+                        # Cada post
+                        MDCard:
+                            size_hint_y: None
+                            height: dp(200)
+                            padding: dp(10)
+                            orientation: "vertical"
+
+                            MDLabel:
+                                text: "Nome do usuário"
+                                font_style: "H6"
+
+                            Image:
+                                source: "Imagens/FotoPost.png"
+                                size_hint_y: None
+                                height: dp(120)
+
+                            MDLabel:
+                                text: "Descrição ou legenda do post..."
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                        # Cada post
+                        MDCard:
+                            size_hint_y: None
+                            height: dp(200)
+                            padding: dp(10)
+                            orientation: "vertical"
+
+                            MDLabel:
+                                text: "Nome do usuário"
+                                font_style: "H6"
+
+                            Image:
+                                source: "Imagens/FotoPost.png"
+                                size_hint_y: None
+                                height: dp(120)
+
+                            MDLabel:
+                                text: "Descrição ou legenda do post..."
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                Widget:
