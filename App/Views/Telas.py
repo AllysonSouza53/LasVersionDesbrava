@@ -390,7 +390,139 @@ class TelaPerfilProfissional(MDScreen):
 
 #_________________________________________________________________________________________________________________________
 class TelaAlterarPerfilProfissional(MDScreen):
-    pass
+
+    ControleLogin = LoginController()
+    ControlePerfil = ProfissionalControler()
+
+    def on_enter(self, *args):
+        self.ControleLogin.setLogin(self.manager)
+        self.ControlePerfil.setUsuario(f"USUARIO = '{self.ControleLogin.usuario}'")
+
+        if self.ControlePerfil.DataNascimento is None:
+            self.ControlePerfil.DataNascimento = ''
+
+        if self.ControlePerfil.Biografia == 'Fale um pouco sobre você':
+            self.ControlePerfil.Biografia = ''
+
+        self.ids.UsuarioAlterarTextField.text = f'@{self.ControlePerfil.Usuario}'
+        self.ids.NomeAlterarTextField.text = f'{self.ControlePerfil.Nome}'
+        self.ids.ProfissãoAlterarTextField.text = f'{self.ControlePerfil.Profissao}'
+        self.ids.DataNascimentoAlterarTextField.text = f'{self.ControlePerfil.DataNascimento}'
+        self.ids.EstadoAlterarTextField.text = f'{self.ControlePerfil.UF}'
+        self.ids.CidadeAlterarTextField.text = f'{self.ControlePerfil.Cidade}'
+        self.ids.EscolaAlterarTextField.text = f'{self.ControlePerfil.Escola}'
+        self.ids.BiografiaAlterarTextField.text = f'{self.ControlePerfil.Biografia}'
+        self.ids.SenhaAlterarTextField.text = f'{self.ControlePerfil.Senha}'
+
+    def VoltarEscolhaButton_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilProfissional"
+
+    def UFAlterarProfissionaisTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MS',
+                    'MT',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.UFAlterarProfissionais_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def UFAlterarProfissionais_ItensClick(self, text_item):
+        self.ids.UFCadastroProfissionaisTextField.text = text_item
+
+    def CidadeAlterarProfissionaisTextFild_Focus(self, instancia, focus):
+        if focus:
+            Cidade = Cidades()
+            itens = Cidade.get_cidades_por_uf(self.ids.EstadoAlterarTextField.text)
+            menu_items = [
+                {
+                    "text": f'{index}',
+                    "on_release": lambda x=f'{index}': self.CidadeAlterarProfissional_ItensClick(x)
+                } for index in itens
+            ]
+
+            MDDropdownMenu(caller=instancia, items=menu_items).open()
+        else:
+            print('erro')
+
+
+    def CidadeAlterarProfissional_ItensClick(self, text_item):
+        self.ids.CidadeAlterarTextField.text = text_item
+
+    def EscolaAlterarProfissionalTextField_Focus(self, instancia, focus):
+        if focus:
+            Escola = Escolas()
+            dados = Escola.Get(self.ids.EstadoAlterarTextField.text, self.ids.CidadeAlterarTextField.text)
+            itens = [item["escola"] for item in dados if "escola" in item]
+            menu_items = [
+                {
+                    "text": f'{index}',
+                    "on_release": lambda x=f'{index}': self.EscolaAlterarProfissional_ItensClick(x)
+                } for index in itens
+            ]
+
+            MDDropdownMenu(caller=instancia, items=menu_items).open()
+        else:
+            print('erro')
+
+    def EscolaAlterarProfissional_ItensClick(self, text_item):
+        self.ids.EscolaCadastroProfissionalTextField.text = text_item
+
+    def ProfissãoAlterarTextField_Focus(self,instancia,focus):
+        if focus:
+            menu_items = self.ProfissãoAlterarTextField_AddItens(Banco.consultar('NOME', 'PROFISSOES', '1'))
+            MDDropdownMenu(caller=instancia, items=menu_items).open()
+        else:
+            pass
+
+    def ProfissãoAlterarTextField_AddItens(self, itens):
+        menu_items = [
+            {
+                "text": f"{item[0].translate(str.maketrans("", "", "(),'"))}",
+                "on_release": lambda
+                    x=f"{item[0].translate(str.maketrans("", "", "(),'"))}": self.ProsissaoAlterarTextField_ItensClick(x),
+            } for item in itens
+        ]
+        return menu_items
+
+    def ProsissaoAlterarTextField_ItensClick(self, text_item):
+        self.ids.ProsissaoCadastroTextField.text = text_item
+
+    def AlterarPerfilButton_Click(self):
+        pass
 
 #_________________________________________________________________________________________________________________________
 class TelaFavoritosProfissional(MDScreen):

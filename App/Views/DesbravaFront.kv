@@ -822,7 +822,7 @@
                                     size_hint_y: None
                                     height: self.texture_size[1]
                                 MDTextField:
-                                    id: UsuarioCadastroTextField
+                                    id: UsuarioAlterarTextField
                                     hint_text: "Digite seu usuário"
                                     mode: "round"
                                     size_hint_x: 1
@@ -832,7 +832,6 @@
                                     text_color_normal: 0, 0, 0, 1
                                     text_color_focus: 0, 0, 0, 1
                                     cursor_color: 0, 0, 0, 1
-                                    on_text: root.UsuarioCadastroTextField_Active(self)
 
                             # Nome Completo
                             BoxLayout:
@@ -847,7 +846,7 @@
                                     size_hint_y: None
                                     height: self.texture_size[1]
                                 MDTextField:
-                                    id: NomeCadastroTextField
+                                    id: NomeAlterarTextField
                                     hint_text: "Digite seu nome completo"
                                     mode: "round"
                                     size_hint_x: 1
@@ -858,29 +857,6 @@
                                     text_color_focus: 0, 0, 0, 1
                                     cursor_color: 0, 0, 0, 1
 
-                            # E-mail
-                            BoxLayout:
-                                orientation: 'vertical'
-                                spacing: dp(8)
-                                MDLabel:
-                                    text: 'E-mail:'
-                                    color: 1, 1, 1, 1
-                                    font_size: "16sp"
-                                    bold: True
-                                    halign: 'left'
-                                    size_hint_y: None
-                                    height: self.texture_size[1]
-                                MDTextField:
-                                    id: EmailCadastroTextField
-                                    hint_text: "Digite seu e-mail"
-                                    mode: "round"
-                                    size_hint_x: 1
-                                    pos_hint: {"center_x": 0.5}
-                                    line_color_normal: 0, 0, 0, 0.5
-                                    line_color_focus: 0.72, 0.53, 0.04, 1
-                                    text_color_normal: 0, 0, 0, 1
-                                    text_color_focus: 0, 0, 0, 1
-                                    cursor_color: 0, 0, 0, 1
 
                             BoxLayout:
                                 orientation: 'vertical'
@@ -919,7 +895,7 @@
                                     size_hint_y: None
                                     height: self.texture_size[1]
                                 MDTextField:
-                                    id: EmailCadastroTextField
+                                    id: DataNascimentoAlterarTextField
                                     hint_text: "Digite sua data de nascimento"
                                     mode: "round"
                                     size_hint_x: 1
@@ -943,7 +919,7 @@
                                     height: self.texture_size[1]
 
                                 MDTextField:
-                                    id: ProfissãoAlterarTextField
+                                    id: EstadoAlterarTextField
                                     hint_text: "Selecione sua UF"
                                     mode: "round"
                                     size_hint_x: 1
@@ -953,7 +929,7 @@
                                     text_color_normal:0,0,0,1
                                     text_color_focus:0,0,0,1
                                     cursor_color:0,0,0,1
-                                    on_focus:root.ProfissãoAlterarTextField_Focus(self, self.focus)
+                                    on_focus:root.UFAlterarProfissionaisTextField_Focus(self, self.focus)
 
                             BoxLayout:
                                 orientation: 'vertical'
@@ -968,7 +944,7 @@
                                     height: self.texture_size[1]
 
                                 MDTextField:
-                                    id: ProfissãoAlterarTextField
+                                    id: CidadeAlterarTextField
                                     hint_text: "Selecione sua cidade"
                                     mode: "round"
                                     size_hint_x: 1
@@ -978,7 +954,7 @@
                                     text_color_normal:0,0,0,1
                                     text_color_focus:0,0,0,1
                                     cursor_color:0,0,0,1
-                                    on_focus:root.ProfissãoAlterarTextField_Focus(self, self.focus)
+                                    on_focus:root.CidadeAlterarProfissionaisTextFild_Focus(self, self.focus)
 
                             BoxLayout:
                                 orientation: 'vertical'
@@ -993,7 +969,7 @@
                                     height: self.texture_size[1]
 
                                 MDTextField:
-                                    id: ProfissãoAlterarTextField
+                                    id: EscolaAlterarTextField
                                     hint_text: "Selecione sua escola"
                                     mode: "round"
                                     size_hint_x: 1
@@ -1003,7 +979,30 @@
                                     text_color_normal:0,0,0,1
                                     text_color_focus:0,0,0,1
                                     cursor_color:0,0,0,1
-                                    on_focus:root.ProfissãoAlterarTextField_Focus(self, self.focus)
+                                    on_focus:root.EscolaAlterarProfissionalTextField_Focus(self, self.focus)
+
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(8)
+                                MDLabel:
+                                    text: 'Biografia:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: BiografiaAlterarTextField
+                                    hint_text: "Fale mais sobre você"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
 
                             BoxLayout:
                                 orientation: 'vertical'
@@ -1017,7 +1016,7 @@
                                     size_hint_y: None
                                     height: self.texture_size[1]
                                 MDTextField:
-                                    id: EmailCadastroTextField
+                                    id: SenhaAlterarTextField
                                     hint_text: "Digite sua nova senha"
                                     mode: "round"
                                     size_hint_x: 1
