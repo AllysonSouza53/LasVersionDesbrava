@@ -11,14 +11,16 @@
         name:"PerfilProfissional"
     TelaAlterarPerfilProfissional:
         name:"AlterarPerfilProfissional"
-    TelaFavoritosProfissional:
-        name:"FavoritosProfissional"
+    TelaFavoritosPerfilProfissional:
+        name:"FavoritosPerfilProfissional"
     TelaAlunosProfissional:
         name:"AlunosProfissional"
     TelaInformacoesJogosProfissionais:
         name:"InformacoesJogosProfissionais"
     TelaComunidadeProfissionais:
         name:"ComunidadeProfissionais"
+    TelaCarregamentoInicial:
+        name:"CarregamentoInicial"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -182,6 +184,7 @@
             bold: True
             on_release: root.EntrarButton_Click()
             line_color: 1, 1, 1, 1
+<TelaCarregamentoInicial>:
 
 <TelaCadastroProfissional1>:
     MDFloatLayout:
@@ -615,12 +618,21 @@
                     BoxLayout:
                         orientation:'vertical'
                         pos_hint:{"center_y":0.9}
-                        Image:
-                            id: PerfilImagem
-                            source: 'Imagens/FotoPerfil.png'
-                            size_hint: None, None
-                            size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                            pos_hint: {"center_x": 0.5}
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            Widget:
+
+                            MDCard:
+                                size_hint: None, None
+                                size: dp(120), dp(120)
+                                radius: [dp(60), dp(60), dp(60), dp(60)]  # borda totalmente circular
+                                elevation: 0
+                                padding: 0
+                                FitImage:
+                                    id: PerfilImagem
+                                    source: "Imagens/FotoPerfil.png"
+
+                            Widget:
 
                         MDLabel:
                             id: UsuarioPerfilLabel
@@ -802,11 +814,12 @@
                                 orientation: 'horizontal'
                                 Widget:
                                 Button:
+                                    id: FotoPerfil
                                     size_hint: None, None
                                     size: dp(120), dp(120)
                                     background_normal: "Imagens/FotoPerfil.png"
                                     border: (0, 0, 0, 0)
-                                    on_release: app.acao()
+                                    on_release: root.TrocarImagem()
                                 Widget:
 
                             # Usuário
@@ -1065,6 +1078,72 @@
 
 
 <TelaFavoritosPerfilProfissional>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.20
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+                BoxLayout:
+                    spacing:25
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    MDTextButton:
+                        text: "Perfil"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.PerfilMDTextButton_Click()
+
+                    MDTextButton:
+                        text: "Alunos"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.AlunosMDTextButton_Click()
+
+                    MDTextButton:
+                        text: "Jogos"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.JogosMDTextButton_Click()
+
+                    MDTextButton:
+                        text: "Comunidade"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.ComunidadeMDTextButton_Click()
+            BoxLayout:
+                orientation:'horizontal'
+                BoxLayout:
+                    id:AlbunsUsuario
+                    orientation:'vertical'
+
+                BoxLayout:
+                    id:FeedFavoritos
+
+
 
 <TelaAlunosProfissional>:
     MDFloatLayout:

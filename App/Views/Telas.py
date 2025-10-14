@@ -1,25 +1,26 @@
-import io
-from kivy.uix.boxlayout import BoxLayout
+
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
 from kivymd.uix.card import MDCard
-from kivymd.uix.carousel import MDCarousel
 from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.fitimage import FitImage
 from kivymd.uix.label import MDLabel
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 from kivy.clock import Clock
 from kivy.core.image import Image as CoreImage
-from kivy.uix.image import Image
-from kivy.animation import Animation
+from kivy.core.window import Window
 from App.Controllers.AlunosController import AlunoController
 from App.Controllers.PostController import PostController
 from App.Controllers.ProfissionalController import ProfissionalControler
 from App.Controllers.ProfissionaisLoginController import LoginController
 from App.Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
 from App.Banco import Banco
-import base64
+from App.Controllers.FavoritosController import FavoritosController
+import io, base64
+import os
 
 #-------------------------------------------------------------------
 class TelaEscolha(MDScreen):
@@ -46,7 +47,7 @@ class TelaLoginProfissionais(MDScreen):
         Sessao.setLogin(self.manager)
         if self.manager:
             if Sessao.Sessao():
-                self.manager.current = "PerfilProfissional"
+                self.manager.current = "CarregamentoInicial"
 
 #--------------------------------------------------------------------
 class TelaCadastroProfissional1(MDScreen):
@@ -253,16 +254,20 @@ class TelaCadastroProfissional2(MDScreen):
             print("root ainda não existe")
 
 #-------------------------------------------------------------------------------------------------------
-class TelaPerfilProfissional(MDScreen):
-
+class TelaCarregamentoInicial(MDScreen):
+    Profissional = None
     def on_enter(self, *args):
         self.Sessao = LoginController()
         self.Sessao.setLogin(self.manager)
         self.Profissional = ProfissionalControler()
         self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
+        if os.path.exists('App/Imagens/FotoPerfil.png'):
+            os.remove('App/Imagens/FotoPerfil.png')
+        else:
+            pass
         self.GetFotoPerfil(self.Sessao.usuario)
-        self.MostrarDados()
-        self.ListarPosts()
+        if self.manager:
+            self.manager.current = "PerfilProfissional"
 
     def GetFotoPerfil(self, usuario):
         Perfil = Perfis()
@@ -277,6 +282,18 @@ class TelaPerfilProfissional(MDScreen):
             imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
             with open("Imagens/FotoPerfil.png", "wb") as f:
                 f.write(imagem_bytes)
+#-------------------------------------------------------------------------------------------------------
+class TelaPerfilProfissional(MDScreen):
+    Profissional = None
+    def on_pre_enter(self, *args):
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        if tela_carregamento.Profissional:
+            self.Profissional = tela_carregamento.Profissional
+        else:
+            self.Profissional = None
+
+        self.MostrarDados()
+        self.ListarPosts()
 
     def GetArquivoPosts(self, usuario):
         try:
@@ -371,7 +388,7 @@ class TelaPerfilProfissional(MDScreen):
 
     def FavoritosPerfilButton_Click(self):
         if self.manager:
-            self.manager.current = "FavoritosProfissional"
+            self.manager.current = "FavoritosPerfilProfissional"
 
     def PerfilMDTextButton_Click(self):
         pass
@@ -390,13 +407,23 @@ class TelaPerfilProfissional(MDScreen):
 
 #_________________________________________________________________________________________________________________________
 class TelaAlterarPerfilProfissional(MDScreen):
+    ControlePerfil = None
 
-    ControleLogin = LoginController()
-    ControlePerfil = ProfissionalControler()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Cria o gerenciador de arquivos
+        self.file_manager = MDFileManager(
+            exit_manager=self.fechar_file_manager,
+            select_path=self.selecionar_imagem
+        )
 
-    def on_enter(self, *args):
-        self.ControleLogin.setLogin(self.manager)
-        self.ControlePerfil.setUsuario(f"USUARIO = '{self.ControleLogin.usuario}'")
+    def on_pre_enter(self, *args):
+        self.ids.FotoPerfil.background_normal = "Imagens/FotoPerfil.png"
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        if tela_carregamento.Profissional:
+            self.ControlePerfil = tela_carregamento.Profissional
+        else:
+            self.ControlePerfil = None
 
         if self.ControlePerfil.DataNascimento is None:
             self.ControlePerfil.DataNascimento = ''
@@ -413,6 +440,15 @@ class TelaAlterarPerfilProfissional(MDScreen):
         self.ids.EscolaAlterarTextField.text = f'{self.ControlePerfil.Escola}'
         self.ids.BiografiaAlterarTextField.text = f'{self.ControlePerfil.Biografia}'
         self.ids.SenhaAlterarTextField.text = f'{self.ControlePerfil.Senha}'
+
+        from kivy.cache import Cache
+
+
+        # Limpa cache da imagem
+        Cache.remove('kv.image', 'Imagens/FotoPerfil.png')
+
+    def on_enter(self, *args):
+        pass
 
     def VoltarEscolhaButton_Click(self):
         if self.manager:
@@ -521,12 +557,136 @@ class TelaAlterarPerfilProfissional(MDScreen):
     def ProsissaoAlterarTextField_ItensClick(self, text_item):
         self.ids.ProsissaoCadastroTextField.text = text_item
 
-    def AlterarPerfilButton_Click(self):
-        pass
+    def TrocarImagem(self):
+        initial_path = "/" if Window.system_size[0] > 0 else "."
+        self.file_manager.show(initial_path)
 
+    def fechar_file_manager(self, *args):
+        self.file_manager.close()
+
+    def selecionar_imagem(self, path):
+        self.fechar_file_manager()
+        with open(path, "rb") as f:
+            imagem_bytes = f.read()
+        self.imagem_base64 = base64.b64encode(imagem_bytes).decode("utf-8")
+        self.ids.PerfilImagem.source = self.imagem_base64
+        MDDialog(title="Imagem selecionada", text=f"Caminho: {path}").open()
+
+    def AlterarPerfilButton_Click(self):
+        # Garante que já existe uma imagem convertida em base64
+        if not hasattr(self, "imagem_base64"):
+            MDDialog(title="Erro", text="Nenhuma imagem foi selecionada.").open()
+            return
+
+        # Atualiza o objeto de controle
+        self.ControlePerfil.FotoPerfil = self.imagem_base64
+
+        # Atualiza no banco/API
+        Perfil = Perfis()
+        if not Perfil.GetPorUsuario(self.ControlePerfil.Usuario):
+            Perfil.Post(self.ControlePerfil.CPF, self.ControlePerfil.Usuario, self.ControlePerfil.FotoPerfil)
+        else:
+            Perfil.Update(self.ControlePerfil.CPF, self.ControlePerfil.Usuario, self.ControlePerfil.FotoPerfil)
+
+        MDDialog(
+            title="Sucesso",
+            text="A imagem de perfil foi atualizada!"
+        ).open()
+        if self.manager:
+            self.manager.current = "CarregamentoInicial"
+
+    def GetFotoPerfil(self, usuario):
+        Perfil = Perfis()
+        UsuarioPerfil = Perfil.GetPorUsuario(usuario)
+        if UsuarioPerfil is None:
+            UsuarioPerfilImagem = Perfil.GetPorUsuario('ADMIN')['imagem']
+            self.imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
+            with open("Imagens/FotoPerfil.png", "wb") as f:
+                f.write(self.imagem_bytes)
+        else:
+            UsuarioPerfilImagem = UsuarioPerfil['imagem']
+            self.imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
+            with open("Imagens/FotoPerfil.png", "wb") as f:
+                f.write(self.imagem_bytes)
 #_________________________________________________________________________________________________________________________
-class TelaFavoritosProfissional(MDScreen):
-    pass
+class TelaFavoritosPerfilProfissional(MDScreen):
+    Profissional = None
+    def on_pre_enter(self, *args):
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        if tela_carregamento.Profissional:
+            self.Profissional = tela_carregamento.Profissional
+        else:
+            self.Profissional = None
+        self.ListarFavoritos()
+
+    def PerfilMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilProfissional"
+
+    def AlunosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "AlunosProfissional"
+
+    def JogosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "InformacoesJogosProfissionais"
+
+    def ComunidadeMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "ComunidadeProfissionais"
+
+    def ListarFavoritos(self):
+        Favoritos = FavoritosController()
+        FeedPerfil = self.ids.FeedFavoritos
+
+        resposta = Favoritos.PesquisarPorUsuario(self.Profissional.Usuario)
+        imagens = self.GetArquivoPost(self.Profissional.Usuario)
+
+        FeedPerfil.clear_widgets()
+
+        if not resposta or not imagens:
+            FeedPerfil.cols = 1
+            FeedPerfil.add_widget(
+                MDLabel(
+                    text='Sem posts. Poste algo!',
+                    font_style="H6",
+                    halign="center",
+                    theme_text_color="Custom",  # permite cor personalizada
+                    text_color=(1, 1, 1, 1)
+                )
+            )
+            return
+
+        FeedPerfil.cols = 2
+        for i, post in enumerate(resposta):
+            imagem = imagens[i]['imagem'] if i < len(imagens) else None
+
+            card = MDCard(
+                size_hint_y=None,
+                height=dp(250),
+                padding=dp(10),
+                orientation="vertical",
+                ripple_behavior=True
+            )
+
+            usuario = MDLabel(
+                text=f'@{self.Profissional.Usuario}',
+                font_style="H6"
+            )
+            card.add_widget(usuario)
+
+            if imagem:
+                imagem_widget = FitImage(texture=imagem, size_hint_y=0.8)
+                card.add_widget(imagem_widget)
+
+            legenda = MDLabel(
+                text=post.get('descricao', ''),
+                halign="center",
+                theme_text_color="Secondary"
+            )
+            card.add_widget(legenda)
+
+            FeedPerfil.add_widget(card)
 
 #_________________________________________________________________________________________________________________________
 class TelaAlunosProfissional(MDScreen):
