@@ -52,3 +52,7 @@ class FavoritosController:
         if not Resultado:
             return False
         return Resultado
+
+    def setListaFavoritos(self, condicao):
+        lista = self.Favoritos.ListarFavoritos(condicao)
+        return lista

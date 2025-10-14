@@ -5,7 +5,7 @@ class Favorito:
     ID = None
     Usuario = None
     PostID = None
-    DataFavorito = None
+    AlbumID = None
 
     def __init__(self):
         self.TE = Erros()
@@ -14,7 +14,7 @@ class Favorito:
         self.ID = dados[0]
         self.Usuario = dados[1]
         self.PostID = dados[2]
-        self.DataFavorito = dados[3]
+        self.AlbumID = dados[3]
 
     def Salvar(self):
         if not self.Usuario or not self.Usuario.strip():
@@ -24,8 +24,8 @@ class Favorito:
         if self.TE.TemErros():
             return False
         try:
-            colunas = "Usuario,PostID,DataFavorito"
-            valores = [self.Usuario, self.PostID, self.DataFavorito]
+            colunas = "Usuario,PostID,AlbumID"
+            valores = [self.Usuario, self.PostID, self.AlbumID]
             Banco.inserir("FAVORITOS", colunas, valores)
             return True
         except Exception as e:
@@ -60,6 +60,30 @@ class Favorito:
             self.PostID = Resultado[0][2]
             self.DataFavorito = Resultado[0][3]
             return [self.ID, self.Usuario, self.PostID, self.DataFavorito]
+        except Exception as e:
+            self.TE.SetErro(f"Erro ao extrair dados do favorito: {e}")
+            return False
+
+    def ListarFavoritos(self, condicao):
+        Resultado = Banco.consultar('*', "FAVORITOS", condicao)
+        if not Resultado or Resultado is False:
+            return False
+
+        try:
+            favoritos = []
+            for linha in Resultado:
+                ID = linha[0]
+                Usuario = linha[1]
+                PostID = linha[2]
+                DataFavorito = linha[3]
+                favoritos.append({
+                    "ID": ID,
+                    "Usuario": Usuario,
+                    "PostID": PostID,
+                    "DataFavorito": DataFavorito
+                })
+            return favoritos
+
         except Exception as e:
             self.TE.SetErro(f"Erro ao extrair dados do favorito: {e}")
             return False

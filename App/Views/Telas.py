@@ -610,14 +610,20 @@ class TelaAlterarPerfilProfissional(MDScreen):
                 f.write(self.imagem_bytes)
 #_________________________________________________________________________________________________________________________
 class TelaFavoritosPerfilProfissional(MDScreen):
-    Profissional = None
+    ControlePerfil = None
+    Favoritos = None
     def on_pre_enter(self, *args):
+        self.Favoritos = FavoritosController()
         tela_carregamento = self.manager.get_screen("CarregamentoInicial")
         if tela_carregamento.Profissional:
-            self.Profissional = tela_carregamento.Profissional
+            self.ControlePerfil = tela_carregamento.Profissional
         else:
-            self.Profissional = None
+            self.ControlePerfil = None
+        if self.Favoritos.setFavorito(f"USUARIO = {self.ControlePerfil.Usuario}"):
+            self.Favoritos.ID = FavoritosController
+
         self.ListarFavoritos()
+        self.ListarAlbuns()
 
     def PerfilMDTextButton_Click(self):
         if self.manager:
@@ -635,58 +641,12 @@ class TelaFavoritosPerfilProfissional(MDScreen):
         if self.manager:
             self.manager.current = "ComunidadeProfissionais"
 
+    def ListarAlbuns(self):
+        Albuns = self.ids.AlbunsUsuario
+
+
     def ListarFavoritos(self):
-        Favoritos = FavoritosController()
-        FeedPerfil = self.ids.FeedFavoritos
-
-        resposta = Favoritos.PesquisarPorUsuario(self.Profissional.Usuario)
-        imagens = self.GetArquivoPost(self.Profissional.Usuario)
-
-        FeedPerfil.clear_widgets()
-
-        if not resposta or not imagens:
-            FeedPerfil.cols = 1
-            FeedPerfil.add_widget(
-                MDLabel(
-                    text='Sem posts. Poste algo!',
-                    font_style="H6",
-                    halign="center",
-                    theme_text_color="Custom",  # permite cor personalizada
-                    text_color=(1, 1, 1, 1)
-                )
-            )
-            return
-
-        FeedPerfil.cols = 2
-        for i, post in enumerate(resposta):
-            imagem = imagens[i]['imagem'] if i < len(imagens) else None
-
-            card = MDCard(
-                size_hint_y=None,
-                height=dp(250),
-                padding=dp(10),
-                orientation="vertical",
-                ripple_behavior=True
-            )
-
-            usuario = MDLabel(
-                text=f'@{self.Profissional.Usuario}',
-                font_style="H6"
-            )
-            card.add_widget(usuario)
-
-            if imagem:
-                imagem_widget = FitImage(texture=imagem, size_hint_y=0.8)
-                card.add_widget(imagem_widget)
-
-            legenda = MDLabel(
-                text=post.get('descricao', ''),
-                halign="center",
-                theme_text_color="Secondary"
-            )
-            card.add_widget(legenda)
-
-            FeedPerfil.add_widget(card)
+        pass
 
 #_________________________________________________________________________________________________________________________
 class TelaAlunosProfissional(MDScreen):

@@ -1139,6 +1139,14 @@
                 BoxLayout:
                     id:AlbunsUsuario
                     orientation:'vertical'
+                    size_hint_x:0.5
+                    padding:dp(20)
+                    canvas.before:
+                        Color:
+                            rgba: 0, 0, 0, 0.5
+                        RoundedRectangle:
+                            pos: self.x + self.padding[0] - 10, self.y + self.padding[1] - 10
+                            size: self.width + 20 - (self.padding[0] + self.padding[2]), self.height + 20 - (self.padding[1] + self.padding[3])
 
                 BoxLayout:
                     id:FeedFavoritos

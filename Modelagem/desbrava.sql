@@ -1,11 +1,5 @@
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1:3306
--- Tempo de geração: 08-Out-2025 às 03:18
--- Versão do servidor: 5.7.40
--- versão do PHP: 8.0.26
+CREATE DATABASE IF NOT EXISTS DESBRAVA;
+USE DESBRAVA;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,7 +21,6 @@ SET time_zone = "+00:00";
 -- Estrutura da tabela `alunos`
 --
 
-DROP TABLE IF EXISTS `alunos`;
 CREATE TABLE IF NOT EXISTS `alunos` (
   `RE` int(11) NOT NULL,
   `NOME` varchar(225) CHARACTER SET utf8 NOT NULL,
@@ -59,8 +52,6 @@ INSERT INTO `alunos` (`RE`, `NOME`, `USUARIO`, `ESCOLA`, `DATANASCIMENTO`, `GENE
 --
 -- Estrutura da tabela `post`
 --
-
-DROP TABLE IF EXISTS `post`;
 CREATE TABLE IF NOT EXISTS `post` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `USUARIO` varchar(225) CHARACTER SET utf8 NOT NULL,
@@ -75,7 +66,6 @@ CREATE TABLE IF NOT EXISTS `post` (
 -- Estrutura da tabela `profissionais`
 --
 
-DROP TABLE IF EXISTS `profissionais`;
 CREATE TABLE IF NOT EXISTS `profissionais` (
   `CPF` char(11) NOT NULL,
   `NOME` varchar(200) NOT NULL,
@@ -108,7 +98,6 @@ INSERT INTO `profissionais` (`CPF`, `NOME`, `USUARIO`, `PROFISSAO`, `DATANASCIME
 -- Estrutura da tabela `profissoes`
 --
 
-DROP TABLE IF EXISTS `profissoes`;
 CREATE TABLE IF NOT EXISTS `profissoes` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOME` varchar(100) NOT NULL,
@@ -125,19 +114,14 @@ INSERT INTO `profissoes` (`ID`, `NOME`) VALUES
 (1, 'Professor');
 COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+CREATE TABLE IF NOT EXISTS FAVORITOS(
+	ID INT AUTO_INCREMENT UNIQUE,
+    ID_POST INT UNIQUE,
+    ID_USUARIO INT,
+    ID_ALBUM INT,
+    PRIMARY KEY(ID)
+);
 
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-
---
--- Extraindo dados da tabela `profissoes`
---
-
-INSERT INTO `profissoes` (`ID`, `NOME`) VALUES
-(1, 'Professor');
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
