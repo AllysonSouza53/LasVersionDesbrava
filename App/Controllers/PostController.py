@@ -52,3 +52,9 @@ class PostController:
         if not Resultado:
             return False
         return Resultado
+
+    def PesquisarPorID(self,id):
+        Resultado = self.Post.Pesquisar('*', f'ID = {id}')
+        if not Resultado:
+            return False
+        return Resultado

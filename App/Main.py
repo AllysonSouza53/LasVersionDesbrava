@@ -8,6 +8,7 @@ class Gerenciador(ScreenManager):
     pass
 
 class MainApp(MDApp):
+    resp = None
     def build(self):
         self.resp = Responsividade()
         self.load_kv("Views/DesbravaFront.kv")

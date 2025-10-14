@@ -1,5 +1,4 @@
 import requests
-import pandas as pd
 
 class Cidades:
     def __init__(self):

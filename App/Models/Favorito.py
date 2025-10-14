@@ -58,8 +58,8 @@ class Favorito:
             self.ID = Resultado[0][0]
             self.Usuario = Resultado[0][1]
             self.PostID = Resultado[0][2]
-            self.DataFavorito = Resultado[0][3]
-            return [self.ID, self.Usuario, self.PostID, self.DataFavorito]
+            self.AlbumID = Resultado[0][3]
+            return [self.ID, self.Usuario, self.PostID, self.AlbumID]
         except Exception as e:
             self.TE.SetErro(f"Erro ao extrair dados do favorito: {e}")
             return False
@@ -75,12 +75,12 @@ class Favorito:
                 ID = linha[0]
                 Usuario = linha[1]
                 PostID = linha[2]
-                DataFavorito = linha[3]
+                AlbumID = linha[3]
                 favoritos.append({
                     "ID": ID,
                     "Usuario": Usuario,
                     "PostID": PostID,
-                    "DataFavorito": DataFavorito
+                    "AlbumID": AlbumID
                 })
             return favoritos
 

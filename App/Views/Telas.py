@@ -609,19 +609,27 @@ class TelaAlterarPerfilProfissional(MDScreen):
             with open("Imagens/FotoPerfil.png", "wb") as f:
                 f.write(self.imagem_bytes)
 #_________________________________________________________________________________________________________________________
+
 class TelaFavoritosPerfilProfissional(MDScreen):
     ControlePerfil = None
     Favoritos = None
+    Albuns = None
+    Post = None
+
     def on_pre_enter(self, *args):
         self.Favoritos = FavoritosController()
+        self.Post = PostController()
         tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+
         if tela_carregamento.Profissional:
             self.ControlePerfil = tela_carregamento.Profissional
         else:
             self.ControlePerfil = None
-        if self.Favoritos.setFavorito(f"USUARIO = {self.ControlePerfil.Usuario}"):
-            self.Favoritos.ID = FavoritosController
 
+        # Atualiza lista de favoritos do usuário logado
+        self.Favoritos.setListaFavoritos(f"ID_USUARIO = '{self.ControlePerfil.CPF}'")
+
+        self.Albuns = self.ids.AlbunsUsuario
         self.ListarFavoritos()
         self.ListarAlbuns()
 
@@ -642,11 +650,97 @@ class TelaFavoritosPerfilProfissional(MDScreen):
             self.manager.current = "ComunidadeProfissionais"
 
     def ListarAlbuns(self):
-        Albuns = self.ids.AlbunsUsuario
-
+        pass
 
     def ListarFavoritos(self):
-        pass
+        FeedFavoritos = self.ids.Favoritos_Grid
+        FeedFavoritos.clear_widgets()
+
+        # Busca os favoritos salvos para o usuário
+        favoritos = self.Favoritos.setListaFavoritos(f"ID_USUARIO = '{self.ControlePerfil.CPF}'")
+
+        if not favoritos:
+            FeedFavoritos.cols = 1
+            FeedFavoritos.add_widget(
+                MDLabel(
+                    text='Sem Favoritos',
+                    font_style="H6",
+                    halign="center",
+                    theme_text_color="Custom",
+                    text_color=(1, 1, 1, 1)
+                )
+            )
+            return
+
+        FeedFavoritos.cols = 2
+        for fav in favoritos:
+            post_id = fav[2]  # supondo que a 3ª coluna da tabela é o ID do post
+
+            # Usa o PostController existente na tela
+            resposta = self.Post.PesquisarPorID(post_id)
+            if not resposta:
+                continue
+
+            post = resposta[0] if isinstance(resposta, list) else resposta
+            imagem_data = self.GetArquivoPosts(post_id)
+            imagem_texture = None
+
+            if imagem_data:
+                imagem_texture = self.DecodificarImagem(imagem_data)
+
+            # Criação do card de post favorito
+            card = MDCard(
+                size_hint_y=None,
+                height=dp(250),
+                padding=dp(10),
+                orientation="vertical",
+                ripple_behavior=True
+            )
+
+            usuario_label = MDLabel(
+                text=f"@{post.get('usuario', 'desconhecido')}",
+                font_style="H6"
+            )
+            card.add_widget(usuario_label)
+
+            if imagem_texture:
+                imagem_widget = FitImage(texture=imagem_texture, size_hint_y=0.8)
+                card.add_widget(imagem_widget)
+
+            legenda = MDLabel(
+                text=post.get('descricao', ''),
+                halign="center",
+                theme_text_color="Secondary"
+            )
+            card.add_widget(legenda)
+
+            FeedFavoritos.add_widget(card)
+
+    def GetArquivoPosts(self, id_post):
+        """Busca imagem base64 do post via PostController"""
+        try:
+            resultado = self.Post.PesquisarPorID(id_post)
+            if not resultado:
+                return None
+
+            post = resultado[0] if isinstance(resultado, list) else resultado
+            return post.get("imagem", None)
+
+        except Exception as e:
+            print(f"Erro ao obter imagem do post: {e}")
+            return None
+
+    def DecodificarImagem(self, imagem_base64):
+        """Converte imagem em base64 para textura"""
+        if not imagem_base64:
+            return None
+        try:
+            data = io.BytesIO(base64.b64decode(imagem_base64))
+            return CoreImage(data, ext='png').texture
+        except Exception as e:
+            print(f"Erro ao decodificar imagem: {e}")
+            return None
+
 
 #_________________________________________________________________________________________________________________________
 class TelaAlunosProfissional(MDScreen):
