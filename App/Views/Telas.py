@@ -802,6 +802,7 @@ class TelaInformacoesJogosProfissionais(MDScreen):
             self.manager.current = "ComunidadeProfissionais"
 
 #_________________________________________________________________________________________________________________________
+
 class TelaComunidadeProfissionais(MDScreen):
 
     def on_pre_enter(self, *args):
