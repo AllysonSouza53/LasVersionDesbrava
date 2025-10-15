@@ -58,11 +58,8 @@ class Post:
             return False
 
     def Pesquisar(self, rotulo, condicao):
-        """
-        Pesquisa posts no banco com base na condição passada.
-        """
         try:
-            return Banco.consultar(f'{rotulo}', 'POSTS', f'{condicao}')
+            return Banco.consultar(f'{rotulo}', 'POST', f'{condicao}')
         except Exception as e:
             self.TE.SetErro(f"Não foi possível encontrar posts. Erro: {e}")
             return False

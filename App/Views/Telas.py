@@ -1,6 +1,7 @@
-
+from kivy.graphics import texture
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
+from kivymd.uix.button.button import ButtonContentsIcon, MDIconButton
 from kivymd.uix.card import MDCard
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.dialog import MDDialog
@@ -12,6 +13,8 @@ from kivymd.uix.screen import MDScreen
 from kivy.clock import Clock
 from kivy.core.image import Image as CoreImage
 from kivy.core.window import Window
+from pygments.styles.dracula import background
+from kivy.uix.image import Image
 from App.Controllers.AlunosController import AlunoController
 from App.Controllers.PostController import PostController
 from App.Controllers.ProfissionalController import ProfissionalControler
@@ -284,103 +287,131 @@ class TelaCarregamentoInicial(MDScreen):
 #-------------------------------------------------------------------------------------------------------
 class TelaPerfilProfissional(MDScreen):
     Profissional = None
+    Post = None
+    FeedPerfil = None
+    resposta = None
+    imagens = None
+
     def on_pre_enter(self, *args):
         tela_carregamento = self.manager.get_screen("CarregamentoInicial")
-        if tela_carregamento.Profissional:
-            self.Profissional = tela_carregamento.Profissional
-        else:
-            self.Profissional = None
+
+        self.Profissional = tela_carregamento.Profissional or None
+        self.Post = PostController()
+        self.FeedPerfil = self.ids.feed_grid
+
+        usuario = self.Profissional.Usuario if self.Profissional else None
+        if not usuario:
+            return
+
+        self.resposta = self.Post.PesquisarPorUsuario(usuario)
+        self.imagens = self.GetArquivoPosts(usuario)
 
         self.MostrarDados()
         self.ListarPosts()
 
-    def GetArquivoPosts(self, usuario):
-        try:
-            ListaPosts = Posts()
-            UsuarioPerfil = ListaPosts.GetPorUsuario(usuario)
-            if not UsuarioPerfil:
-                return []
-
-            listaposts = []
-            for post in UsuarioPerfil:
-                imagem = post['imagem']
-
-                if imagem:
-                    try:
-                        # Converte Base64 para uma imagem utilizável no Kivy
-                        data = io.BytesIO(base64.b64decode(imagem))
-                        imagem = CoreImage(data, ext='png').texture
-                        listaposts.append({"imagem": imagem})
-                    except Exception as e:
-                        print(f"Erro ao decodificar imagem do post: {e}")
-
-            return listaposts
-
-        except Exception as e:
-            print(f"Erro ao decodificar imagem do post: {e}")
-            return []
-
     def MostrarDados(self):
+        if not self.Profissional:
+            return
+
         self.ids.UsuarioPerfilLabel.text = f'@{self.Profissional.Usuario}'
-        self.ids.NomePerfilLabel.text = f'Nome:{self.Profissional.Nome}'
-        self.ids.CPFPerfilLabel.text = f'CPF:{self.Profissional.CPF}'
-        self.ids.ProfissaoPerfilLabel.text = f'Profissão:{self.Profissional.Profissao}'
-        self.ids.EscolaPerfilLabel.text = f'Escola:{self.Profissional.Escola}'
-        self.ids.BiografiaPerfilLabel.text = f'Biografia:{self.Profissional.Biografia}'
+        self.ids.NomePerfilLabel.text = f'Nome: {self.Profissional.Nome}'
+        self.ids.CPFPerfilLabel.text = f'CPF: {self.Profissional.CPF}'
+        self.ids.ProfissaoPerfilLabel.text = f'Profissão: {self.Profissional.Profissao}'
+        self.ids.EscolaPerfilLabel.text = f'Escola: {self.Profissional.Escola}'
+        self.ids.BiografiaPerfilLabel.text = f'Biografia: {self.Profissional.Biografia}'
 
     def ListarPosts(self):
-        Post = PostController()
-        FeedPerfil = self.ids.feed_grid
+        self.FeedPerfil.clear_widgets()
 
-        resposta = Post.PesquisarPorUsuario(self.Profissional.Usuario)
-        imagens = self.GetArquivoPosts(self.Profissional.Usuario)
-
-        FeedPerfil.clear_widgets()
-
-        if not resposta or not imagens:
-            FeedPerfil.cols = 1
-            FeedPerfil.add_widget(
+        if not self.resposta:
+            self.FeedPerfil.cols = 1
+            self.FeedPerfil.add_widget(
                 MDLabel(
                     text='Sem posts. Poste algo!',
                     font_style="H6",
                     halign="center",
-                    theme_text_color="Custom",  # permite cor personalizada
+                    theme_text_color="Custom",
                     text_color=(1, 1, 1, 1)
                 )
             )
             return
 
-        FeedPerfil.cols = 2
-        for i, post in enumerate(resposta):
-            imagem = imagens[i]['imagem'] if i < len(imagens) else None
+        self.FeedPerfil.cols = 2
 
+        for i, post in enumerate(self.resposta):
             card = MDCard(
                 size_hint_y=None,
-                height=dp(250),
+                height=dp(200),
                 padding=dp(10),
-                orientation="vertical",
-                ripple_behavior=True
+                orientation="vertical"
             )
 
+            # Label do usuário
             usuario = MDLabel(
-                text=f'@{self.Profissional.Usuario}',
-                font_style="H6"
+                text=f"@{post['usuario']}",
+                font_size="16sp",
+                halign="left",
+                theme_text_color="Primary"
             )
             card.add_widget(usuario)
 
-            if imagem:
-                imagem_widget = FitImage(texture=imagem, size_hint_y=0.8)
-                card.add_widget(imagem_widget)
+            # Verifica se há imagem e cria FitImage se válida
+            imagem = None
+            if self.imagens and i < len(self.imagens):
+                imagem = self.imagens[i].get('imagem', None)
 
+            if imagem:
+                try:
+                    imagem_widget = Image(texture = self.imagens[i]['imagem'])
+                    card.add_widget(imagem_widget)
+                except Exception as e:
+                    print(f"Erro ao adicionar imagem do post {post.get('id', '')}: {e}")
+
+            # Label da legenda
             legenda = MDLabel(
-                text=post.get('descricao', ''),
+                text=post['legenda'],
                 halign="center",
                 theme_text_color="Secondary"
             )
             card.add_widget(legenda)
 
-            FeedPerfil.add_widget(card)
+            self.FeedPerfil.add_widget(card)
 
+    def GetArquivoPosts(self, usuario=None):
+        try:
+            ListaPostsHelper = Posts()
+            if usuario:
+                UsuarioPerfil = ListaPostsHelper.GetPorUsuario(usuario)
+            else:
+                UsuarioPerfil = ListaPostsHelper.Get()
+
+            if not UsuarioPerfil:
+                return []
+
+            listaposts = []
+            for post in UsuarioPerfil:
+                imagem_b64 = post.get('imagem', None)
+                textura = None
+
+                # Decodificar apenas se houver imagem válida
+                if imagem_b64 and imagem_b64 not in ("NULL", "null", ""):
+                    try:
+                        data = io.BytesIO(base64.b64decode(imagem_b64))
+                        textura = CoreImage(data, ext='png').texture
+                    except Exception as e:
+                        print(f"Erro ao decodificar imagem do post {post.get('id', '')}: {e}")
+                        textura = None  # garante que falha não quebre o fluxo
+
+                # Adiciona sempre a chave 'imagem', mesmo que seja None
+                listaposts.append({"imagem": textura})
+
+            return listaposts
+
+        except Exception as e:
+            print(f"Erro ao buscar imagens dos posts: {e}")
+            return []
+
+    # Navegação entre telas
     def AlterarPerfilButton_Click(self):
         if self.manager:
             self.manager.current = "AlterarPerfilProfissional"
@@ -403,7 +434,6 @@ class TelaPerfilProfissional(MDScreen):
     def ComunidadeMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "ComunidadeProfissionais"
-
 #_________________________________________________________________________________________________________________________
 class TelaAlterarPerfilProfissional(MDScreen):
     ControlePerfil = None
@@ -773,6 +803,21 @@ class TelaInformacoesJogosProfissionais(MDScreen):
 
 #_________________________________________________________________________________________________________________________
 class TelaComunidadeProfissionais(MDScreen):
+
+    def on_pre_enter(self, *args):
+        self.Post = PostController()
+        self.FeedComunidade = self.ids.FeedComunidade
+
+        # Carrega todos os posts
+        self.resposta = self.Post.ListarPosts()
+
+        # Atualiza posts com imagens
+        self.resposta = self.CarregarImagensPosts(self.resposta)
+
+        # Lista os posts no feed
+        self.ListarPosts()
+
+    # Navegação entre telas
     def PerfilMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "PerfilProfissional"
@@ -787,3 +832,110 @@ class TelaComunidadeProfissionais(MDScreen):
 
     def ComunidadeMDTextButton_Click(self):
         pass
+
+    def PostarNoFeed(self):
+        if self.manager:
+            self.manager.current = "PostarNoFeed"
+
+    # Atualiza o feed
+    def AtualizarFeed(self):
+        self.resposta = self.Post.ListarPosts()
+        self.resposta = self.CarregarImagensPosts(self.resposta)
+        self.ListarPosts()
+
+    # Lista os posts no feed
+    def ListarPosts(self):
+        self.FeedComunidade.clear_widgets()
+
+        if not self.resposta:
+            self.FeedComunidade.cols = 1
+            self.FeedComunidade.add_widget(
+                MDLabel(
+                    text='Sem posts. Poste algo!',
+                    font_style="H6",
+                    halign="center",
+                    theme_text_color="Custom",
+                    text_color=(1, 1, 1, 1)
+                )
+            )
+            return
+
+        self.FeedComunidade.cols = 1
+
+        for post in self.resposta:
+            card = MDCard(
+                size_hint_y=None,
+                height=dp(200),
+                padding=dp(10),
+                orientation="vertical"
+            )
+
+            # Label do usuário
+            usuario = MDLabel(
+                text=f"@{post.get('usuario', '')}",
+                font_size="16sp",
+                halign="left",
+                theme_text_color="Primary"
+            )
+            card.add_widget(usuario)
+
+            # Adiciona imagem do post, se existir
+            imagem_obj = post.get('imagem_obj', None)
+            if imagem_obj:
+                try:
+                    imagem_widget = Image(texture=imagem_obj)
+                    card.add_widget(imagem_widget)
+                except Exception as e:
+                    print(f"Erro ao adicionar imagem do post {post.get('id', '')}: {e}")
+
+            # Label da legenda
+            legenda = MDLabel(
+                text=post.get('legenda', ''),
+                halign="center",
+                theme_text_color="Secondary"
+            )
+            card.add_widget(legenda)
+
+            self.FeedComunidade.add_widget(card)
+
+    # Favoritar posts
+    def on_release_button(self, instance):
+        if instance.favoritado:
+            instance.icon_color = (0.502, 0.502, 0.502, 1)  # cinza
+            instance.favoritado = False
+        else:
+            instance.icon_color = (1, 0.843, 0, 1)  # amarelo
+            instance.favoritado = True
+
+    # Carrega imagens decodificando Base64 e associando pelo id do post
+    def CarregarImagensPosts(self, posts):
+        try:
+            ListaPostsHelper = Posts()
+            posts_no_banco = ListaPostsHelper.Get()  # pega todos os posts do banco
+
+            # Cria um dicionário de imagens pelo id do post
+            imagens_dict = {}
+            for post_banco in posts_no_banco:
+                imagem_b64 = post_banco.get('imagem', None)
+                textura = None
+                if imagem_b64 and imagem_b64 not in ("NULL", "null", ""):
+                    try:
+                        data = io.BytesIO(base64.b64decode(imagem_b64))
+                        textura = CoreImage(data, ext='png').texture
+                    except Exception as e:
+                        print(f"Erro ao decodificar imagem do post {post_banco.get('id', '')}: {e}")
+                imagens_dict[post_banco['id']] = textura
+
+            # Atualiza os posts originais com a textura correta
+            for post in posts:
+                post['imagem_obj'] = imagens_dict.get(post.get('id'), None)
+
+            return posts
+
+        except Exception as e:
+            print(f"Erro ao carregar imagens dos posts: {e}")
+            return posts
+
+
+class TelaPostarNoFeed(MDScreen):
+    pass
