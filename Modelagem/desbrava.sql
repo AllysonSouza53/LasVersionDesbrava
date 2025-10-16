@@ -1,5 +1,11 @@
-CREATE DATABASE IF NOT EXISTS DESBRAVA;
-USE DESBRAVA;
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1:3306
+-- Tempo de geração: 16-Out-2025 às 05:08
+-- Versão do servidor: 5.7.40
+-- versão do PHP: 8.0.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,9 +24,25 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `albuns`
+--
+
+DROP TABLE IF EXISTS `albuns`;
+CREATE TABLE IF NOT EXISTS `albuns` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NOME` varchar(255) NOT NULL,
+  `USUARIO` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID` (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `alunos`
 --
 
+DROP TABLE IF EXISTS `alunos`;
 CREATE TABLE IF NOT EXISTS `alunos` (
   `RE` int(11) NOT NULL,
   `NOME` varchar(225) CHARACTER SET utf8 NOT NULL,
@@ -50,15 +72,84 @@ INSERT INTO `alunos` (`RE`, `NOME`, `USUARIO`, `ESCOLA`, `DATANASCIMENTO`, `GENE
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `comentarios`
+--
+
+DROP TABLE IF EXISTS `comentarios`;
+CREATE TABLE IF NOT EXISTS `comentarios` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `USUARIO` varchar(255) NOT NULL,
+  `IDPOST` int(11) NOT NULL,
+  `TEXTO` varchar(500) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `comentarios`
+--
+
+INSERT INTO `comentarios` (`ID`, `USUARIO`, `IDPOST`, `TEXTO`) VALUES
+(1, 'AllysonSouza', 1, 'Ola Brasil!!!!!'),
+(2, 'AllysonSouza', 1, 'Foi mais um');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `favoritos`
+--
+
+DROP TABLE IF EXISTS `favoritos`;
+CREATE TABLE IF NOT EXISTS `favoritos` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_POST` int(11) NOT NULL,
+  `USUARIO` varchar(255) NOT NULL,
+  `ID_ALBUM` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID` (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `post`
 --
+
+DROP TABLE IF EXISTS `post`;
 CREATE TABLE IF NOT EXISTS `post` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `USUARIO` varchar(225) CHARACTER SET utf8 NOT NULL,
-  `ARQUIVO` varchar(225) CHARACTER SET utf8 DEFAULT NULL,
   `LEGENDA` varchar(300) CHARACTER SET utf8 DEFAULT NULL,
+  `DATA_POST` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `post`
+--
+
+INSERT INTO `post` (`ID`, `USUARIO`, `LEGENDA`, `DATA_POST`) VALUES
+(1, 'AllysonSouza', 'Olá mundo!', '2025-10-14 20:50:50'),
+(2, 'AllysonSouza', 'Foi mais um', '2025-10-14 20:50:50'),
+(3, 'Teste1', 'Teste1', '2025-10-14 20:50:50'),
+(5, 'Teste1', 'Sou o primeiro', '2025-10-14 20:54:55'),
+(6, 'Teste1', 'Teste2', '2025-10-14 21:11:42'),
+(7, 'AllysonSouza', 'Teste de Horario', '2025-10-15 00:21:30'),
+(8, 'AllysonSouza', 'Teste de imagem', '2025-10-15 00:28:06'),
+(9, 'Teste1', 'aaa', '2025-10-15 18:41:47'),
+(10, 'Teste1', 'aaa', '2025-10-15 18:43:00'),
+(11, 'Teste1', 'teste1', '2025-10-15 18:48:03'),
+(12, 'Teste1', 'Teste3', '2025-10-15 18:49:47'),
+(13, 'Teste1', 'Teste4', '2025-10-15 18:55:01'),
+(14, 'Teste1', 'Teste5', '2025-10-15 19:00:04'),
+(15, 'Teste1', 'kkkk', '2025-10-15 19:09:13'),
+(16, 'Teste1', 'Teste6', '2025-10-15 19:13:53'),
+(17, 'Teste1', 'teste7', '2025-10-15 19:16:54'),
+(18, 'Teste1', 'Teste8', '2025-10-15 19:28:29'),
+(19, 'Teste1', 'Teste9', '2025-10-15 19:29:51'),
+(20, 'Teste1', 'Teste10', '2025-10-15 20:12:36'),
+(21, 'Teste1', 'Teste11', '2025-10-15 20:13:19'),
+(22, 'Teste1', 'Olá', '2025-10-15 21:43:04'),
+(23, 'Teste1', 'Olá, eu sou Allyson. Novo integrante desta rede social. Muito prazer! Gosto mutio do assunto de Dislaxia, trabalho com crianças na escola E.E.Escola inventada. Poderian me dar algumas dicas de como lidar e ajudar crianças com dislexia na aprendizagem?', '2025-10-15 21:46:06');
 
 -- --------------------------------------------------------
 
@@ -66,6 +157,7 @@ CREATE TABLE IF NOT EXISTS `post` (
 -- Estrutura da tabela `profissionais`
 --
 
+DROP TABLE IF EXISTS `profissionais`;
 CREATE TABLE IF NOT EXISTS `profissionais` (
   `CPF` char(11) NOT NULL,
   `NOME` varchar(200) NOT NULL,
@@ -98,6 +190,7 @@ INSERT INTO `profissionais` (`CPF`, `NOME`, `USUARIO`, `PROFISSAO`, `DATANASCIME
 -- Estrutura da tabela `profissoes`
 --
 
+DROP TABLE IF EXISTS `profissoes`;
 CREATE TABLE IF NOT EXISTS `profissoes` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NOME` varchar(100) NOT NULL,
@@ -113,15 +206,6 @@ CREATE TABLE IF NOT EXISTS `profissoes` (
 INSERT INTO `profissoes` (`ID`, `NOME`) VALUES
 (1, 'Professor');
 COMMIT;
-
-CREATE TABLE IF NOT EXISTS FAVORITOS(
-	ID INT AUTO_INCREMENT UNIQUE,
-    ID_POST INT UNIQUE,
-    ID_USUARIO INT,
-    ID_ALBUM INT,
-    PRIMARY KEY(ID)
-);
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
