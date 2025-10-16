@@ -1,6 +1,7 @@
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
+from kivymd.color_definitions import text_colors
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button.button import MDIconButton, MDRaisedButton, MDFloatingActionButton
 from kivymd.uix.card import MDCard
@@ -1014,9 +1015,49 @@ class TelaComunidadeProfissionais(MDScreen):
                     spacing=dp(5),
                     md_bg_color=(0.8, 0.8, 0.8, 1)
                 )
-                Card.add_widget(MDLabel(text=f"@{comentario['Usuario']}"))
-                Card.add_widget(MDLabel(text=comentario['Texto']))
 
+                BoxCabecalho = MDBoxLayout(
+                    orientation="horizontal",
+                    padding=dp(0),
+                    spacing=dp(20),
+                    size_hint_y=None,
+                    md_bg_color=(1, 1, 1, 1)
+                )
+
+                btn_menu = MDIconButton(
+                    icon="dots-vertical",
+                    size_hint=(None, None),
+                    size=(dp(24), dp(24)),
+                    pos=(dp(0), dp(0))
+                )
+
+                btn_menu.theme_icon_color = "Custom"
+                btn_menu.text_color  = (0, 0, 0, 0)
+
+                BoxCabecalho.md_bg_color = (0.8, 0.8, 0.8, 1)
+                BoxCabecalho.bind(minimum_height=BoxCabecalho.setter('height'))
+                BoxCabecalho.add_widget(MDLabel(text=f"@{comentario['Usuario']}"))
+                if comentario['Usuario'] == self.ControlePerfil.Usuario:
+                    btn_menu.text_color  = (0, 0, 0, 1)
+                    menu = MDDropdownMenu(caller=btn_menu, width_mult=4)
+                    menu.items = [
+                        {
+                            "text": "Excluir",
+                            "icon": "delete",
+                            "on_release": lambda x=comentario: (menu.dismiss(), self.ExcluirComentario(x))
+                        }
+                    ]
+                    btn_menu.on_release = menu.open
+
+                BoxCabecalho.add_widget(btn_menu)
+                Card.add_widget(BoxCabecalho)
+                TextoComentario = MDLabel(
+                    text=comentario['Texto'],
+                    size_hint_y = None
+                )
+                Card.add_widget(TextoComentario)
+
+                Card.bind(minimum_height=Card.setter('height'))
                 BoxComentario.add_widget(Card)
         else:
             BoxComentario = MDBoxLayout(
@@ -1045,8 +1086,7 @@ class TelaComunidadeProfissionais(MDScreen):
         )
 
         # Campo de texto
-        tf = MDTextField(
-            id = 'ComentarioTextField',
+        self.tf = MDTextField(
             hint_text="Fale-nos sua opinião",
             mode="round",
             size_hint_x=0.8,
@@ -1054,7 +1094,7 @@ class TelaComunidadeProfissionais(MDScreen):
             line_color_focus=(0.72, 0.53, 0.04, 1),
             cursor_color=(0, 0, 0, 1),
         )
-
+        self.tf.text_color = (0, 0, 0, 1)  # preto
         # Botão circular com seta
         btn_cima = MDFloatingActionButton(
             icon="arrow-up",
@@ -1062,8 +1102,8 @@ class TelaComunidadeProfissionais(MDScreen):
             text_color=(0, 0, 0, 1),
         )
 
-        btn_cima.bind(on_release=lambda _: self.ComentarioButton_Click())
-        BoxPostarComentario.add_widget(tf)
+        btn_cima.bind(on_release=lambda _: self.on_release_Comentarios_button())
+        BoxPostarComentario.add_widget(self.tf)
         BoxPostarComentario.add_widget(btn_cima)
 
         # ScrollView para permitir rolagem se necessário
@@ -1089,14 +1129,6 @@ class TelaComunidadeProfissionais(MDScreen):
         # Abre o Dialog
         self.dialog.open()
 
-    def ComentarioButton_Click(self):
-        try:
-            self.Comentario.setNewComentario(self)
-            self.Comentario.Comentar()
-            self.AtualizarComentarios(self.instanciacomentario)
-        except Exception as e:
-            print(e)
-
     def AtualizarComentarios(self, instance):
         if self.dialog:
             self.dialog.dismiss()
@@ -1117,8 +1149,13 @@ class TelaComunidadeProfissionais(MDScreen):
             instance.favoritado = True
             self.Favoritos.Favoritar()
 
-    def on_release_Comentarios_button(self, instance):
-        pass
+    def on_release_Comentarios_button(self):
+        try:
+            self.Comentario.setNewComentario(self)
+            self.Comentario.Comentar()
+            self.AtualizarComentarios(self.instanciacomentario)
+        except Exception as e:
+            print(e)
 
     # Carrega imagens decodificando Base64 e associando pelo id do post
     def CarregarImagensPosts(self, posts):
@@ -1149,6 +1186,8 @@ class TelaComunidadeProfissionais(MDScreen):
             print(f"Erro ao carregar imagens dos posts: {e}")
             return posts
 
+    def ExcluirComentario(self, post):
+        pass
 
 class TelaPostarNoFeed(MDScreen):
     file_manager = None

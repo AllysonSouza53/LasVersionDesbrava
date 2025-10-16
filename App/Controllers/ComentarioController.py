@@ -15,7 +15,7 @@ class ComentarioController:
     def setNewComentario(self, app):
         self.Usuario = app.ControlePerfil.Usuario
         self.IDPost = app.post_id
-        self.Texto = app.ids.ComentarioTextField.text
+        self.Texto = app.tf.text
 
     # 🔹 Retorna o comentário atual em formato de lista
     def getComentario(self):
