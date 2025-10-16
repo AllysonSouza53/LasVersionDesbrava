@@ -12,7 +12,9 @@ class FavoritosController:
         self.Favoritos = Favorito()
 
     def setNewFavorito(self, app):
-        pass
+        self.PostID = app.post_id
+        self.Usuario = app.ControlePerfil.Usuario
+        self.AlbumID = None
 
     def getFavorito(self):
         return [
@@ -35,6 +37,7 @@ class FavoritosController:
             self.PostID,
             self.AlbumID
         ) = favorito
+        print(favorito)
         return True
 
     def Favoritar(self):
@@ -56,3 +59,13 @@ class FavoritosController:
     def setListaFavoritos(self, condicao):
         lista = self.Favoritos.ListarFavoritos(condicao)
         return lista
+
+    def Desfavoritar(self):
+        try:
+            self.setFavorito(f"ID_POST = {self.PostID} AND USUARIO = '{self.Usuario}'")
+            self.Favoritos.Deletar()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+

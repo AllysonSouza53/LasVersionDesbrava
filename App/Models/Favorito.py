@@ -24,8 +24,8 @@ class Favorito:
         if self.TE.TemErros():
             return False
         try:
-            colunas = "Usuario,PostID,AlbumID"
-            valores = [self.Usuario, self.PostID, self.AlbumID]
+            colunas = "ID_POST,USUARIO,ID_ALBUM"
+            valores = [self.PostID,self.Usuario, self.AlbumID]
             Banco.inserir("FAVORITOS", colunas, valores)
             return True
         except Exception as e:

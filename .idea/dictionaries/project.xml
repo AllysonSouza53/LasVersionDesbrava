@@ -11,6 +11,7 @@
       <w>biografia</w>
       <w>botao</w>
       <w>brutos</w>
+      <w>cabecalho</w>
       <w>cadastar</w>
       <w>cadastrar</w>
       <w>cadastro</w>
@@ -19,6 +20,8 @@
       <w>cidades</w>
       <w>colocar</w>
       <w>colunas</w>
+      <w>comentario</w>
+      <w>comentarios</w>
       <w>comunidade</w>
       <w>condicao</w>
       <w>confirmacao</w>
@@ -37,6 +40,7 @@
       <w>escolha</w>
       <w>escrita</w>
       <w>excluir</w>
+      <w>favoritado</w>
       <w>favoritar</w>
       <w>favoritos</w>
       <w>fundo</w>
@@ -84,6 +88,7 @@
       <w>turma</w>
       <w>usuario</w>
       <w>valores</w>
+      <w>vizualizacao</w>
       <w>voltar</w>
     </words>
   </dictionary>

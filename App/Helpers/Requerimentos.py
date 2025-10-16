@@ -190,13 +190,13 @@ class Posts:
             print(f"Erro ao buscar posts do usuário {id}:", e)
             return None
 
-    def Post(self, id, usuario, imagem, legenda):
+    def Post(self, id, usuario, imagem):
         post_data = {
             'id': id,
             'usuario': usuario,
-            'legenda': legenda,
             'imagem': imagem
         }
+        print(f'{id}, {usuario}, {imagem}')
         try:
             resp = requests.post(f'{self.url}/Posts', json=post_data, timeout=10)
             resp.raise_for_status()
@@ -206,10 +206,9 @@ class Posts:
             print("Erro ao adicionar post:", e)
             return None
 
-    def Update(self, id, usuario, imagem, legenda):
+    def Update(self, id, usuario, imagem):
         post_alterado = {
             'usuario': usuario,
-            'legenda': legenda,
             'imagem': imagem
         }
         try:

@@ -886,7 +886,7 @@
                                     height: self.texture_size[1]
 
                                 MDTextField:
-                                    id: ProfissãoAlterarTextField
+                                    id: ProfissaoAlterarTextField
                                     hint_text: "Selecione sua Profissão"
                                     mode: "round"
                                     size_hint_x: 1
@@ -896,7 +896,7 @@
                                     text_color_normal:0,0,0,1
                                     text_color_focus:0,0,0,1
                                     cursor_color:0,0,0,1
-                                    on_focus:root.ProfissãoAlterarTextField_Focus(self, self.focus)
+                                    on_focus:root.ProfissaoAlterarTextField_Focus(self, self.focus)
 
                             BoxLayout:
                                 orientation: 'vertical'
@@ -1700,7 +1700,7 @@
                         height: self.minimum_height  # ajusta a altura ao conteúdo interno
                         padding: dp(20)
                         spacing: dp(10)
-                        cols:2
+                        cols:1
 
                 Widget:
 
@@ -1717,7 +1717,7 @@
             orientation:'vertical'
             BoxLayout:
                 orientation:'horizontal'
-                size_hint_y: 0.2
+                size_hint_y: 0.18
                 BoxLayout:
                     canvas:
                         Color:
@@ -1739,30 +1739,34 @@
                         md_bg_color: 0.0, 0.4, 0.0, 0
                         font_size: "18sp"
                         bold: True
-                        on_release: root.VoltarEscolhaButton_Click()
+                        on_release: root.VoltarComunidade_Click()
                         size_hint: None, None
                         size: "200dp", "50dp"
                         text_color: 1, 1, 1, 1
                         icon_color: 1, 1, 1, 1
                         line_color: 1, 1, 1, 0
+
             BoxLayout:
                 size_hint_y:0.5
                 orientation:'horizontal'
                 Widget:
-                BoxLayout:
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
 
-                    orientation:'vertical'
                     BoxLayout:
                         orientation: 'vertical'
                         spacing: dp(8)
-                        padding:dp(20)
+                        padding: dp(20)
+                        size_hint_y: None
+                        height: self.minimum_height
 
                         canvas.before:
                             Color:
                                 rgba: 0, 0, 0, 0.5
                             RoundedRectangle:
-                                pos: self.x, self.y
-                                size: self.width, self.height
+                                pos: self.pos
+                                size: self.size
 
                         MDLabel:
                             text: 'Compartilhe conosco seu conhecimento!'
@@ -1788,12 +1792,11 @@
                             mode: "round"
                             size_hint_x: 1
                             pos_hint: {"center_x": 0.5}
-                            line_color_normal: 0, 0, 0, 0.5
-                            line_color_focus: 0.72, 0.53, 0.04, 1
-                            text_color_normal:0,0,0,1
-                            text_color_focus:0,0,0,1
-                            cursor_color:0,0,0,1
-                            on_focus:root.MidiaPostarTextField_Focus(self, self.focus)
+                            on_focus: root.MidiaPostarTextField_Focus()
+
+                        BoxLayout:
+                            id: vizualizacao
+                            size_hint_y: 0.01
 
                         MDLabel:
                             text: 'Legenda:'
@@ -1809,39 +1812,36 @@
                             hint_text: "O que quer falar?"
                             multiline: True
                             size_hint_x: 1
-                            height: dp(140)
+                            size_hint_y: None
+                            height: dp(200)  # ajuste conforme o tamanho desejado
                             background_color: (1, 1, 1, 1)
                             foreground_color: (0, 0, 0, 1)
                             cursor_color: (0, 0, 0, 1)
 
                         BoxLayout:
-                            orientation:'horizontal'
-                            Widget:
-                            MDRaisedButton:
-                                id: ExcluirAluno
-                                text: "Postar"
-                                pos_hint: {"center_x": 1}
-                                md_bg_color: 0.0, 0.4, 0.0, 1
-                                font_size: "18sp"
-                                bold: True
-                                line_color: 1, 1, 1, 1
-                                size_hint_y: None
-                                height: dp(50)
-                                on_release: root.ExcluirAlunoButton_Click()
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(60)
+                            spacing: dp(10)
 
                             Widget:
+
                             MDRaisedButton:
-                                id: ExcluirAluno
-                                text: "Cancelar"
-                                pos_hint: {"center_x": 1}
+                                text: "Postar"
                                 md_bg_color: 0.0, 0.4, 0.0, 1
                                 font_size: "18sp"
                                 bold: True
-                                line_color: 1, 1, 1, 1
-                                size_hint_y: None
-                                height: dp(50)
-                                on_release: root.ExcluirAlunoButton_Click()
+                                on_release: root.PostarButton_Click()
+
+                            MDRaisedButton:
+                                text: "Cancelar"
+                                md_bg_color: 0.4, 0.0, 0.0, 1
+                                font_size: "18sp"
+                                bold: True
+                                on_release: root.CancelarPostarButton_Click()
+
                             Widget:
+
                 Widget:
             BoxLayout:
                 size_hint_y:0.25

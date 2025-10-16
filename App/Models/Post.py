@@ -11,12 +11,7 @@ class Post:
         self.TE = Erros()
 
     def setPost(self, dados):
-        """
-        Define os dados do post a partir de uma lista ou tupla.
-        """
-        self.ID = dados[0]
         self.Usuario = dados[1]
-        self.Arquivo = dados[2]
         self.Legenda = dados[3]
 
     def Salvar(self):
@@ -24,16 +19,12 @@ class Post:
         Valida e insere o post no banco de dados.
         """
         print("== Iniciando Salvar Post ==")
-        print("Dados recebidos:", self.ID, self.Usuario, self.Arquivo, self.Legenda)
+        print("Dados recebidos:", self.Usuario, self.Legenda)
 
         # Validações básicas
         if not self.Usuario or not self.Usuario.strip():
             print("Erro: Usuário vazio")
             self.TE.SetErro("Usuário vazio!")
-
-        if not self.Arquivo or not self.Arquivo.strip():
-            print("Erro: Arquivo vazio")
-            self.TE.SetErro("Arquivo do post vazio!")
 
         if not self.Legenda or not self.Legenda.strip():
             print("Erro: Legenda vazia")
@@ -47,9 +38,9 @@ class Post:
 
         try:
             print("Tentando inserir post no banco...")
-            colunas = "Usuario,Arquivo,Legenda"
-            valores = [self.Usuario, self.Arquivo, self.Legenda]
-            Banco.inserir("POSTS", colunas, valores)
+            colunas = "USUARIO,LEGENDA"
+            valores = [self.Usuario, self.Legenda]
+            Banco.inserir("POST", colunas, valores)
             print("Post inserido com sucesso!")
             return True
         except Exception as e:

@@ -1,5 +1,6 @@
 from App.Models.Post import Post
 from App.Helpers.TratamentoErros import Erros as E
+from App.Helpers.Requerimentos import Posts
 import datetime
 import random
 
@@ -8,13 +9,18 @@ class PostController:
     Usuario = None
     Arquivo = None
     Legenda = None
+    Posts = None
+
     def __init__(self):
         self.Erros = E()
         self.Post = Post()
+        self.Posts = Posts()
 
 
     def setNewPost(self, app):
-        pass
+        self.Usuario = app.ProfissionalControle.Usuario
+        self.Arquivo = app.imagem_base64
+        self.Legenda = app.LegendaPostarTextField.text
 
     def getPost(self):
         return [
@@ -44,19 +50,24 @@ class PostController:
             self.Post.setPost(self.getPost())
             resultado = self.Post.Salvar()
             if resultado:
+                self.ID = self.Post.Pesquisar('ID',f"USUARIO = '{self.Usuario}' ORDER BY DATA_POST DESC")[0][0]
+                print(self.ID)
+                self.Posts.Post(
+                    self.ID,
+                    self.Usuario,
+                    self.Arquivo)
                 return True
             return False
         except Exception as e:
             return e
 
-    import datetime
-    import random
+    import datetime, random
 
     def ListarPosts(self):
         try:
-            # Busca todos os posts, do mais recente ao mais antigo
             Resultado = self.Post.Pesquisar('*', '1 ORDER BY DATA_POST DESC')
             if not Resultado:
+                print("⚠️ Nenhum resultado encontrado no banco.")
                 return []
 
             lista = []
@@ -64,14 +75,13 @@ class PostController:
                 lista.append({
                     "id": post[0],
                     "usuario": post[1],
-                    "arquivo": post[2],
-                    "legenda": post[3],
-                    "data_post": post[4] if len(post) > 4 else None
+                    "legenda": post[2],
+                    "data_post": post[3] if len(post) > 3 else None
                 })
 
             agora = datetime.datetime.now()
             intervalo_1h = datetime.timedelta(hours=1)
-            intervalo_6h = datetime.timedelta(hours=6)  # 🔹 Ajuste se quiser mais ou menos
+            intervalo_6h = datetime.timedelta(hours=6)
 
             posts_ultima_hora = []
             posts_ultimas_horas = []
@@ -79,17 +89,35 @@ class PostController:
             posts_antigos = []
 
             for post in lista:
-                if not post["data_post"]:
+                data = post["data_post"]
+
+                # 🧩 Caso sem data: vai para os antigos
+                if not data:
                     posts_antigos.append(post)
                     continue
 
-                data = post["data_post"]
+                # 🔹 Converter string → datetime de forma robusta
                 if isinstance(data, str):
-                    data = datetime.datetime.fromisoformat(data)
+                    formatos_possiveis = [
+                        "%Y-%m-%d %H:%M:%S",
+                        "%Y-%m-%dT%H:%M:%S",
+                        "%Y/%m/%d %H:%M:%S",
+                    ]
+                    for fmt in formatos_possiveis:
+                        try:
+                            data = datetime.datetime.strptime(data, fmt)
+                            break
+                        except Exception:
+                            continue
+                    else:
+                        print(f"⚠️ Formato de data desconhecido: {data}")
+                        posts_antigos.append(post)
+                        continue
 
+                post["data_post"] = data
                 diferenca = agora - data
 
-                # 🔸 Classificação de tempo
+                # 🔹 Classificação temporal
                 if diferenca <= intervalo_1h:
                     posts_ultima_hora.append(post)
                 elif diferenca <= intervalo_6h:
@@ -99,13 +127,13 @@ class PostController:
                 else:
                     posts_antigos.append(post)
 
-            # Embaralhar (opcional)
-            random.shuffle(posts_ultima_hora)
-            random.shuffle(posts_ultimas_horas)
-            random.shuffle(posts_hoje)
-            random.shuffle(posts_antigos)
+            # 🔹 Ordena cada grupo por data
+            key_sort = lambda p: p["data_post"]
+            for grupo in [posts_ultima_hora, posts_ultimas_horas, posts_hoje, posts_antigos]:
+                grupo.sort(key=key_sort, reverse=True)
+                random.shuffle(grupo)  # embaralha dentro do grupo
 
-            # 🔸 Ordem final: última hora → últimas horas → hoje → antigos
+            # 🔹 Monta feed final (mantendo prioridade)
             lista_final = (
                     posts_ultima_hora +
                     posts_ultimas_horas +
@@ -113,10 +141,11 @@ class PostController:
                     posts_antigos
             )
 
+            print(f"✅ Posts carregados: {len(lista_final)}")
             return lista_final
 
         except Exception as e:
-            print(f"Erro ao listar posts: {e}")
+            print(f"❌ Erro ao listar posts: {e}")
             return []
 
     def PesquisarPorUsuario(self, usuario):
@@ -128,10 +157,9 @@ class PostController:
             lista = []
             for post in Resultado:
                 lista.append({
-                    "CPF": post[0] or "",
+                    "ID": post[0] or "",
                     "usuario": post[1] or "",
-                    "arquivo": post[2] or "",
-                    "legenda": post[3] or ""
+                    "legenda": post[2] or ""
                 })
             return lista
 
