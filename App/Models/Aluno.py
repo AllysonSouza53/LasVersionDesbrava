@@ -22,25 +22,26 @@ class Aluno:
 
 
     def setAluno(self, dados):
-        self.RE = dados[0],
-        self.Nome = dados[1],
-        self.Usuario = dados[2],
-        self.Escola = dados[3],
-        self.DataNascimento = dados[4],
-        self.Genero = dados[5],
-        self.Turma = dados[6],
-        self.ProfissionalResponsavel = dados[7],
-        self.UF = dados[8],
-        self.Cidade = dados[9],
-        self.Diagnostico = dados[10],
-        self.Observacao = dados[11],
-        self.NivelLeitura = dados[12],
+        self.RE = dados[0]
+        self.Nome = dados[1]
+        self.Usuario = dados[2]
+        self.Escola = dados[3]
+        self.DataNascimento = dados[4]
+        self.Genero = dados[5]
+        self.Turma = dados[6]
+        self.ProfissionalResponsavel = dados[7]
+        self.UF = dados[8]
+        self.Cidade = dados[9]
+        self.Diagnostico = dados[10]
+        self.Observacao = dados[11]
+        self.NivelLeitura = dados[12]
         self.NivelEscrita = dados[13]
 
     def getAluno(self, usuario):
-        Resultado = Banco.consultar('*','ALUNOS',f'USUARIO ={usuario}')
+        Resultado = Banco.consultar('*','ALUNOS',f"USUARIO ='{usuario}'")
         if not Resultado or Resultado is False:
             self.Erros.SetErro('Aluno não encontrado')
+            print(self.Erros.GetErros())
             return False
 
         try:
@@ -68,6 +69,7 @@ class Aluno:
             return False
 
     def Cadastrar(self):
+        self.Erros.LimpeErros()
         if not self.RE:
             self.Erros.SetErro('O resgistro não deve ser vazio')
 
@@ -76,8 +78,6 @@ class Aluno:
 
         if not self.Usuario:
             self.Erros.SetErro('O usuario não deve ser vazio')
-        elif self.Usuario == Banco.consultar('*','ALUNOS',f'USUARIO ={self.Usuario}')[0][2]:
-            self.Erros.SetErro('Usuario já existente')
 
         if not self.Escola:
             self.Erros.SetErro('A escola não pode ser vazia')
@@ -118,7 +118,7 @@ class Aluno:
             return False
 
         try:
-            colunas = "RE,Nome,Usuario,Escola,DataNascimento,Genero,Turma,ProfissionalResponsavel,UF,Cidade,Diagnostico,Observacao,NivelLeitura,NivelEscrita"
+            colunas = "RE,NOME,USUARIO,ESCOLA,DATANASCIMENTO,GENERO,TURMA,PROFISSIONALRESPONSAVEL,UF,CIDADE,DIAGNOSTICO,OBSERVACOES,NIVELDELEITURA,NIVELDEESCRITA"
             valores = [
                 self.RE,
                 self.Nome,
@@ -139,6 +139,7 @@ class Aluno:
             return True
         except Exception as e:
             self.Erros.SetErro(f'Não foi possível salvar o aluno. Erro: {e}')
+            print(self.Erros.GetErros())
             return False
 
     def Atualizar(self):
@@ -156,8 +157,8 @@ class Aluno:
                 f"CIDADE = '{self.Cidade}'",
                 f"DIAGNOSTICO = '{self.Diagnostico}'" if self.Diagnostico else "DIAGNOSTICO = NULL",
                 f"OBSERVACAO = '{self.Observacao}'" if self.Observacao else "OBSERVACAO = NULL",
-                f"NIVELLEITURA = '{self.NivelLeitura}'" if self.NivelLeitura else "NIVELLEITURA = NULL",
-                f"NIVELESCRITA = '{self.NivelEscrita}'" if self.NivelEscrita else "NIVELESCRITA = NULL"
+                f"NIVELDELEITURA = '{self.NivelLeitura}'" if self.NivelLeitura else "NIVELDELEITURA = NULL",
+                f"NIVELDEESCRITA = '{self.NivelEscrita}'" if self.NivelEscrita else "NIVELDEESCRITA = NULL"
             ]
             Banco.editar('ALUNOS', valores, f"RE = '{self.RE}'")
             return True

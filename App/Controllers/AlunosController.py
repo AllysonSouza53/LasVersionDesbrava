@@ -56,12 +56,12 @@ class AlunoController:
         ]
 
     def setAluno(self, aluno):
-        aluno = self.Aluno.getAluno(self.Usuario)
+        aluno = self.Aluno.getAluno(aluno)
 
         if not aluno:
             self.Erros.SetErro('Aluno não encontrado')
             if self.Erros.TemErros():
-                return self.Erros.GetErros()
+                return False
             else:
                 pass
 
@@ -100,12 +100,16 @@ class AlunoController:
 
     def Salvar(self):
         try:
+            self.Aluno.setAluno(self.getAluno())
             if not self.Aluno.getAluno(self.Usuario):
+                print('Cadastro')
                 self.Aluno.Cadastrar()
                 return None
             else:
                 self.Aluno.Atualizar()
+                print('Atualiza')
                 return None
         except Exception as e:
             self.Erros.SetErro(f'Não foi possivel salvar aluno. Erro{e}')
+            print('Erro Controller')
             return self.Erros.GetErros()

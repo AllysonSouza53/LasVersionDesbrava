@@ -28,7 +28,10 @@ from App.Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
 from App.Banco import Banco
 import io, base64
 import os
+from functools import partial
 from kivymd.uix.bottomsheet import MDCustomBottomSheet
+
+from App.Helpers.TratamentoErros import Erros
 
 
 #-------------------------------------------------------------------
@@ -653,6 +656,7 @@ class TelaAlunosProfissional(MDScreen):
     Sessao = LoginController()
     ProfissionalControle = ProfissionalControler()
     AlunoControle = AlunoController()
+    aluno_usuario = None
 
     def on_enter(self, *args):
         self.Sessao.setLogin(self.manager)
@@ -720,19 +724,31 @@ class TelaAlunosProfissional(MDScreen):
                     ("RE", dp(30)),
                     ("Nome", dp(30)),
                     ("Usuario", dp(30)),
-                    ("Escola", dp(30)),
+                    ("Escola", dp(40)),
                     ("Genero", dp(30)),
                     ("Turma", dp(30)),
                     ("Diagnostico", dp(30)),
-                    ('DataNascimento', dp(30))
+                    ('DataNascimento', dp(20))
                 ],
                 row_data=Dados
             )
+            tabela.bind(on_row_press=self.on_row_press)
 
 
             DataGrid.add_widget(Widget())
             DataGrid.add_widget(tabela)
             DataGrid.add_widget(Widget())
+
+    def on_row_press(self, instance_table, instance_row):
+        colunas = len(instance_table.column_data)
+        indice_celula = instance_row.index
+        linha = indice_celula // colunas
+        coluna = indice_celula % colunas
+        self.aluno_usuario = instance_row.table.row_data[linha][2]
+        print(self.aluno_usuario)
+        if self.manager:
+            self.manager.current = "AlunoEspecifico"
+
 
     def PerfilMDTextButton_Click(self):
         if self.manager:
@@ -1444,8 +1460,13 @@ class TelaAdicionarAluno(MDScreen):
     AlunoControle = None
 
     def on_pre_enter(self, *args):
-        self.ControleProfissional = ProfissionalControler()
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        if tela_carregamento.Profissional:
+            self.ControleProfissional = tela_carregamento.Profissional
+        else:
+            self.ControleProfissional = None
         self.AlunoControle = AlunoController()
+
     def Voltar_Click(self):
         if self.manager:
             self.manager.current = "AlunosProfissional"
@@ -1605,10 +1626,122 @@ class TelaAdicionarAluno(MDScreen):
 
     def AdicionarAlunos_Click(self):
         try:
+            print("IDs disponíveis:", self.ids.keys())
             self.AlunoControle.setCadastro(self)
+            print("Aluno:", self.AlunoControle.getAluno())
             self.AlunoControle.Salvar()
             if self.manager:
                 self.manager.current = "AlunosProfissional"
         except Exception as e:
-            print(e)
+            print("Erro ao adicionar aluno:", e)
+
+class TelaAlunoEspecifico(MDScreen):
+    RA = StringProperty("")
+    NOME = StringProperty("")
+    USUARIO = StringProperty("")
+    ESCOLA = StringProperty("")
+    DATANASCIMENTO = StringProperty("")
+    GENERO = StringProperty("")
+    TURMA = StringProperty("")
+    PROFISSIONALRESPONSAVEL = StringProperty("")
+    UF = StringProperty("")
+    CIDADE = StringProperty("")
+    DIAGNOSTICO = StringProperty("")
+    OBSERVACOES = StringProperty("")
+    NIVELDELEITURA = StringProperty("")
+    NIVELDEESCRITA = StringProperty("")
+    AlunoUsuario = None
+    dialog = None  # variável para controlar o diálogo
+
+    Aluno = None
+
+    def on_pre_enter(self):
+        # Pegar referência do aluno da tela anterior
+        tela_carregamento = self.manager.get_screen("AlunosProfissional")
+        self.AlunoUsuario = tela_carregamento.aluno_usuario
+
+        # Inicializar o controller e carregar os dados do aluno
+        self.Aluno = AlunoController()
+        self.Aluno.setAluno(self.AlunoUsuario)
+
+        # Preencher os campos da tela com os dados do aluno
+        self.RA = str(self.Aluno.RE) if self.Aluno.RE is not None else ""
+        self.NOME = str(self.Aluno.Nome) if self.Aluno.Nome is not None else ""
+        self.USUARIO = str(self.Aluno.Usuario) if self.Aluno.Usuario is not None else ""
+        self.ESCOLA = str(self.Aluno.Escola) if self.Aluno.Escola is not None else ""
+        if self.Aluno.DataNascimento:
+            self.DATANASCIMENTO = self.Aluno.DataNascimento.strftime("%d/%m/%Y")
+        else:
+            self.DATANASCIMENTO = ""
+        self.GENERO = str(self.Aluno.Genero) if self.Aluno.Genero is not None else ""
+        self.TURMA = str(self.Aluno.Turma) if self.Aluno.Turma is not None else ""
+        self.PROFISSIONALRESPONSAVEL = str(self.Aluno.ProfissionalResponsavel) if self.Aluno.ProfissionalResponsavel is not None else ""
+        self.UF = str(self.Aluno.UF) if self.Aluno.UF is not None else ""
+        self.CIDADE = str(self.Aluno.Cidade) if self.Aluno.Cidade is not None else ""
+        self.DIAGNOSTICO = str(self.Aluno.Diagnostico) if self.Aluno.Diagnostico is not None else ""
+        self.OBSERVACOES = str(self.Aluno.Observacao) if self.Aluno.Observacao is not None else ""
+        self.NIVELDELEITURA = str(self.Aluno.NivelLeitura) if self.Aluno.NivelLeitura is not None else ""
+        self.NIVELDEESCRITA = str(self.Aluno.NivelEscrita) if self.Aluno.NivelEscrita is not None else ""
+
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "AlunosProfissional"
+
+    dialog = None
+
+    def AbrirTelaJogoEspecifico(self, titulo):
+        # Fecha o diálogo anterior, se já estiver aberto
+        if self.dialog:
+            self.dialog.dismiss()
+
+        # Layout vertical com espaçamento entre os níveis
+        box_botoes = MDBoxLayout(
+            orientation="vertical",
+            spacing=dp(10),
+            padding=dp(10),
+            adaptive_height=True
+        )
+
+        # Cria 3 níveis (você pode aumentar esse número depois)
+        for i in range(1, 4):
+            card = MDCard(
+                size_hint_y=None,
+                height=dp(60),
+                md_bg_color=(0.9, 0.9, 0.9, 1),  # cor do card
+                radius=[15],
+                padding=dp(10),
+                ripple_behavior=True,  # animação ao clicar
+            )
+
+            # Texto centralizado
+            label = MDLabel(
+                text=f"[b]Nível {i}[/b]",
+                halign="center",
+                valign="center",
+                markup=True,
+            )
+
+            card.add_widget(label)
+            card.bind(on_release=partial(self.AbrirNivel, i))  # passa o número do nível
+            box_botoes.add_widget(card)
+
+        # Cria o diálogo com o título do jogo e os cards dentro
+        self.dialog = MDDialog(
+            title=titulo,
+            type="custom",
+            content_cls=box_botoes,
+            size_hint=(0.8, None),
+            auto_dismiss=True,
+        )
+
+        # Exibe o diálogo
+        self.dialog.open()
+
+    def AbrirNivel(self, nivel, *args):
+        """Função chamada quando o usuário escolhe um nível."""
+        print(f"Abrindo informações do Nível {nivel}...")
+
+        # Aqui você pode abrir outro diálogo ou navegar para uma tela de estatísticas
+        if self.dialog:
+            self.dialog.dismiss()
 
