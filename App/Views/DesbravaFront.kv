@@ -23,6 +23,10 @@
         name:"CarregamentoInicial"
     TelaPostarNoFeed:
         name:"PostarNoFeed"
+    TelaInformacaoJogoEspecifico:
+        name:"InformacaoJogoEspecifico"
+    TelaAdicionarAluno:
+        name:"AdicionarAluno"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -1219,30 +1223,11 @@
                 size_hint_x:0.5
                 Widget:
 
-                MDRaisedButton:
-                    id: AdicionarAluno
-                    text: "Adicionar Aluno"
-                    pos_hint: {"center_x": 1}
-                    md_bg_color: 0.0, 0.4, 0.0, 1
-                    font_size: "18sp"
-                    bold: True
-                    line_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: dp(50)
-                    on_release: root.AdicionarAlunoButton_Click()
-
-
-                MDRaisedButton:
-                    id: ExcluirAluno
-                    text: "Excluir Aluno"
-                    pos_hint: {"center_x": 1}
-                    md_bg_color: 0.0, 0.4, 0.0, 1
-                    font_size: "18sp"
-                    bold: True
-                    line_color: 1, 1, 1, 1
-                    size_hint_y: None
-                    height: dp(50)
-                    on_release: root.ExcluirAlunoButton_Click()
+                MDIconButton:
+                    icon:'plus'
+                    theme_text_color:'Custom'
+                    icon_color:1, 1, 1, 1
+                    on_release:root.AdicionarAlunoButton_Click()
 
                 Widget:
 
@@ -1358,240 +1343,355 @@
                             direction: "right"
                             size_hint_y: 0.5
                             pos_hint: {"center_y": 0.6}
-                            BoxLayout:
 
-                                spacing: 10
-
-
-                                MDCard:
-                                    Image:
-                                        source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
-                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                                        pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text:'Jogo 1'
-
-                                MDCard:
-                                    Image:
-                                        source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
-                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                                        pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text:'Jogo 2'
-
-                                MDCard:
-                                    Image:
-                                        source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
-                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                                        pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text:'Jogo 3'
-
-
-                                MDCard:
-                                    Image:
-                                        source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
-                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                                        pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text:'Jogo 4'
-
-
-                                MDCard:
-                                    Image:
-                                        source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
-                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                                        pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text:'Jogo 5'
-
-                                MDCard:
-                                    Image:
-                                        source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
-                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                                        pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text:'Jogo 6'
-
+                            # --- Tela 1 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
+                                    on_release: root.JogosCard_Click(1)
                                     Image:
                                         source: 'Imagens/Jogo1.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 2'
-
+                                        text: 'Jogo 1'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(2)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo2.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 3'
-
+                                        text: 'Jogo 2'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(3)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo3.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 4'
-
-
+                                        text: 'Jogo 3'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(4)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo4.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 5'
-
-
+                                        text: 'Jogo 4'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(5)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo5.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 6'
-
+                                        text: 'Jogo 5'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(6)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo6.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 1'
+                                        text: 'Jogo 6'
 
+                            # --- Tela 2 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
+                                    on_release: root.JogosCard_Click(6)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo6.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 3'
-
+                                        text: 'Jogo 6'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(1)
                                     Image:
                                         source: 'Imagens/Jogo1.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 4'
-
+                                        text: 'Jogo 1'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(2)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo2.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 5'
-
-
+                                        text: 'Jogo 2'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(3)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo3.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 6'
-
-
+                                        text: 'Jogo 3'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(4)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo4.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 1'
-
+                                        text: 'Jogo 4'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(5)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo5.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 2'
+                                        text: 'Jogo 5'
 
+                            # --- Tela 3 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
+                                    on_release: root.JogosCard_Click(5)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo5.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 4'
-
+                                        text: 'Jogo 5'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(6)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo6.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 5'
-
+                                        text: 'Jogo 6'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(1)
                                     Image:
                                         source: 'Imagens/Jogo1.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 6'
-
-
+                                        text: 'Jogo 1'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(2)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo2.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 1'
-
-
+                                        text: 'Jogo 2'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(3)
                                     Image:
-                                        source: 'Imagens/Jogo1.png'
+                                        source: 'Imagens/Jogo3.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 2'
-
+                                        text: 'Jogo 3'
                                 MDCard:
+                                    on_release: root.JogosCard_Click(4)
+                                    Image:
+                                        source: 'Imagens/Jogo4.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 4'
+
+                            # --- Tela 4 ---
+                            BoxLayout:
+                                spacing: 10
+                                MDCard:
+                                    on_release: root.JogosCard_Click(4)
+                                    Image:
+                                        source: 'Imagens/Jogo4.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 4'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(5)
+                                    Image:
+                                        source: 'Imagens/Jogo5.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 5'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(6)
+                                    Image:
+                                        source: 'Imagens/Jogo6.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 6'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(1)
                                     Image:
                                         source: 'Imagens/Jogo1.png'
                                         size_hint: None, None
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
                                     MDLabel:
-                                        text:'Jogo 3'
+                                        text: 'Jogo 1'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(2)
+                                    Image:
+                                        source: 'Imagens/Jogo2.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 2'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(3)
+                                    Image:
+                                        source: 'Imagens/Jogo3.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 3'
+
+                            # --- Tela 5 ---
+                            BoxLayout:
+                                spacing: 10
+                                MDCard:
+                                    on_release: root.JogosCard_Click(3)
+                                    Image:
+                                        source: 'Imagens/Jogo3.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 3'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(4)
+                                    Image:
+                                        source: 'Imagens/Jogo4.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 4'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(5)
+                                    Image:
+                                        source: 'Imagens/Jogo5.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 5'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(6)
+                                    Image:
+                                        source: 'Imagens/Jogo6.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 6'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(1)
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 1'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(2)
+                                    Image:
+                                        source: 'Imagens/Jogo2.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 2'
+
+                            # --- Tela 6 ---
+                            BoxLayout:
+                                spacing: 10
+                                MDCard:
+                                    on_release: root.JogosCard_Click(2)
+                                    Image:
+                                        source: 'Imagens/Jogo2.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 2'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(3)
+                                    Image:
+                                        source: 'Imagens/Jogo3.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 3'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(4)
+                                    Image:
+                                        source: 'Imagens/Jogo4.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 4'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(5)
+                                    Image:
+                                        source: 'Imagens/Jogo5.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 5'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(6)
+                                    Image:
+                                        source: 'Imagens/Jogo6.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 6'
+                                MDCard:
+                                    on_release: root.JogosCard_Click(1)
+                                    Image:
+                                        source: 'Imagens/Jogo1.png'
+                                        size_hint: None, None
+                                        size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                        pos_hint: {"center_x": 0.5}
+                                    MDLabel:
+                                        text: 'Jogo 1'
+
 
                     MDFloatingActionButton:
                         icon: "chevron-right"
@@ -1845,3 +1945,577 @@
                 Widget:
             BoxLayout:
                 size_hint_y:0.25
+
+
+<TelaInformacaoJogoEspecifico>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.18
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+
+            BoxLayout:
+                orientation: 'horizontal'
+                padding: dp(10)
+
+                Widget:  # espaço à esquerda
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+
+                    MDCard:
+                        size_hint_x: 0.9
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: dp(15)
+                        spacing: dp(15)
+                        radius: [20,]  # mantém borda arredondada
+                        md_bg_color: (0.95, 0.95, 0.95, 1)  # fundo cinza claro
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(15)
+
+                            MDLabel:
+                                text: f"[b]{root.Titulo}[/b]"
+                                markup: True
+                                font_style: "H6"
+                                size_hint_y: None
+                                haling:'center'
+                                height: self.texture_size[1]
+
+                            MDSeparator:
+
+                            MDLabel:
+                                text: "[b]Objetivo Pedagógico:[/b]"
+                                markup: True
+                                font_style: "Subtitle1"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                            MDLabel:
+                                text: f"{root.Objetivo}"
+                                theme_text_color: "Secondary"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+
+                            MDLabel:
+                                text: "[b]Competências Estimuladas:[/b]"
+                                markup: True
+                                font_style: "Subtitle1"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                            MDLabel:
+                                text: f"{root.Competencias}"
+                                theme_text_color: "Secondary"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+
+                            MDLabel:
+                                text: "[b]Base Teórica:[/b]"
+                                markup: True
+                                font_style: "Subtitle1"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                            MDLabel:
+                                text: f"{root.BaseTeorica}"
+                                theme_text_color: "Secondary"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+
+                            MDLabel:
+                                text: "[b]Instruções para o Profissional:[/b]"
+                                markup: True
+                                font_style: "Subtitle1"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                            MDLabel:
+                                text: f"{root.Instrucoes}"
+                                theme_text_color: "Secondary"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+
+                            MDLabel:
+                                text: "[b]Classificação por Área:[/b]"
+                                markup: True
+                                font_style: "Subtitle1"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                            MDLabel:
+                                text: f"{root.Classificar}"
+                                theme_text_color: "Secondary"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+
+                            MDLabel:
+                                text: "[b]Explicação e Funcionamento:[/b]"
+                                markup: True
+                                font_style: "Subtitle1"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                            MDLabel:
+                                text: f"{root.Explicacoes}"
+                                theme_text_color: "Secondary"
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                Widget:  # espaço à direita
+
+<TelaAdicionarAluno>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.18
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                BoxLayout:
+                    orientation:'vertical'
+                    padding:dp(20)
+                    size_hint_y:0.8
+                    pos_hint:{"x":0.5,"y":0.2}
+                    canvas.before:
+                        Color:
+                            rgba: 0, 0, 0, 0.5
+                        RoundedRectangle:
+                            pos: self.x, self.y
+                            size: self.width, self.height
+                    MDLabel:
+                        padding:30,0,30,0
+                        text: 'Adicione seu aluno!'
+                        color: 1, 1, 1, 1
+                        font_size: "25sp"
+                        bold: True
+                        halign: 'center'
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+                    ScrollView:
+                        do_scroll_x: False
+                        do_scroll_y: True
+                        BoxLayout:
+                            spacing:dp(80)
+                            orientation:'vertical'
+                            size_hint_y:None
+                            height: self.minimum_height
+
+                            Widget:
+
+                            # RA
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'RA do Aluno:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: RAAlunosTextField
+                                    hint_text: "Digite o registro do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+
+                            # NOME
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Nome do Aluno:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: NomeAlunosTextField
+                                    hint_text: "Digite o nome completo do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+
+                            # USUARIO
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Usuário:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: UsuarioAlunosTextField
+                                    hint_text: "Digite o nome de usuário"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+
+                            # DATANASCIMENTO
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Data de Nascimento:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: DataNascimentoAlunosTextField
+                                    hint_text: "Digite a data de nascimento (DD/MM/AAAA)"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+                                    on_text: root.DataNascimentoAlunosTextField_Click(self)
+
+                            # GÊNERO
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Gênero:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: GeneroAlunosTextField
+                                    hint_text: "Digite o gênero do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+
+                            # TURMA
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Turma:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: TurmaAlunosTextField
+                                    hint_text: "Digite a turma do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+
+                            # UF
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'UF:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: UFAlunosTextField
+                                    hint_text: "Selecione sua UF"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal:0,0,0,1
+                                    text_color_focus:0,0,0,1
+                                    cursor_color:0,0,0,1
+                                    on_focus:root.UFAlunosProfissionaisTextField_Focus(self, self.focus)
+
+                            # CIDADE
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Cidade:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: CidadeAlunosTextField
+                                    hint_text: "Selecione sua cidade"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal:0,0,0,1
+                                    text_color_focus:0,0,0,1
+                                    cursor_color:0,0,0,1
+                                    on_focus:root.CidadeAlunosProfissionaisTextFild_Focus(self, self.focus)
+
+                            # ESCOLA
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Escola:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: EscolaAlunosTextField
+                                    hint_text: "Selecione sua escola"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal:0,0,0,1
+                                    text_color_focus:0,0,0,1
+                                    cursor_color:0,0,0,1
+                                    on_focus:root.EscolaAlunosProfissionalTextField_Focus(self, self.focus)
+
+                            # DIAGNOSTICO
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Diagnóstico:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: DiagnosticoAlunosTextField
+                                    hint_text: "Digite o diagnóstico do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+
+                            # OBSERVAÇÕES
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Observações:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: ObservacoesAlunosTextField
+                                    hint_text: "Digite observações adicionais"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+
+                            BoxLayout:
+                                orientation:'horizontal'
+                                spacing: dp(5)
+
+                                # NÍVEL DE LEITURA
+                                BoxLayout:
+                                    orientation: 'vertical'
+                                    spacing: dp(5)
+                                    MDLabel:
+                                        text: 'Nível de Leitura:'
+                                        color: 1, 1, 1, 1
+                                        font_size: "16sp"
+                                        bold: True
+                                        halign: 'left'
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    MDTextField:
+                                        id: NivelLeituraAlunosTextField
+                                        hint_text: "Digite o nível de leitura do aluno"
+                                        mode: "round"
+                                        size_hint_x: 1
+                                        pos_hint: {"center_x": 0.5}
+                                        line_color_normal: 0, 0, 0, 0.5
+                                        line_color_focus: 0.72, 0.53, 0.04, 1
+                                        text_color_normal: 0, 0, 0, 1
+                                        text_color_focus: 0, 0, 0, 1
+                                        cursor_color: 0, 0, 0, 1
+                                        on_focus: root.NivelLeituraAlunosProfissionalTextField_Focus(self, self.focus)
+
+                                # NÍVEL DE ESCRITA
+                                BoxLayout:
+                                    orientation: 'vertical'
+                                    spacing: dp(5)
+                                    MDLabel:
+                                        text: 'Nível de Escrita:'
+                                        color: 1, 1, 1, 1
+                                        font_size: "16sp"
+                                        bold: True
+                                        halign: 'left'
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    MDTextField:
+                                        id: NivelEscritaAlunosTextField
+                                        hint_text: "Digite o nível de escrita do aluno"
+                                        mode: "round"
+                                        size_hint_x: 1
+                                        pos_hint: {"center_x": 0.5}
+                                        line_color_normal: 0, 0, 0, 0.5
+                                        line_color_focus: 0.72, 0.53, 0.04, 1
+                                        text_color_normal: 0, 0, 0, 1
+                                        text_color_focus: 0, 0, 0, 1
+                                        cursor_color: 0, 0, 0, 1
+                                        on_focus: root.NivelEscritaAlunosProfissionalTextField_Focus(self, self.focus)
+
+                            MDRaisedButton:
+                                text: "Adicionar"
+                                pos_hint: {"center_x": 0.5}
+                                md_bg_color: 0.0, 0.4, 0.0, 1
+                                font_size: "18sp"
+                                bold: True
+                                line_color: 1, 1, 1, 1
+                                size_hint_y: None
+                                height: dp(30)
+                                on_release: root.AdicionarAlunos_Click()
+
+
+                Widget:

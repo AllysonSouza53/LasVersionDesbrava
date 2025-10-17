@@ -1,7 +1,8 @@
+from kivy.properties import StringProperty
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
-from kivymd.color_definitions import text_colors
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button.button import MDIconButton, MDRaisedButton, MDFloatingActionButton
 from kivymd.uix.card import MDCard
@@ -668,14 +669,33 @@ class TelaAlunosProfissional(MDScreen):
 
         if not ListaAlunos:
             # Caso não haja alunos
+            Card = MDCard(
+                size_hint_y=0.8,
+                padding=dp(10),
+                orientation="vertical",
+                spacing=dp(10),
+                pos_hint={"x": 0.5, "y": 0.2}
+            )
             SemAluno = MDLabel(
-                text='Sem alunos.',
+                text='Sem alunos. Adicione seus alunos ao App!',
                 font_style="H6",
                 halign="center",
+                valign="top",
                 theme_text_color="Custom",
-                text_color=(1, 1, 1, 1)
+                text_color=(0, 0, 0, 1)
             )
-            DataGrid.add_widget(SemAluno)
+            Card.add_widget(SemAluno)
+            DataGrid.add_widget(
+                Widget(
+                    size_hint_x=0.4,
+                )
+            )
+            DataGrid.add_widget(Card)
+            DataGrid.add_widget(
+                Widget(
+                    size_hint_x=0.4,
+                )
+            )
         else:
             # Monta dados da tabela
             Dados = [
@@ -733,10 +753,80 @@ class TelaAlunosProfissional(MDScreen):
         if self.manager:
             self.manager.current = "ComunidadeProfissionais"
 
+    def AdicionarAlunoButton_Click(self):
+        if self.manager:
+            self.manager.current = "AdicionarAluno"
+
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "AlunosProfissional"
+
 #_________________________________________________________________________________________________________________________
 class TelaInformacoesJogosProfissionais(MDScreen):
+    Titulo = StringProperty("")
+    Objetivo = StringProperty("")
+    Competencias = StringProperty("")
+    BaseTeorica = StringProperty("")
+    Instrucoes = StringProperty("")
+    Classificar = StringProperty("")
+    Explicacoes = StringProperty("")
+
     def on_enter(self, *args):
         pass
+
+    def JogosCard_Click(self, jogo):
+        if jogo == 1:
+            self.Titulo = 'Jogo dos 7 Erros'
+            self.Objetivo = 'Desenvolver a Percepção Visual e o Pensamento Crítico através da identificação e análise de semelhanças e diferenças entre duas imagens.'
+            self.Competencias = 'Atenção Sustentada, Concentração Visual, Análise e Síntese, Habilidade de Comparação e Raciocínio Lógico-Visual.'
+            self.BaseTeorica = 'Fundamentado na Teoria da Gestalt (que estuda a percepção de formas e padrões) e nas Funções Executivas (especificamente o controle de atenção e inibição).'
+            self.Instrucoes = 'Oriente a criança a escanear a imagem de forma sistemática (de cima para baixo, da esquerda para a direita) para evitar a busca aleatória. Peça que verbalize o que mudou (tamanho, cor, posição) após encontrar o erro.'
+            self.Classificar = 'Raciocínio'
+            self.Explicacoes = 'Consiste em duas imagens que parecem idênticas, mas que contêm um número específico de diferenças intencionais (geralmente 7). O jogador deve usar a comparação ativa para localizar os pontos de divergência. A atividade treina o cérebro a filtrar informações redundantes e focar apenas nas alterações.'
+        elif jogo == 2:
+            self.Titulo = 'WaterSort'
+            self.Objetivo = 'Treinar o Planejamento Multiestágio e o Raciocínio Lógico Dedutivo, ensinando a criança a antecipar e otimizar movimentos sob regras de restrição.'
+            self.Competencias = 'Raciocínio Lógico, Pensamento Estratégico, Antecipação, Resolução de Problemas (fase de "tentativa e erro" e análise de consequências) e Concentração.'
+            self.BaseTeorica = 'Baseado na Teoria da Resolução de Problemas (Heurística) e no desenvolvimento de Funções Executivas, como o planejamento e a memória de trabalho (para reter o estado atual dos tubos).'
+            self.Instrucoes = 'Incentive a criança a pensar sobre o movimento atual e suas consequências a longo prazo ("O que este movimento me permite fazer no futuro?"). Em caso de travamento, peça que reinicie, revisando mentalmente a estratégia inicial.'
+            self.Classificar = 'Raciocínio'
+            self.Explicacoes = 'O jogador deve classificar líquidos coloridos em tubos de ensaio, de modo que cada tubo contenha apenas uma cor. As regras de restrição (só pode despejar em um tubo se a cor for a mesma do topo e houver espaço) exigem a criação de uma sequência lógica de movimentos para liberar os tubos e permitir a classificação completa.'
+        elif jogo == 3:
+            self.Titulo = 'SílabasMix'
+            self.Objetivo = 'Desenvolver a Consciência Silábica e Fonológica, permitindo a análise (separação) e a síntese (junção) de sílabas para a construção de palavras.'
+            self.Competencias = 'Consciência Fonológica, Análise e Síntese, Rastreamento Visual da Palavra, Reconhecimento de Padrões Ortográficos e Vocabulário.'
+            self.BaseTeorica = 'Fundamentado no Modelo Construtivista da aquisição da escrita e em pesquisas sobre a importância do conhecimento das unidades menores (sílabas) para o avanço no processo de alfabetização.'
+            self.Instrucoes = 'Peça que a criança pronuncie a palavra em voz alta, batendo palmas a cada sílaba, antes de manipular as peças. Proponha desafios como: "Se tirarmos a primeira sílaba de "sapato", o que sobra?".'
+            self.Classificar = 'Palavras'
+            self.Explicacoes = 'O jogo apresenta diferentes atividades com sílabas (digitação, arrasto, clique) que requerem a identificação e a manipulação de sílabas simples e complexas para completar ou formar palavras ilustradas. Estimula o reconhecimento de que a palavra escrita é formada pela união de unidades silábicas.'
+        elif jogo == 4:
+            self.Titulo = 'Som e Sílaba'
+            self.Objetivo = 'Estabelecer a conexão sólida entre os sons da fala (fonemas/sílabas orais) e suas representações escritas (grafemas), fundamentando o princípio alfabético.'
+            self.Competencias = 'Discriminação Auditiva, Memória Sonora, Associação Fonema-Grafema, Reconhecimento de Letras e Sílabas Iniciais e Leitura Fonética.'
+            self.BaseTeorica = 'Apoiado nos estudos da Consciência Fonológica e do Processamento Fonológico, essenciais para a decodificação de palavras e o diagnóstico/intervenção em dificuldades de leitura (dislexia).'
+            self.Instrucoes = 'Use o método multisensorial, pedindo à criança para tocar na letra ou sílaba enquanto emite o som. Concentre-se nos sons, não apenas nos nomes das letras. O feedback imediato sobre acerto/erro é crucial.'
+            self.Classificar = 'Palavras'
+            self.Explicacoes = 'Apresenta desafios onde a criança deve ouvir um som (de letra ou sílaba) e selecionar a representação gráfica correspondente, ou vice-versa. Utiliza recursos visuais e auditivos para reforçar a ideia de que a escrita representa a fala, tornando o aprendizado da leitura mais consistente e significativo.'
+        elif jogo == 5:
+            self.Titulo = 'Jogo da Memória'
+            self.Objetivo = 'Fortalecer a Memória de Trabalho e a Associação Semântica, ligando o conceito visual (imagem) à sua forma escrita (palavra) para acelerar o reconhecimento de leitura.'
+            self.Competencias = 'Memória Visual e Espacial, Concentração, Raciocínio Lógico (estratégia de localização), Reconhecimento de Palavras (vocabulário) e Leitura Global.'
+            self.BaseTeorica = 'Utiliza princípios da Teoria Cognitiva da Aprendizagem (processamento de informação e memória de curto prazo) e da Abordagem Lexical, que prioriza o reconhecimento da palavra completa.'
+            self.Instrucoes = 'Comece com poucos pares e aumente gradualmente a dificuldade. Antes de virar as cartas, peça à criança para tentar ler as palavras viradas ou nomear as figuras para reforçar a associação.'
+            self.Classificar = 'Memória'
+            self.Explicacoes = 'As cartas são dispostas viradas para baixo; uma carta contém a imagem de um objeto e a outra contém o nome escrito desse objeto. O jogador deve virar duas cartas por vez para encontrar o par correspondente (imagem e palavra), exercitando a lembrança da localização e a leitura.'
+        elif jogo == 6:
+            self.Titulo = 'Memória das Cores'
+            self.Objetivo = 'Desenvolver a Memória Visual, a Sequenciação e o Reconhecimento de Padrões, habilidades que servem como pré-requisitos para a organização do pensamento em tarefas complexas.'
+            self.Competencias = 'Memória Visual de Curto Prazo, Discriminação Visual, Rastreamento e Reprodução de Padrões, Concentração e Organização da Informação.'
+            self.BaseTeorica = 'Enraizado na Psicologia Cognitiva (estudo da memória de curto prazo e da capacidade de codificação e recuperação de estímulos visuais) e na importância do reconhecimento de padrões para o raciocínio.'
+            self.Instrucoes = 'Para jogos de sequência (como o Genius), peça que a criança verbalize a sequência de cores antes de reproduzi-la (codificação verbal). Para jogos de pares, estimule a criação de estratégias de localização espacial.'
+            self.Classificar = 'Memória'
+            self.Explicacoes = 'Em sua forma clássica, é um jogo de memória simples de encontrar pares de cores idênticas. Em sua forma avançada (sequência), o jogo exibe um padrão de luzes e sons coloridos que o jogador deve memorizar e reproduzir. A dificuldade aumenta progressivamente, exigindo um esforço crescente da memória para reter sequências longas.'
+
+        if self.manager:
+            self.manager.current = "InformacaoJogoEspecifico"
+
 
     def JogosMDDropDownItem_Click(self, instancia):
         menu_items = [
@@ -808,7 +898,6 @@ class TelaInformacoesJogosProfissionais(MDScreen):
             self.manager.current = "ComunidadeProfissionais"
 
 #_________________________________________________________________________________________________________________________
-
 class TelaComunidadeProfissionais(MDScreen):
 
     Favoritos = None
@@ -1085,16 +1174,19 @@ class TelaComunidadeProfissionais(MDScreen):
             md_bg_color=(1, 1, 1, 1),
         )
 
-        # Campo de texto
-        self.tf = MDTextField(
-            hint_text="Fale-nos sua opinião",
-            mode="round",
+        self.tf = TextInput(
             size_hint_x=0.8,
-            line_color_normal=(0, 0, 0, 0.5),
-            line_color_focus=(0.72, 0.53, 0.04, 1),
             cursor_color=(0, 0, 0, 1),
+            foreground_color=(0, 0, 0, 1),
+            multiline=True,
         )
-        self.tf.text_color = (0, 0, 0, 1)  # preto
+
+        # limite de caracteres
+        self.tf.max_chars = 500
+
+        # evento que monitora a digitação
+        self.tf.bind(text=self.limitar_texto)
+
         # Botão circular com seta
         btn_cima = MDFloatingActionButton(
             icon="arrow-up",
@@ -1128,6 +1220,10 @@ class TelaComunidadeProfissionais(MDScreen):
 
         # Abre o Dialog
         self.dialog.open()
+
+    def limitar_texto(self, instance, value):
+        if len(value) > instance.max_chars:
+            instance.text = value[:instance.max_chars]
 
     def AtualizarComentarios(self, instance):
         if self.dialog:
@@ -1319,3 +1415,34 @@ class TelaPostarNoFeed(MDScreen):
                 self.manager.current = "ComunidadeProfissionais"
         except Exception as e:
             print(e)
+
+class TelaInformacaoJogoEspecifico(MDScreen):
+    Titulo = StringProperty("")
+    Objetivo = StringProperty("")
+    Competencias = StringProperty("")
+    BaseTeorica = StringProperty("")
+    Instrucoes = StringProperty("")
+    Classificar = StringProperty("")
+    Explicacoes = StringProperty("")
+
+    def on_pre_enter(self, *args):
+        JogoEspecifico = self.manager.get_screen("InformacoesJogosProfissionais")
+        self.Titulo = JogoEspecifico.Titulo
+        self.Objetivo = JogoEspecifico.Objetivo
+        self.Competencias = JogoEspecifico.Competencias
+        self.BaseTeorica = JogoEspecifico.BaseTeorica
+        self.Instrucoes = JogoEspecifico.Instrucoes
+        self.Classificar = JogoEspecifico.Classificar
+        self.Explicacoes = JogoEspecifico.Explicacoes
+
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "InformacoesJogosProfissionais"
+
+class TelaAdicionarAluno(MDScreen):
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "AlunosProfissional"
+
+    def DataNascimentoAlunoTextField_Click(self):
+        pass

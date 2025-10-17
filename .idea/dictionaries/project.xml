@@ -40,6 +40,7 @@
       <w>escolha</w>
       <w>escrita</w>
       <w>excluir</w>
+      <w>explicacoes</w>
       <w>favoritado</w>
       <w>favoritar</w>
       <w>favoritos</w>
@@ -50,8 +51,10 @@
       <w>halign</w>
       <w>imagem</w>
       <w>imagens</w>
+      <w>informacao</w>
       <w>informacoes</w>
       <w>instancia</w>
+      <w>instrucoes</w>
       <w>jogos</w>
       <w>leitura</w>
       <w>listaposts</w>
@@ -84,6 +87,7 @@
       <w>senha</w>
       <w>sessao</w>
       <w>tabela</w>
+      <w>teorica</w>
       <w>transp</w>
       <w>turma</w>
       <w>usuario</w>

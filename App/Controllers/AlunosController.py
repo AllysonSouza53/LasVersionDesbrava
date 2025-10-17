@@ -1,7 +1,5 @@
 from App.Models.Aluno import Aluno
 from App.Helpers.TratamentoErros import Erros
-
-
 class AlunoController:
     RE = None
     Nome = None
