@@ -2279,7 +2279,7 @@
                                     text_color_normal: 0, 0, 0, 1
                                     text_color_focus: 0, 0, 0, 1
                                     cursor_color: 0, 0, 0, 1
-                                    on_text: root.DataNascimentoAlunosTextField_Click(self)
+                                    on_text: root.DataNascimentoAlunosTextField_Active(self)
 
                             # GÊNERO
                             BoxLayout:
@@ -2377,7 +2377,7 @@
                                     text_color_normal:0,0,0,1
                                     text_color_focus:0,0,0,1
                                     cursor_color:0,0,0,1
-                                    on_focus:root.CidadeAlunosProfissionaisTextFild_Focus(self, self.focus)
+                                    on_focus:root.CidadeAlunosProfissionaisTextField_Focus(self, self.focus)
 
                             # ESCOLA
                             BoxLayout:
@@ -2440,17 +2440,14 @@
                                     halign: 'left'
                                     size_hint_y: None
                                     height: self.texture_size[1]
-                                MDTextField:
-                                    id: ObservacoesAlunosTextField
-                                    hint_text: "Digite observações adicionais"
-                                    mode: "round"
+                                TextInput:
+                                    id: ObservacaoAlunosTextField
+                                    hint_text: "Digite suas observações sobre o aluno"
                                     size_hint_x: 1
                                     pos_hint: {"center_x": 0.5}
-                                    line_color_normal: 0, 0, 0, 0.5
-                                    line_color_focus: 0.72, 0.53, 0.04, 1
-                                    text_color_normal: 0, 0, 0, 1
-                                    text_color_focus: 0, 0, 0, 1
-                                    cursor_color: 0, 0, 0, 1
+                                    multiline:True
+                                    size_hint_y:None
+                                    height:dp(50)
 
                             BoxLayout:
                                 orientation:'horizontal'
@@ -2516,6 +2513,5 @@
                                 size_hint_y: None
                                 height: dp(30)
                                 on_release: root.AdicionarAlunos_Click()
-
 
                 Widget:

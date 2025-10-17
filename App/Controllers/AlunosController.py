@@ -20,8 +20,22 @@ class AlunoController:
         self.Erros = Erros()
         self.Aluno = Aluno()
 
-    def setCadastro(self):
-        pass
+    def setCadastro(self,app):
+        self.RE = app.ids.RAAlunosTextField.text
+        self.Nome = app.ids.NomeAlunosTextField.text
+        self.Usuario = app.ids.UsuarioAlunosTextField.text
+        listadata = app.ids.DataNascimentoAlunosTextField.text.split('/')
+        self.DataNascimento = f'{listadata[2]}-{listadata[1]}-{listadata[0]}'
+        self.Genero = app.ids.GeneroAlunosTextField.text
+        self.Turma = app.ids.TurmaAlunosTextField.text
+        self.ProfissionalResponsavel = app.ControleProfissional.CPF
+        self.UF = app.ids.UFAlunosTextField.text
+        self.Cidade = app.ids.CidadeAlunosTextField.text
+        self.Escola = app.ids.EscolaAlunosTextField.text
+        self.Diagnostico = app.ids.DiagnosticoAlunosTextField.text
+        self.Observacao = app.ids.ObservacaoAlunosTextField.text
+        self.NivelLeitura = app.ids.NivelLeituraAlunosTextField.text
+        self.NivelEscrita = app.ids.NivelEscritaAlunosTextField.text
 
     def getAluno(self):
         return [

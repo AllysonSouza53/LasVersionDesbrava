@@ -1440,9 +1440,175 @@ class TelaInformacaoJogoEspecifico(MDScreen):
             self.manager.current = "InformacoesJogosProfissionais"
 
 class TelaAdicionarAluno(MDScreen):
+    ControleProfissional = None
+    AlunoControle = None
+
+    def on_pre_enter(self, *args):
+        self.ControleProfissional = ProfissionalControler()
+        self.AlunoControle = AlunoController()
     def Voltar_Click(self):
         if self.manager:
             self.manager.current = "AlunosProfissional"
 
-    def DataNascimentoAlunoTextField_Click(self):
-        pass
+
+    def UFAlunosProfissionaisTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MS',
+                    'MT',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.UFAlunosProfissionais_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def UFAlunosProfissionais_ItensClick(self, text_item):
+        self.ids.UFAlunosTextField.text = text_item
+
+    def CidadeAlunosProfissionaisTextField_Focus(self, instancia, focus):
+        if focus:
+            Cidade = Cidades()
+            try:
+                itens = Cidade.get_cidades_por_uf(self.ids.UFAlunosTextField.text)
+
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.CidadeAlunosProfissional_ItensClick(x)
+                    } for index in itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            except Exception as e:
+                print(e)
+        else:
+            print('erro')
+
+
+    def CidadeAlunosProfissional_ItensClick(self, text_item):
+        self.ids.CidadeAlunosTextField.text = text_item
+
+    def EscolaAlunosProfissionalTextField_Focus(self, instancia, focus):
+        if focus:
+            Escola = Escolas()
+            try:
+                dados = Escola.Get(self.ids.UFAlunosTextField.text, self.ids.CidadeAlunosTextField.text)
+                itens = [item["escola"] for item in dados if "escola" in item]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.EscolaAlunosProfissional_ItensClick(x)
+                    } for index in itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            except:
+                pass
+        else:
+            print('erro')
+
+    def EscolaAlunosProfissional_ItensClick(self, text_item):
+        self.ids.EscolaAlunosTextField.text = text_item
+
+    def NivelLeituraAlunosProfissionalTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    '1',
+                    '2',
+                    '3',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.NivelLeituraAlunosProfissionalTextField_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def NivelLeituraAlunosProfissionalTextField_ItensClick(self, text_item):
+        self.ids.NivelLeituraAlunosTextField.text = text_item
+
+    def NivelEscritaAlunosProfissionalTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    '1',
+                    '2',
+                    '3',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.NivelEscritaAlunosTextField_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def NivelEscritaAlunosTextField_ItensClick(self, text_item):
+        self.ids.NivelEscritaAlunosTextField.text = text_item
+
+    from kivy.clock import Clock
+
+    def DataNascimentoAlunosTextField_Active(self, instancia):
+        # Remove tudo que não for número
+        puro = "".join(ch for ch in instancia.text if ch.isdigit())
+        puro = puro[:8]  # Limita a 8 dígitos (DDMMAAAA)
+
+        novo = ""
+        for i, d in enumerate(puro):
+            novo += d
+            # Adiciona "/" após o dia e mês
+            if i == 1 or i == 3:
+                if len(puro) > i + 1:
+                    novo += '/'
+
+        # Atualiza o texto formatado
+        if instancia.text != novo:
+            instancia.text = novo
+            Clock.schedule_once(lambda dt: instancia.do_cursor_movement('cursor_end'))
+
+    def AdicionarAlunos_Click(self):
+        try:
+            self.AlunoControle.setCadastro(self)
+            self.AlunoControle.Salvar()
+            if self.manager:
+                self.manager.current = "AlunosProfissional"
+        except Exception as e:
+            print(e)
+
