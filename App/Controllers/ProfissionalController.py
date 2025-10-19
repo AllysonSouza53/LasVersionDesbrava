@@ -1,5 +1,5 @@
-from App.Models.Profissional import Profissional
-from App.Helpers.TratamentoErros import Erros as E
+from Models.Profissional import Profissional
+from Helpers.TratamentoErros import Erros as E
 
 class ProfissionalControler:
     Profissional = None

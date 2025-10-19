@@ -1,5 +1,5 @@
-from App.Models.Aluno import Aluno
-from App.Helpers.TratamentoErros import Erros
+from Models.Aluno import Aluno
+from Helpers.TratamentoErros import Erros
 class AlunoController:
     RE = None
     Nome = None
@@ -113,3 +113,16 @@ class AlunoController:
             self.Erros.SetErro(f'Não foi possivel salvar aluno. Erro{e}')
             print('Erro Controller')
             return self.Erros.GetErros()
+        
+    def ExcluirAluno(self, usuario):
+        try:
+            self.Usuario = usuario
+            if self.Aluno.getAluno(self.Usuario):
+                self.Aluno.Deletar()
+                return True
+            else:
+                return False
+        except Exception as e:
+            self.Erros.SetErro(f'Não foi possivel excluir aluno. Erro:{e}')
+            return False
+        

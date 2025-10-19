@@ -1,6 +1,6 @@
-from App.Models.Post import Post
-from App.Helpers.TratamentoErros import Erros as E
-from App.Helpers.Requerimentos import Posts
+from Models.Post import Post
+from Helpers.TratamentoErros import Erros as E
+from Helpers.Requerimentos import Posts
 import datetime
 import random
 

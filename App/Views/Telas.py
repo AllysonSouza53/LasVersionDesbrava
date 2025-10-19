@@ -16,19 +16,20 @@ from kivy.clock import Clock
 from kivy.core.image import Image as CoreImage
 from kivy.core.window import Window
 from kivy.uix.image import Image
-from App.Controllers.AlunosController import AlunoController
-from App.Controllers.ComentarioController import ComentarioController
-from App.Controllers.DadosJogosController import DadosJogosController
-from App.Controllers.FavoritosController import FavoritosController
-from App.Controllers.PostController import PostController
-from App.Controllers.ProfissionalController import ProfissionalControler
-from App.Controllers.ProfissionaisLoginController import LoginController
-from App.Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
-from App.Banco import Banco
+from Controllers.AlunosController import AlunoController
+from Controllers.ComentarioController import ComentarioController
+from Controllers.DadosJogosController import DadosJogosController
+from Controllers.FavoritosController import FavoritosController
+from Controllers.PostController import PostController
+from Controllers.ProfissionalController import ProfissionalControler
+from Controllers.ProfissionaisLoginController import LoginController
+from Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
+from Banco import Banco
 import io, base64
 import os
 from functools import partial
-from App.Helpers.TratamentoErros import Erros
+from kivymd.uix.button import MDRoundFlatButton  # compatível
+from Helpers.TratamentoErros import Erros
 
 
 #-------------------------------------------------------------------
@@ -1727,7 +1728,7 @@ class TelaAlunoEspecifico(MDScreen):
             title=self.titulo,
             type="custom",
             content_cls=box_botoes,
-            size_hint=(0.8, None),
+            size_hint=(0.8,None),
             auto_dismiss=True,
         )
 
@@ -1745,37 +1746,52 @@ class TelaAlunoEspecifico(MDScreen):
         if self.dialog:
             self.dialog.dismiss()
 
-        BoxExclusao = MDBoxLayout(orientation="vertical")
-        BoxBotoes = MDBoxLayout(orientation="horizontal")
-        Label = MDLabel(
-            text=f'Realmente deseja excluir o aluno de nome {self.AlunoUsuario}, RA {self.AlunoRA} da sua lista de alunos?'
+        # Layout vertical com espaçamento entre os níveis
+        box_botoes = MDBoxLayout(
+            orientation="horizontal",
+            spacing=dp(10),
+            padding=dp(10),
+            adaptive_height=True
         )
 
-        BoxExclusao.add_widget(Label)
+        Btn1 = MDRoundFlatButton(
+            text="Cancelar",
+            on_release=lambda x: self.dialog.dismiss(),
+            md_bg_color=(0.8, 0.1, 0.1, 1),
+            text_color=(1, 1, 1, 1),
 
-        BtnNao = MDFloatingActionButton(
-            text='Não'
         )
 
-        BtnSim = MDFloatingActionButton(
-            text='Sim'
+        Btn2 = MDRoundFlatButton(
+            text="Excluir",
+            on_release=lambda x: self.Excluir(),
+            md_bg_color=(0.1, 0.6, 0.1, 1),
+            text_color=(1, 1, 1, 1),
         )
 
-        BoxBotoes.add_widget(BtnNao)
-        BoxBotoes.add_widget(BtnSim)
-        BoxExclusao.add_widget(BoxBotoes)
+        box_botoes.add_widget(Btn1)
+        box_botoes.add_widget(Btn2)
 
         # Cria o diálogo com o título do jogo e os cards dentro
         self.dialog = MDDialog(
-            title='Excluir Aluno',
+            title='Tem certeza que deseja excluir este aluno de sua lista?',
             type="custom",
-            content_cls=BoxExclusao,
-            size_hint=(0.8, None),
+            content_cls=box_botoes,
+            size_hint=(0.8,None),
             auto_dismiss=True,
         )
 
         # Exibe o diálogo
         self.dialog.open()
+    
+    def Excluir(self):
+        try:
+            self.Aluno.ExcluirAluno(self.AlunoUsuario)
+            if self.manager:
+                self.dialog.dismiss()
+                self.manager.current = "AlunosProfissional"
+        except Exception as e:
+            print(e)
 
 class TelaEstatisticasJogos(MDScreen):
     AlunoUsuario = StringProperty("")

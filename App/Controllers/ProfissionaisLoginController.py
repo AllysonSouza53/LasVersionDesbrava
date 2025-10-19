@@ -1,4 +1,4 @@
-from App.Models.Login import Login
+from Models.Login import Login
 
 class LoginController:
     usuario = None

@@ -1,5 +1,5 @@
-from App.Models.Comentario import Comentario
-from App.Helpers.TratamentoErros import Erros as E
+from Models.Comentario import Comentario
+from Helpers.TratamentoErros import Erros as E
 
 class ComentarioController:
     ID = None

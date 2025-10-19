@@ -1,5 +1,5 @@
-from App.Models.DadosJogo import DadosJogo
-from App.Helpers.TratamentoErros import Erros as E
+from Models.DadosJogo import DadosJogo
+from Helpers.TratamentoErros import Erros as E
 
 class DadosJogosController:
     ID = None

@@ -1,5 +1,5 @@
-from App.Models.Favorito import Favorito
-from App.Helpers.TratamentoErros import Erros as E
+from Models.Favorito import Favorito
+from Helpers.TratamentoErros import Erros as E
 
 class FavoritosController:
     ID = None
