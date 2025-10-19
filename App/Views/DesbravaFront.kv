@@ -29,6 +29,8 @@
         name:"AdicionarAluno"
     TelaAlunoEspecifico:
         name:"AlunoEspecifico"
+    TelaEstatisticasJogos:
+        name:"EstatisticasJogos"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -2566,8 +2568,35 @@
                     size_hint_x:0.2
 
                 BoxLayout:
-                    orientation: 'horizontal'
+                    orientation: 'vertical'
                     padding: dp(10)
+
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y:0.1
+                        MDRectangleFlatIconButton:
+                            text: "Alterar Dados do Aluno"
+                            icon: "account-edit"
+                            icon_size: "24sp"
+                            icon_color:1,1,1,1
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            line_color: 1, 1, 1, 0
+                            md_bg_color: 1, 1, 1, 0
+                            pos_hint: {"center_x": 0.5}
+                            on_release: root.AlterarAluno_Click()
+
+                        MDRectangleFlatIconButton:
+                            text: "Excluir Aluno"
+                            icon: "delete"
+                            icon_size: "24sp"
+                            icon_color:1,1,1,1
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            line_color: 1, 1, 1, 0
+                            md_bg_color: 1, 1, 1, 0
+                            pos_hint: {"center_x": 0.5}
+                            on_release: root.ExcluirAluno_Click()
 
                     ScrollView:
                         do_scroll_x: False
@@ -2768,3 +2797,146 @@
 
                 Widget:
                     size_hint_x:0.2
+
+<TelaEstatisticasJogos>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.18
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                    size_hint_x: 0.2
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: dp(10)
+
+                    MDCard:
+                        size_hint_x: 0.9
+                        size_hint_y: 0.8  # usa 80% da altura da tela
+                        padding: dp(30)
+                        spacing: dp(5)
+                        radius: [20,]
+                        md_bg_color: (0.95, 0.95, 0.95, 1)
+                        BoxLayout:
+                            orientation:'vertical'
+                            spacing: dp(5)
+                            BoxLayout:
+                                orientation: "vertical"
+                                size_hint_y:0.1
+
+                                BoxLayout:
+                                    orientation: "horizontal"
+                                    spacing: dp(10)
+
+                                    MDLabel:
+                                        text: f"{root.Jogo}"
+                                        halign: "center"
+
+                                    MDLabel:
+                                        text: f"Nível {root.Nivel}"
+                                        halign: "center"
+
+                                MDSeparator:
+
+                            ScrollView:
+                                do_scroll_x: False
+                                do_scroll_y: True
+
+                                MDBoxLayout:
+                                    orientation: "vertical"
+                                    size_hint_y: None
+                                    height: self.minimum_height  # necessário pro scroll funcionar
+                                    spacing: dp(20)
+                                    Widget:
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing:dp(10)
+                                        MDLabel:
+                                            text: f"Pontuação:{root.PONTUACAO}"
+
+                                        MDSeparator:
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing:dp(10)
+                                        MDLabel:
+                                            text: f"Porcentagem Completa:{root.PORCENTAGEM_COMPLETADA}"
+
+                                        MDSeparator:
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing:dp(10)
+                                        MDLabel:
+                                            text: f"Tempo Gasto:{root.TEMPO_GASTO}"
+
+                                        MDSeparator:
+
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing:dp(10)
+                                        MDLabel:
+                                            text: f"Acertos:{root.ACERTOS}"
+
+                                        MDSeparator:
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing:dp(10)
+                                        MDLabel:
+                                            text: f"Erros:{root.ERROS}"
+
+                                        MDSeparator:
+
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing:dp(10)
+                                        MDLabel:
+                                            text: f"Tentativas:{root.TENTATIVAS}"
+
+                                        MDSeparator:
+
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing:dp(10)
+                                        MDLabel:
+                                            text: f"Data de Registro:{root.DATA_REGISTRO}"
+                                            haling:'right'
+
+                Widget:
+                    size_hint_x: 0.2

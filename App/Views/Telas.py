@@ -4,7 +4,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button.button import MDIconButton, MDRaisedButton, MDFloatingActionButton
+from kivymd.uix.button.button import MDIconButton, MDFloatingActionButton
 from kivymd.uix.card import MDCard
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.dialog import MDDialog
@@ -16,10 +16,9 @@ from kivy.clock import Clock
 from kivy.core.image import Image as CoreImage
 from kivy.core.window import Window
 from kivy.uix.image import Image
-from kivymd.uix.textfield import MDTextField
-
 from App.Controllers.AlunosController import AlunoController
 from App.Controllers.ComentarioController import ComentarioController
+from App.Controllers.DadosJogosController import DadosJogosController
 from App.Controllers.FavoritosController import FavoritosController
 from App.Controllers.PostController import PostController
 from App.Controllers.ProfissionalController import ProfissionalControler
@@ -29,8 +28,6 @@ from App.Banco import Banco
 import io, base64
 import os
 from functools import partial
-from kivymd.uix.bottomsheet import MDCustomBottomSheet
-
 from App.Helpers.TratamentoErros import Erros
 
 
@@ -744,7 +741,7 @@ class TelaAlunosProfissional(MDScreen):
         indice_celula = instance_row.index
         linha = indice_celula // colunas
         coluna = indice_celula % colunas
-        self.aluno_usuario = instance_row.table.row_data[linha][2]
+        self.aluno_usuario = str(instance_row.table.row_data[linha][2])
         print(self.aluno_usuario)
         if self.manager:
             self.manager.current = "AlunoEspecifico"
@@ -1650,9 +1647,10 @@ class TelaAlunoEspecifico(MDScreen):
     OBSERVACOES = StringProperty("")
     NIVELDELEITURA = StringProperty("")
     NIVELDEESCRITA = StringProperty("")
-    AlunoUsuario = None
+    AlunoUsuario = StringProperty("")
     dialog = None  # variável para controlar o diálogo
-
+    titulo = StringProperty("")
+    nivel = StringProperty("")
     Aluno = None
 
     def on_pre_enter(self):
@@ -1687,9 +1685,8 @@ class TelaAlunoEspecifico(MDScreen):
         if self.manager:
             self.manager.current = "AlunosProfissional"
 
-    dialog = None
-
     def AbrirTelaJogoEspecifico(self, titulo):
+        self.titulo = titulo
         # Fecha o diálogo anterior, se já estiver aberto
         if self.dialog:
             self.dialog.dismiss()
@@ -1727,7 +1724,7 @@ class TelaAlunoEspecifico(MDScreen):
 
         # Cria o diálogo com o título do jogo e os cards dentro
         self.dialog = MDDialog(
-            title=titulo,
+            title=self.titulo,
             type="custom",
             content_cls=box_botoes,
             size_hint=(0.8, None),
@@ -1738,10 +1735,97 @@ class TelaAlunoEspecifico(MDScreen):
         self.dialog.open()
 
     def AbrirNivel(self, nivel, *args):
-        """Função chamada quando o usuário escolhe um nível."""
-        print(f"Abrindo informações do Nível {nivel}...")
+        self.nivel = str(nivel)
+        print(f"Abrindo informações do Nível {self.nivel}...")
+        self.dialog.dismiss()
+        if self.manager:
+            self.manager.current = "EstatisticasJogos"
 
-        # Aqui você pode abrir outro diálogo ou navegar para uma tela de estatísticas
+    def ExcluirAluno_Click(self):
         if self.dialog:
             self.dialog.dismiss()
 
+        BoxExclusao = MDBoxLayout(orientation="vertical")
+        BoxBotoes = MDBoxLayout(orientation="horizontal")
+        Label = MDLabel(
+            text=f'Realmente deseja excluir o aluno de nome {self.AlunoUsuario}, RA {self.AlunoRA} da sua lista de alunos?'
+        )
+
+        BoxExclusao.add_widget(Label)
+
+        BtnNao = MDFloatingActionButton(
+            text='Não'
+        )
+
+        BtnSim = MDFloatingActionButton(
+            text='Sim'
+        )
+
+        BoxBotoes.add_widget(BtnNao)
+        BoxBotoes.add_widget(BtnSim)
+        BoxExclusao.add_widget(BoxBotoes)
+
+        # Cria o diálogo com o título do jogo e os cards dentro
+        self.dialog = MDDialog(
+            title='Excluir Aluno',
+            type="custom",
+            content_cls=BoxExclusao,
+            size_hint=(0.8, None),
+            auto_dismiss=True,
+        )
+
+        # Exibe o diálogo
+        self.dialog.open()
+
+class TelaEstatisticasJogos(MDScreen):
+    AlunoUsuario = StringProperty("")
+    Jogo = StringProperty("")
+    Nivel = StringProperty("")
+    Profissional = None
+    UsuarioProfissional = StringProperty("")
+    ControleDados = None
+    PONTUACAO = StringProperty("")
+    PORCENTAGEM_COMPLETADA = StringProperty("")
+    TEMPO_GASTO = StringProperty("")
+    ACERTOS = StringProperty("")
+    ERROS = StringProperty("")
+    TENTATIVAS = StringProperty("")
+    DATA_REGISTRO = StringProperty("")
+
+    def on_pre_enter(self, *args):
+        tela_carregamento = self.manager.get_screen("AlunoEspecifico")
+        self.AlunoUsuario = tela_carregamento.AlunoUsuario
+        self.AlunoRA = tela_carregamento.RA
+        self.Jogo = tela_carregamento.titulo
+        self.Nivel = str(tela_carregamento.nivel)
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        self.Profissional = tela_carregamento.Profissional
+        self.UsuarioProfissional = self.Profissional.Usuario
+        self.ControleDados = DadosJogosController()
+        self.PegarDados()
+
+
+    def PegarDados(self):
+        try:
+            if self.ControleDados.setDadoJogo(f"USUARIO_ALUNO = '{self.AlunoUsuario}' AND NOME_JOGO = '{self.Jogo}' AND ID_NIVEL = {self.Nivel} AND USUARIO_PROFISSIONAL = '{self.UsuarioProfissional}'"):
+                self.PONTUACAO = str(self.ControleDados.PONTUACAO)
+                self.PORCENTAGEM_COMPLETADA = str(self.ControleDados.PORCENTAGEM_COMPLETADA)
+                self.TEMPO_GASTO = str(self.ControleDados.TEMPO_GASTO)
+                self.ACERTOS = str(self.ControleDados.ACERTOS)
+                self.ERROS = str(self.ControleDados.ERROS)
+                self.TENTATIVAS = str(self.ControleDados.TENTATIVAS)
+                self.DATA_REGISTRO = str(self.ControleDados.DATA_REGISTRO)
+            else:
+                self.PONTUACAO = 'Sem dados'
+                self.PORCENTAGEM_COMPLETADA = 'Sem dados'
+                self.TEMPO_GASTO = 'Sem dados'
+                self.ACERTOS = 'Sem dados'
+                self.ERROS = 'Sem dados'
+                self.TENTATIVAS = 'Sem dados'
+                self.DATA_REGISTRO = 'Sem dados'
+        except Exception as e:
+            print(e)
+
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "AlunoEspecifico"
