@@ -118,7 +118,7 @@ class Aluno:
             return False
 
         try:
-            colunas = "RE,NOME,USUARIO,ESCOLA,DATANASCIMENTO,GENERO,TURMA,PROFISSIONALRESPONSAVEL,UF,CIDADE,DIAGNOSTICO,OBSERVACOES,NIVELDELEITURA,NIVELDEESCRITA"
+            colunas = "RE,NOME,USUARIO,ESCOLA,DATANASCIMENTO,GENERO,TURMA,UF,CIDADE,DIAGNOSTICO,OBSERVACOES,NIVELDELEITURA,NIVELDEESCRITA"
             valores = [
                 self.RE,
                 self.Nome,
@@ -127,7 +127,6 @@ class Aluno:
                 self.DataNascimento,
                 self.Genero,
                 self.Turma,
-                self.ProfissionalResponsavel,
                 self.UF,
                 self.Cidade,
                 self.Diagnostico,
@@ -145,7 +144,7 @@ class Aluno:
     def Atualizar(self):
         try:
             valores = [
-                f"RE = '{self.RE}'",
+                f"RE = {self.RE}",
                 f"NOME = '{self.Nome}'",
                 f"USUARIO = '{self.Usuario}'",
                 f"ESCOLA = '{self.Escola}'",
@@ -156,13 +155,14 @@ class Aluno:
                 f"UF = '{self.UF}'",
                 f"CIDADE = '{self.Cidade}'",
                 f"DIAGNOSTICO = '{self.Diagnostico}'" if self.Diagnostico else "DIAGNOSTICO = NULL",
-                f"OBSERVACAO = '{self.Observacao}'" if self.Observacao else "OBSERVACAO = NULL",
-                f"NIVELDELEITURA = '{self.NivelLeitura}'" if self.NivelLeitura else "NIVELDELEITURA = NULL",
-                f"NIVELDEESCRITA = '{self.NivelEscrita}'" if self.NivelEscrita else "NIVELDEESCRITA = NULL"
+                f"OBSERVACOES = '{self.Observacao}'" if self.Observacao else "OBSERVACOES = NULL",
+                f"NIVELDELEITURA = {self.NivelLeitura}" if self.NivelLeitura else "NIVELDELEITURA = NULL",
+                f"NIVELDEESCRITA = {self.NivelEscrita}" if self.NivelEscrita else "NIVELDEESCRITA = NULL"
             ]
-            Banco.editar('ALUNOS', valores, f"RE = '{self.RE}'")
+            Banco.editar('ALUNOS', valores, f"RE = {self.RE}")
             return True
         except Exception as e:
+            print(f'Erro ao atualizar aluno: {e}')
             self.Erros.SetErro(f'Não foi possivel atualizar a aluno. Erro: {e}')
             return False
 

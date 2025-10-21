@@ -1792,6 +1792,10 @@ class TelaAlunoEspecifico(MDScreen):
                 self.manager.current = "AlunosProfissional"
         except Exception as e:
             print(e)
+    
+    def AlterarAluno_Click(self):
+        if self.manager:
+            self.manager.current = "AlterarAlunoProfissional"
 
 class TelaEstatisticasJogos(MDScreen):
     AlunoUsuario = StringProperty("")
@@ -1845,3 +1849,212 @@ class TelaEstatisticasJogos(MDScreen):
     def Voltar_Click(self):
         if self.manager:
             self.manager.current = "AlunoEspecifico"
+
+class TelaAlterarAlunoProfissional(MDScreen):
+    ControleProfissional = None
+    AlunoControle = None
+    Tela_especifico = None
+    RA = StringProperty("")
+    NOME = StringProperty("")
+    USUARIO = StringProperty("")
+    ESCOLA = StringProperty("")
+    DATANASCIMENTO = StringProperty("")
+    GENERO = StringProperty("")
+    TURMA = StringProperty("")
+    PROFISSIONALRESPONSAVEL = StringProperty("")
+    UF = StringProperty("")
+    CIDADE = StringProperty("")
+    DIAGNOSTICO = StringProperty("")
+    OBSERVACOES = StringProperty("")
+    NIVELDELEITURA = StringProperty("")
+    NIVELDEESCRITA = StringProperty("")
+
+
+    def on_pre_enter(self, *args):
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        if tela_carregamento.Profissional:
+            self.ControleProfissional = tela_carregamento.Profissional
+        else:
+            self.ControleProfissional = None
+        self.Tela_especifico = self.manager.get_screen("AlunoEspecifico")
+        self.AlunoControle = AlunoController()
+
+        # Carregar dados do aluno específico
+        self.RA = str(self.Tela_especifico.RA) if self.Tela_especifico.RA is not None else ""
+        self.NOME = str(self.Tela_especifico.NOME) if self.Tela_especifico.NOME is not None else ""
+        self.USUARIO = str(self.Tela_especifico.USUARIO) if self.Tela_especifico.USUARIO is not None else ""
+        self.ESCOLA = str(self.Tela_especifico.ESCOLA) if self.Tela_especifico.ESCOLA is not None else ""
+        self.DATANASCIMENTO = str(self.Tela_especifico.DATANASCIMENTO) if self.Tela_especifico.DATANASCIMENTO is not None else ""
+        self.GENERO = str(self.Tela_especifico.GENERO) if self.Tela_especifico.GENERO is not None else ""
+        self.TURMA = str(self.Tela_especifico.TURMA) if self.Tela_especifico.TURMA is not None else ""
+        self.PROFISSIONALRESPONSAVEL = str(self.Tela_especifico.PROFISSIONALRESPONSAVEL) if self.Tela_especifico.PROFISSIONALRESPONSAVEL is not None else ""
+        self.UF = str(self.Tela_especifico.UF) if self.Tela_especifico.UF is not None else ""
+        self.CIDADE = str(self.Tela_especifico.CIDADE) if self.Tela_especifico.CIDADE is not None else ""
+        self.DIAGNOSTICO = str(self.Tela_especifico.DIAGNOSTICO) if self.Tela_especifico.DIAGNOSTICO is not None else ""
+        self.OBSERVACOES = str(self.Tela_especifico.OBSERVACOES) if self.Tela_especifico.OBSERVACOES is not None else ""
+        self.NIVELDELEITURA = str(self.Tela_especifico.NIVELDELEITURA) if self.Tela_especifico.NIVELDELEITURA is not None else ""
+        self.NIVELDEESCRITA = str(self.Tela_especifico.NIVELDEESCRITA) if self.Tela_especifico.NIVELDEESCRITA is not None else ""
+
+    def DataNascimentoAlunosTextField_Active(self, instancia):
+            # Remove tudo que não for número
+            puro = "".join(ch for ch in instancia.text if ch.isdigit())
+            puro = puro[:8]  # Limita a 8 dígitos (DDMMAAAA)
+
+            novo = ""
+            for i, d in enumerate(puro):
+                novo += d
+                # Adiciona "/" após o dia e mês
+                if i == 1 or i == 3:
+                    if len(puro) > i + 1:
+                        novo += '/'
+
+            # Atualiza o texto formatado
+            if instancia.text != novo:
+                instancia.text = novo
+                Clock.schedule_once(lambda dt: instancia.do_cursor_movement('cursor_end'))
+    
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "AlunosProfissional"
+
+
+    def UFAlunosProfissionaisTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MS',
+                    'MT',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.UFAlunosProfissionais_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def UFAlunosProfissionais_ItensClick(self, text_item):
+        self.ids.UFAlunosTextField.text = text_item
+
+    def CidadeAlunosProfissionaisTextField_Focus(self, instancia, focus):
+        if focus:
+            Cidade = Cidades()
+            try:
+                itens = Cidade.get_cidades_por_uf(self.ids.UFAlunosTextField.text)
+
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.CidadeAlunosProfissional_ItensClick(x)
+                    } for index in itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            except Exception as e:
+                print(e)
+        else:
+            print('erro')
+
+
+    def CidadeAlunosProfissional_ItensClick(self, text_item):
+        self.ids.CidadeAlunosTextField.text = text_item
+
+    def EscolaAlunosProfissionalTextField_Focus(self, instancia, focus):
+        if focus:
+            Escola = Escolas()
+            try:
+                dados = Escola.Get(self.ids.UFAlunosTextField.text, self.ids.CidadeAlunosTextField.text)
+                itens = [item["escola"] for item in dados if "escola" in item]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.EscolaAlunosProfissional_ItensClick(x)
+                    } for index in itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            except:
+                pass
+        else:
+            print('erro')
+
+    def EscolaAlunosProfissional_ItensClick(self, text_item):
+        self.ids.EscolaAlunosTextField.text = text_item
+
+    def NivelLeituraAlunosProfissionalTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    '1',
+                    '2',
+                    '3',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.NivelLeituraAlunosProfissionalTextField_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def NivelLeituraAlunosProfissionalTextField_ItensClick(self, text_item):
+        self.ids.NivelLeituraAlunosTextField.text = text_item
+
+    def NivelEscritaAlunosProfissionalTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    '1',
+                    '2',
+                    '3',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.NivelEscritaAlunosTextField_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def NivelEscritaAlunosTextField_ItensClick(self, text_item):
+        self.ids.NivelEscritaAlunosTextField.text = text_item
+
+    def AlterarAlunos_Click(self):
+        try:
+            self.AlunoControle.setCadastro(self)
+            self.AlunoControle.Salvar()
+            if self.manager:
+                self.manager.current = "AlunosProfissional"
+        except Exception as e:
+            print("Erro ao alterar aluno:", e)
