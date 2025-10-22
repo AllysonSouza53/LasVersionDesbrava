@@ -609,13 +609,6 @@
                         bold: True
                         on_release: root.ComunidadeMDTextButton_Click()
 
-                    MDIconButton:
-                        icon:'star'
-                        theme_text_color: "Custom"
-                        text_color: 1, 1, 0, 1
-                        pos_hint:{"center_y":0.1}
-                        on_release: root.FavoritosPerfilButton_Click()
-
             BoxLayout:
                 orientation:'horizontal'
                 BoxLayout:
@@ -730,17 +723,36 @@
                             on_release: root.AlterarPerfilButton_Click()
 
                         Widget:
+                BoxLayout:
+                    orientation:'vertical'
+                    BoxLayout:
+                        size_hint_y: 0.1
+                        padding: dp(8)
 
-                ScrollView:
-                    do_scroll_x: False
-                    do_scroll_y: True
+                        Widget:  # empurra o botão para a direita
+                        MDRectangleFlatIconButton:
+                            text: "[b]Favoritos[/b]"
+                            icon: "star"
+                            icon_size: "32sp"    
+                            markup:True
+                            text_size: "35sp"
+                            pos_hint: {"center_y": 0.5}
+                            text_color: 1, 1, 1, 1      # texto branco
+                            theme_icon_color: "Custom"
+                            icon_color: 1, 1, 0, 1      # ícone amarelo
+                            line_color: 0, 0, 0, 0      # sem borda
+                            on_release: root.FavoritosPerfilButton_Click()
 
-                    MDGridLayout:
-                        id: feed_grid
-                        cols: 2                 # 2 cards por linha
-                        adaptive_height: True    # ajusta altura ao conteúdo
-                        padding: dp(20), dp(50), dp(20), dp(20)  # left, top, right, bottom
-                        spacing: dp(10)
+                    ScrollView:
+                        do_scroll_x: False
+                        do_scroll_y: True
+
+                        MDGridLayout:
+                            id: feed_grid
+                            cols: 1                # 2 cards por linha
+                            adaptive_height: True    # ajusta altura ao conteúdo
+                            padding: dp(20), dp(50), dp(20), dp(20)  # left, top, right, bottom
+                            spacing: dp(10)
 
 <TelaAlterarPerfilProfissional>:
     MDFloatLayout:
@@ -1149,9 +1161,8 @@
             BoxLayout:
                 orientation:'horizontal'
                 BoxLayout:
-                    id:AlbunsUsuario
                     orientation:'vertical'
-                    size_hint_x:0.5
+                    size_hint_x:0.7
                     padding:dp(20)
                     canvas.before:
                         Color:
@@ -1159,10 +1170,63 @@
                         RoundedRectangle:
                             pos: self.x + self.padding[0] - 10, self.y + self.padding[1] - 10
                             size: self.width + 20 - (self.padding[0] + self.padding[2]), self.height + 20 - (self.padding[1] + self.padding[3])
+                    
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(60)
+                        padding: dp(15)
+                        spacing: dp(10)
 
+                        MDLabel:
+                            text: "Coleções"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            font_style: "H6"
+                            halign: "left"
+                            valign: "center"
+
+                        Widget:  # empurra o ícone para a direita
+
+                        MDIconButton:
+                            icon: "plus"
+                            theme_icon_color: "Custom"
+                            icon_color: 1, 1, 1, 1
+                            md_bg_color: 0.2, 0.5, 0.2, 1  # verde suave de fundo
+                            radius: [dp(20)]  # cantos arredondados
+                            user_font_size: "28sp"
+                            pos_hint: {"center_y": 0.5}
+                            on_release: root.AdicionarAlbum()
+
+                    BoxLayout:
+                        orientation:'vertical'
+                        ScrollView:
+                            do_scroll_x: False
+                            do_scroll_y: True
+
+                            MDGridLayout:
+                                id: GridAlbuns
+                                cols: 1                # 2 cards por linha
+                                adaptive_height: True    # ajusta altura ao conteúdo
+                                padding: dp(20), dp(20), dp(20), dp(20)  # left, top, right, bottom
+                                spacing: dp(10)
 
                 BoxLayout:
-                    id:FeedFavoritos
+                    orientation:'horizontal'
+                    Widget:
+                        size_hint_x:0.2
+                    ScrollView:
+                        do_scroll_x: False
+                        do_scroll_y: True
+
+                        MDGridLayout:
+                            id: FeedFavoritos
+                            cols: 1                # 2 cards por linha
+                            adaptive_height: True    # ajusta altura ao conteúdo
+                            padding: dp(20), dp(50), dp(20), dp(20)  # left, top, right, bottom
+                            spacing: dp(10)
+                    Widget:
+                        size_hint_x:0.2
 
 
 
@@ -2987,378 +3051,342 @@
             BoxLayout:
                 orientation:'horizontal'
                 Widget:
-                    size_hint_x: 0.6
-
                 BoxLayout:
-                    orientation: 'vertical'
-                    padding: dp(10)
+                    orientation:'vertical'
+                    padding:dp(20)
+                    size_hint_y:0.8
+                    pos_hint:{"x":0.5,"y":0.2}
+                    canvas.before:
+                        Color:
+                            rgba: 0, 0, 0, 0.5
+                        RoundedRectangle:
+                            pos: self.x, self.y
+                            size: self.width, self.height
+                    MDLabel:
+                        padding:30,0,30,0
+                        text: 'Altere as Informações do Aluno!'
+                        color: 1, 1, 1, 1
+                        font_size: "25sp"
+                        bold: True
+                        halign: 'center'
+                        size_hint_y: None
+                        height: self.texture_size[1]
 
-                    MDCard:
-                        size_hint_x: 0.9
-                        size_hint_y: 0.7  # usa 80% da altura da tela
-                        padding: dp(30)
-                        spacing: dp(5)
-                        radius: [20,]
-                        md_bg_color: (0, 0, 0, 0.5)
+                    ScrollView:
+                        do_scroll_x: False
+                        do_scroll_y: True
                         BoxLayout:
+                            spacing:dp(80)
                             orientation:'vertical'
-                            spacing: dp(5)
+                            size_hint_y:None
+                            height: self.minimum_height
+
+                            Widget:
+
+                            # NOME
                             BoxLayout:
-                                orientation: "vertical"
-                                size_hint_y:0.1
-
-                                BoxLayout:
-                                    orientation: "horizontal"
-                                    spacing: dp(10)
-
-                                    MDLabel:
-                                        text: f"Alterar Aluno"
-                                        halign: "center"
-                                        text_color: 1,1,1,1
-                                        font_size:sp(24)
-
-                                MDSeparator:
-
-                            ScrollView:
-                                do_scroll_x: False
-                                do_scroll_y: True
-
-                                MDBoxLayout:
-                                    orientation: "vertical"
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Nome do Aluno:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
                                     size_hint_y: None
-                                    height: self.minimum_height  # necessário pro scroll funcionar
-                                    spacing: dp(80)
-                                    Widget:
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: NomeAlunosTextField
+                                    hint_text: "Digite o nome completo do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
 
-                                    # RA
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'RA do Aluno:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: RAAlunosTextField
-                                            text:f"{root.RA}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal: 0, 0, 0, 1
-                                            text_color_focus: 0, 0, 0, 1
-                                            cursor_color: 0, 0, 0, 1
+                            # USUARIO
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Usuário:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: UsuarioAlunosTextField
+                                    hint_text: "Digite o nome de usuário"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
 
-                                    # NOME
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Nome do Aluno:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: NomeAlunosTextField
-                                            text:f"{root.NOME}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal: 0, 0, 0, 1
-                                            text_color_focus: 0, 0, 0, 1
-                                            cursor_color: 0, 0, 0, 1
+                            # DATANASCIMENTO
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Data de Nascimento:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: DataNascimentoAlunosTextField
+                                    hint_text: "Digite a data de nascimento (DD/MM/AAAA)"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
+                                    on_text: root.DataNascimentoAlunosTextField_Active(self)
 
-                                    # USUARIO
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Usuário:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: UsuarioAlunosTextField
-                                            text:f"{root.USUARIO}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal: 0, 0, 0, 1
-                                            text_color_focus: 0, 0, 0, 1
-                                            cursor_color: 0, 0, 0, 1
+                            # GÊNERO
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Gênero:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: GeneroAlunosTextField
+                                    hint_text: "Digite o gênero do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
 
-                                    # DATANASCIMENTO
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Data de Nascimento:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: DataNascimentoAlunosTextField
-                                            text:f"{root.DATANASCIMENTO}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal: 0, 0, 0, 1
-                                            text_color_focus: 0, 0, 0, 1
-                                            cursor_color: 0, 0, 0, 1
-                                            on_text: root.DataNascimentoAlunosTextField_Active(self)
+                            # TURMA
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Turma:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: TurmaAlunosTextField
+                                    hint_text: "Digite a turma do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
 
-                                    # GÊNERO
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Gênero:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: GeneroAlunosTextField
-                                            text:f"{root.GENERO}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal: 0, 0, 0, 1
-                                            text_color_focus: 0, 0, 0, 1
-                                            cursor_color: 0, 0, 0, 1
+                            # UF
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'UF:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: UFAlunosTextField
+                                    hint_text: "Selecione sua UF"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal:0,0,0,1
+                                    text_color_focus:0,0,0,1
+                                    cursor_color:0,0,0,1
+                                    on_focus:root.UFAlunosProfissionaisTextField_Focus(self, self.focus)
 
-                                    # TURMA
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Turma:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: TurmaAlunosTextField
-                                            text:f"{root.TURMA}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal: 0, 0, 0, 1
-                                            text_color_focus: 0, 0, 0, 1
-                                            cursor_color: 0, 0, 0, 1
+                            # CIDADE
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Cidade:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: CidadeAlunosTextField
+                                    hint_text: "Selecione sua cidade"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal:0,0,0,1
+                                    text_color_focus:0,0,0,1
+                                    cursor_color:0,0,0,1
+                                    on_focus:root.CidadeAlunosProfissionaisTextField_Focus(self, self.focus)
 
-                                    # UF
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'UF:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: UFAlunosTextField
-                                            text:f"{root.UF}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal:0,0,0,1
-                                            text_color_focus:0,0,0,1
-                                            cursor_color:0,0,0,1
-                                            on_focus:root.UFAlunosProfissionaisTextField_Focus(self, self.focus)
+                            # ESCOLA
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Escola:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: EscolaAlunosTextField
+                                    hint_text: "Selecione sua escola"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal:0,0,0,1
+                                    text_color_focus:0,0,0,1
+                                    cursor_color:0,0,0,1
+                                    on_focus:root.EscolaAlunosProfissionalTextField_Focus(self, self.focus)
 
-                                    # CIDADE
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Cidade:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: CidadeAlunosTextField
-                                            text:f"{root.CIDADE}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal:0,0,0,1
-                                            text_color_focus:0,0,0,1
-                                            cursor_color:0,0,0,1
-                                            on_focus:root.CidadeAlunosProfissionaisTextField_Focus(self, self.focus)
+                            # DIAGNOSTICO
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Diagnóstico:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                MDTextField:
+                                    id: DiagnosticoAlunosTextField
+                                    hint_text: "Digite o diagnóstico do aluno"
+                                    mode: "round"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    line_color_normal: 0, 0, 0, 0.5
+                                    line_color_focus: 0.72, 0.53, 0.04, 1
+                                    text_color_normal: 0, 0, 0, 1
+                                    text_color_focus: 0, 0, 0, 1
+                                    cursor_color: 0, 0, 0, 1
 
-                                    # ESCOLA
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Escola:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: EscolaAlunosTextField
-                                            text:f"{root.ESCOLA}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal:0,0,0,1
-                                            text_color_focus:0,0,0,1
-                                            cursor_color:0,0,0,1
-                                            on_focus:root.EscolaAlunosProfissionalTextField_Focus(self, self.focus)
+                            # OBSERVAÇÕES
+                            BoxLayout:
+                                orientation: 'vertical'
+                                spacing: dp(5)
+                                MDLabel:
+                                    text: 'Observações:'
+                                    color: 1, 1, 1, 1
+                                    font_size: "16sp"
+                                    bold: True
+                                    halign: 'left'
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+                                TextInput:
+                                    id: ObservacaoAlunosTextField
+                                    hint_text: "Digite suas observações sobre o aluno"
+                                    size_hint_x: 1
+                                    pos_hint: {"center_x": 0.5}
+                                    multiline:True
+                                    size_hint_y:None
+                                    height:dp(50)
 
-                                    # DIAGNOSTICO
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Diagnóstico:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        MDTextField:
-                                            id: DiagnosticoAlunosTextField
-                                            text:f"{root.DIAGNOSTICO}"
-                                            mode: "round"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            line_color_normal: 0, 0, 0, 0.5
-                                            line_color_focus: 0.72, 0.53, 0.04, 1
-                                            text_color_normal: 0, 0, 0, 1
-                                            text_color_focus: 0, 0, 0, 1
-                                            cursor_color: 0, 0, 0, 1
+                            BoxLayout:
+                                orientation:'horizontal'
+                                spacing: dp(5)
 
-                                    # OBSERVAÇÕES
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        spacing: dp(5)
-                                        MDLabel:
-                                            text: 'Observações:'
-                                            color: 1, 1, 1, 1
-                                            font_size: "16sp"
-                                            bold: True
-                                            halign: 'left'
-                                            size_hint_y: None
-                                            height: self.texture_size[1]
-                                        TextInput:
-                                            id: ObservacaoAlunosTextField
-                                            text:f"{root.OBSERVACOES}"
-                                            size_hint_x: 1
-                                            pos_hint: {"center_x": 0.5}
-                                            multiline:True
-                                            size_hint_y:None
-                                            height:dp(50)
-
-                                    BoxLayout:
-                                        orientation:'horizontal'
-                                        spacing: dp(5)
-
-                                        # NÍVEL DE LEITURA
-                                        BoxLayout:
-                                            orientation: 'vertical'
-                                            spacing: dp(5)
-                                            MDLabel:
-                                                text: 'Nível de Leitura:'
-                                                color: 1, 1, 1, 1
-                                                font_size: "16sp"
-                                                bold: True
-                                                halign: 'left'
-                                                size_hint_y: None
-                                                height: self.texture_size[1]
-                                            MDTextField:
-                                                id: NivelLeituraAlunosTextField
-                                                text:f"{root.NIVELDELEITURA}"
-                                                mode: "round"
-                                                size_hint_x: 1
-                                                pos_hint: {"center_x": 0.5}
-                                                line_color_normal: 0, 0, 0, 0.5
-                                                line_color_focus: 0.72, 0.53, 0.04, 1
-                                                text_color_normal: 0, 0, 0, 1
-                                                text_color_focus: 0, 0, 0, 1
-                                                cursor_color: 0, 0, 0, 1
-                                                on_focus: root.NivelLeituraAlunosProfissionalTextField_Focus(self, self.focus)
-
-                                        # NÍVEL DE ESCRITA
-                                        BoxLayout:
-                                            orientation: 'vertical'
-                                            spacing: dp(5)
-                                            MDLabel:
-                                                text: 'Nível de Escrita:'
-                                                color: 1, 1, 1, 1
-                                                font_size: "16sp"
-                                                bold: True
-                                                halign: 'left'
-                                                size_hint_y: None
-                                                height: self.texture_size[1]
-                                            MDTextField:
-                                                id: NivelEscritaAlunosTextField
-                                                text:f"{root.NIVELDEESCRITA}"
-                                                mode: "round"
-                                                size_hint_x: 1
-                                                pos_hint: {"center_x": 0.5}
-                                                line_color_normal: 0, 0, 0, 0.5
-                                                line_color_focus: 0.72, 0.53, 0.04, 1
-                                                text_color_normal: 0, 0, 0, 1
-                                                text_color_focus: 0, 0, 0, 1
-                                                cursor_color: 0, 0, 0, 1
-                                                on_focus: root.NivelEscritaAlunosProfissionalTextField_Focus(self, self.focus)
-
-                                    MDRaisedButton:
-                                        text: "Adicionar"
-                                        pos_hint: {"center_x": 0.5}
-                                        md_bg_color: 0.0, 0.4, 0.0, 1
-                                        font_size: "18sp"
+                                # NÍVEL DE LEITURA
+                                BoxLayout:
+                                    orientation: 'vertical'
+                                    spacing: dp(5)
+                                    MDLabel:
+                                        text: 'Nível de Leitura:'
+                                        color: 1, 1, 1, 1
+                                        font_size: "16sp"
                                         bold: True
-                                        line_color: 1, 1, 1, 1
+                                        halign: 'left'
                                         size_hint_y: None
-                                        height: dp(30)
-                                        on_release: root.AlterarAlunos_Click()
+                                        height: self.texture_size[1]
+                                    MDTextField:
+                                        id: NivelLeituraAlunosTextField
+                                        hint_text: "Digite o nível de leitura do aluno"
+                                        mode: "round"
+                                        size_hint_x: 1
+                                        pos_hint: {"center_x": 0.5}
+                                        line_color_normal: 0, 0, 0, 0.5
+                                        line_color_focus: 0.72, 0.53, 0.04, 1
+                                        text_color_normal: 0, 0, 0, 1
+                                        text_color_focus: 0, 0, 0, 1
+                                        cursor_color: 0, 0, 0, 1
+                                        on_focus: root.NivelLeituraAlunosProfissionalTextField_Focus(self, self.focus)
+
+                                # NÍVEL DE ESCRITA
+                                BoxLayout:
+                                    orientation: 'vertical'
+                                    spacing: dp(5)
+                                    MDLabel:
+                                        text: 'Nível de Escrita:'
+                                        color: 1, 1, 1, 1
+                                        font_size: "16sp"
+                                        bold: True
+                                        halign: 'left'
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+                                    MDTextField:
+                                        id: NivelEscritaAlunosTextField
+                                        hint_text: "Digite o nível de escrita do aluno"
+                                        mode: "round"
+                                        size_hint_x: 1
+                                        pos_hint: {"center_x": 0.5}
+                                        line_color_normal: 0, 0, 0, 0.5
+                                        line_color_focus: 0.72, 0.53, 0.04, 1
+                                        text_color_normal: 0, 0, 0, 1
+                                        text_color_focus: 0, 0, 0, 1
+                                        cursor_color: 0, 0, 0, 1
+                                        on_focus: root.NivelEscritaAlunosProfissionalTextField_Focus(self, self.focus)
+
+                            MDRaisedButton:
+                                text: "Alterar"
+                                pos_hint: {"center_x": 0.5}
+                                md_bg_color: 0.0, 0.4, 0.0, 1
+                                font_size: "18sp"
+                                bold: True
+                                line_color: 1, 1, 1, 1
+                                size_hint_y: None
+                                height: dp(30)
+                                on_release: root.AlterarAlunos_Click()
+
                 Widget:
-                    size_hint_x: 0.6
-                    

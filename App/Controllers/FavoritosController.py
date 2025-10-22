@@ -51,7 +51,7 @@ class FavoritosController:
             return e
 
     def PesquisarPorUsuario(self, usuario):
-        Resultado = self.Favoritos.Pesquisar('*', f'USUARIO = {usuario}')
+        Resultado = self.Favoritos.Pesquisar('*', f'USUARIO = "{usuario}"')
         if not Resultado:
             return False
         return Resultado

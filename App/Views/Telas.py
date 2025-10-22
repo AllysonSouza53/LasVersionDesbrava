@@ -27,9 +27,11 @@ from Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
 from Banco import Banco
 import io, base64
 import os
+from kivymd.uix.label import MDIcon
 from functools import partial
 from kivymd.uix.button import MDRoundFlatButton  # compatível
 from Helpers.TratamentoErros import Erros
+from Controllers.AlbumController import AlbumController
 
 
 #-------------------------------------------------------------------
@@ -299,125 +301,349 @@ class TelaPerfilProfissional(MDScreen):
     FeedPerfil = None
     resposta = None
     imagens = None
+    Favoritos = None
+    Post = None
+    resposta = None
+    ControlePerfil = None
+    Comentario = None
+    dialog = None
+    instanciacomentario = None
 
     def on_pre_enter(self, *args):
-        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
-
-        self.Profissional = tela_carregamento.Profissional or None
         self.Post = PostController()
+        self.Favoritos = FavoritosController()
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        self.ControlePerfil = tela_carregamento.Profissional or None
         self.FeedPerfil = self.ids.feed_grid
-
-        usuario = self.Profissional.Usuario if self.Profissional else None
+        usuario = self.ControlePerfil.Usuario if self.ControlePerfil else None
         if not usuario:
             return
-
+        self.Comentario = ComentarioController()
         self.resposta = self.Post.PesquisarPorUsuario(usuario)
-        self.imagens = self.GetArquivoPosts(usuario)
-
+        self.resposta = self.CarregarImagensPosts(self.resposta)
         self.MostrarDados()
         self.ListarPosts()
 
     def MostrarDados(self):
-        if not self.Profissional:
+        if not self.ControlePerfil:
             return
-
-        self.ids.UsuarioPerfilLabel.text = f'@{self.Profissional.Usuario}'
-        self.ids.NomePerfilLabel.text = f'Nome: {self.Profissional.Nome}'
-        self.ids.CPFPerfilLabel.text = f'CPF: {self.Profissional.CPF}'
-        self.ids.ProfissaoPerfilLabel.text = f'Profissão: {self.Profissional.Profissao}'
-        self.ids.EscolaPerfilLabel.text = f'Escola: {self.Profissional.Escola}'
-        self.ids.BiografiaPerfilLabel.text = f'Biografia: {self.Profissional.Biografia}'
+        self.ids.UsuarioPerfilLabel.text = f'@{self.ControlePerfil.Usuario}'
+        self.ids.NomePerfilLabel.text = f'Nome: {self.ControlePerfil.Nome}'
+        self.ids.CPFPerfilLabel.text = f'CPF: {self.ControlePerfil.CPF}'
+        self.ids.ProfissaoPerfilLabel.text = f'Profissão: {self.ControlePerfil.Profissao}'
+        self.ids.EscolaPerfilLabel.text = f'Escola: {self.ControlePerfil.Escola}'
+        self.ids.BiografiaPerfilLabel.text = f'Biografia: {self.ControlePerfil.Biografia}'
 
     def ListarPosts(self):
         self.FeedPerfil.clear_widgets()
 
-        if not self.resposta:
-            self.FeedPerfil.cols = 1
-            self.FeedPerfil.add_widget(
-                MDLabel(
-                    text='Sem posts. Poste algo!',
-                    font_style="H6",
-                    halign="center",
-                    theme_text_color="Custom",
-                    text_color=(1, 1, 1, 1)
-                )
+        for post in self.resposta:
+            box_post = MDBoxLayout(
+                orientation="vertical",
+                size_hint_y=None,
+                padding=dp(5),
             )
-            return
 
-        self.FeedPerfil.cols = 2
-
-        for i, post in enumerate(self.resposta):
             card = MDCard(
                 size_hint_y=None,
-                height=dp(200),
                 padding=dp(10),
-                orientation="vertical"
+                orientation="vertical",
+                spacing=dp(10)
             )
 
-            # Label do usuário
+            # Cabeçalho
+            box_cabecalho = MDBoxLayout(
+                orientation="horizontal",
+                size_hint_y=None,
+                height=dp(30),
+                spacing=dp(10)
+            )
+
             usuario = MDLabel(
-                text=f"@{post['usuario']}",
+                text=f"@{post.get('usuario', '')}",
                 font_size="16sp",
                 halign="left",
-                theme_text_color="Primary"
+                theme_text_color="Primary",
+                size_hint_x=0.7
             )
-            card.add_widget(usuario)
+            usuario.bind(texture_size=usuario.setter('size'))
 
-            # Verifica se há imagem e cria FitImage se válida
-            imagem = None
-            if self.imagens and i < len(self.imagens):
-                imagem = self.imagens[i].get('imagem', None)
+            btn_menu = MDIconButton(
+                icon="dots-vertical",
+                size_hint=(None, None),
+                size=(dp(24), dp(24)),
+                pos=(dp(0), dp(5))
+            )
 
-            if imagem:
-                try:
-                    imagem_widget = Image(texture = self.imagens[i]['imagem'])
-                    card.add_widget(imagem_widget)
-                except Exception as e:
-                    print(f"Erro ao adicionar imagem do post {post.get('id', '')}: {e}")
+            # Cria menu
+            menu = MDDropdownMenu(caller=btn_menu, width_mult=4)
+            menu.items = [
+                {
+                    "text": "Excluir",
+                    "icon": "delete",
+                    "on_release": lambda x=post: (menu.dismiss(), self.excluir_post(x))
+                }
+            ]
 
-            # Label da legenda
+            btn_menu.on_release = menu.open
+
+            box_cabecalho.add_widget(usuario)
+            box_cabecalho.add_widget(btn_menu)
+            card.add_widget(box_cabecalho)
+
+            # Imagem do post
+            imagem_obj = post.get('imagem_obj', None)
+            if imagem_obj:
+                imagem_widget = Image(
+                    texture=imagem_obj,
+                    size_hint_y=None,
+                    height=dp(400),
+                    allow_stretch=True,
+                    keep_ratio=True
+                )
+                card.add_widget(imagem_widget)
+
+            # Legenda
             legenda = MDLabel(
-                text=str(post['legenda']),
-                halign="center",
-                theme_text_color="Secondary"
+                text=post.get('legenda', ''),
+                halign="left",
+                theme_text_color="Secondary",
+                size_hint_y=None
             )
+            legenda.bind(texture_size=legenda.setter('size'))
             card.add_widget(legenda)
 
-            self.FeedPerfil.add_widget(card)
+            # Rodapé
+            box_rodape = MDBoxLayout(
+                orientation="horizontal",
+                size_hint_y=None,
+                height=dp(30),
+                spacing=dp(10)
+            )
 
-    def GetArquivoPosts(self, usuario=None):
+            Comentarios_button = MDIconButton(
+                icon="comment-outline",
+                size_hint=(None, None),
+                size=(dp(24), dp(24))
+            )
+            Comentarios_button.post_id = post.get("id")
+            Comentarios_button.bind(on_release=self.abrir_comentarios)
+
+            box_rodape.add_widget(Comentarios_button)
+            card.add_widget(box_rodape)
+
+            card.bind(minimum_height=card.setter('height'))
+            box_post.add_widget(card)
+            box_post.bind(minimum_height=box_post.setter('height'))
+            self.FeedPerfil.add_widget(box_post)
+
+    def excluir_post(self, post):
+        print(f"🗑️ Excluindo post de {post.get('usuario')}")
+
+    def abrir_comentarios(self, instance):
+        self.instanciacomentario = instance
+        self.post_id = getattr(instance, "post_id", None)
+        resultado = self.Comentario.setListaComentarios(f'IDPOST = {self.post_id}')
+        # BoxLayout que vai conter tudo
+        BoxComentarios = MDBoxLayout(
+            orientation="vertical",
+            padding = dp(10),
+            spacing = dp(10),
+            size_hint_y = None,
+            height = dp(500),  # define altura do box
+            md_bg_color = (1, 1, 1, 1)
+        )
+        if resultado:
+            BoxComentario = MDBoxLayout(
+                orientation="vertical",
+                padding=dp(10),
+                spacing=dp(20),
+                size_hint_y=None,
+                md_bg_color=(1, 1, 1, 1)
+            )
+            BoxComentario.bind(minimum_height=BoxComentario.setter('height'))
+
+            for comentario in resultado:
+                Card = MDCard(
+                    size_hint_y=None,
+                    padding=dp(10),
+                    orientation="vertical",
+                    spacing=dp(5),
+                    md_bg_color=(0.8, 0.8, 0.8, 1)
+                )
+
+                BoxCabecalho = MDBoxLayout(
+                    orientation="horizontal",
+                    padding=dp(0),
+                    spacing=dp(20),
+                    size_hint_y=None,
+                    md_bg_color=(1, 1, 1, 1)
+                )
+
+                btn_menu = MDIconButton(
+                    icon="dots-vertical",
+                    size_hint=(None, None),
+                    size=(dp(24), dp(24)),
+                    pos=(dp(0), dp(0))
+                )
+
+                btn_menu.theme_icon_color = "Custom"
+                btn_menu.text_color  = (0, 0, 0, 0)
+
+                BoxCabecalho.md_bg_color = (0.8, 0.8, 0.8, 1)
+                BoxCabecalho.bind(minimum_height=BoxCabecalho.setter('height'))
+                BoxCabecalho.add_widget(MDLabel(text=f"@{comentario['Usuario']}"))
+                if comentario['Usuario'] == self.ControlePerfil.Usuario:
+                    btn_menu.text_color  = (0, 0, 0, 1)
+                    menu = MDDropdownMenu(caller=btn_menu, width_mult=4)
+                    menu.items = [
+                        {
+                            "text": "Excluir",
+                            "icon": "delete",
+                            "on_release": lambda x=comentario: (menu.dismiss(), self.ExcluirComentario(x))
+                        }
+                    ]
+                    btn_menu.on_release = menu.open
+
+                BoxCabecalho.add_widget(btn_menu)
+                Card.add_widget(BoxCabecalho)
+                TextoComentario = MDLabel(
+                    text=comentario['Texto'],
+                    size_hint_y = None
+                )
+                Card.add_widget(TextoComentario)
+
+                Card.bind(minimum_height=Card.setter('height'))
+                BoxComentario.add_widget(Card)
+        else:
+            BoxComentario = MDBoxLayout(
+                orientation="vertical",
+                padding=dp(10),
+                spacing=dp(10),
+                size_hint_y=None,
+                md_bg_color=(1, 1, 1, 1)
+            )
+            BoxComentario.bind(minimum_height=BoxComentario.setter('height'))
+            BoxComentario.add_widget(
+                MDLabel(
+                    text='Sem Comentários. Seja o Primeiro!',
+                    halign="center",
+                    valign="center",
+                )
+            )
+
+        BoxPostarComentario = MDBoxLayout(
+            orientation="horizontal",
+            padding=dp(10),
+            spacing=dp(10),
+            size_hint_y=None,
+            height=dp(80),  # define altura do box
+            md_bg_color=(1, 1, 1, 1),
+        )
+
+        self.tf = TextInput(
+            size_hint_x=0.8,
+            cursor_color=(0, 0, 0, 1),
+            foreground_color=(0, 0, 0, 1),
+            multiline=True,
+        )
+
+        # limite de caracteres
+        self.tf.max_chars = 500
+
+        # evento que monitora a digitação
+        self.tf.bind(text=self.limitar_texto)
+
+        # Botão circular com seta
+        btn_cima = MDFloatingActionButton(
+            icon="arrow-up",
+            md_bg_color=(1, 1, 1, 1),
+            text_color=(0, 0, 0, 1),
+        )
+
+        btn_cima.bind(on_release=lambda _: self.on_release_Comentarios_button())
+        BoxPostarComentario.add_widget(self.tf)
+        BoxPostarComentario.add_widget(btn_cima)
+
+        # ScrollView para permitir rolagem se necessário
+        scroll = ScrollView(
+            do_scroll_x=False, do_scroll_y=True,
+            size_hint=(1, None),
+            height=dp(400)
+        )
+
+        scroll.add_widget(BoxComentario)
+        BoxComentarios.add_widget(scroll)
+        BoxComentarios.add_widget(BoxPostarComentario)
+
+        # Cria o Dialog
+        self.dialog = MDDialog(
+            title="Comentários",
+            type="custom",
+            content_cls=BoxComentarios,
+            size_hint=(0.5, None),
+            height=dp(180),  # altura do diálogo
+        )
+
+        # Abre o Dialog
+        self.dialog.open()
+
+    def limitar_texto(self, instance, value):
+        if len(value) > instance.max_chars:
+            instance.text = value[:instance.max_chars]
+
+    def AtualizarComentarios(self, instance):
+        if self.dialog:
+            self.dialog.dismiss()
+        self.abrir_comentarios(instance)
+
+    def on_release_Comentarios_button(self):
+        try:
+            self.Comentario.setNewComentario(self)
+            self.Comentario.Comentar()
+            self.AtualizarComentarios(self.instanciacomentario)
+        except Exception as e:
+            print(e)
+
+    # Carrega imagens decodificando Base64 e associando pelo id do post
+    def CarregarImagensPosts(self, posts):
         try:
             ListaPostsHelper = Posts()
-            if usuario:
-                UsuarioPerfil = ListaPostsHelper.GetPorUsuario(usuario)
-            else:
-                UsuarioPerfil = ListaPostsHelper.Get()
+            posts_no_banco = ListaPostsHelper.GetPorUsuario(self.ControlePerfil.Usuario)  # pega todos os posts do banco
 
-            if not UsuarioPerfil:
-                return []
-
-            listaposts = []
-            for post in UsuarioPerfil:
-                imagem_b64 = post.get('imagem', None)
+            # Cria um dicionário de imagens pelo id do post
+            print(posts_no_banco)
+            imagens_dict = {}
+            for post_banco in posts_no_banco:
+                imagem_b64 = post_banco.get('imagem', None)
                 textura = None
-
-                # Decodificar apenas se houver imagem válida
                 if imagem_b64 and imagem_b64 not in ("NULL", "null", ""):
                     try:
                         data = io.BytesIO(base64.b64decode(imagem_b64))
-                        textura = CoreImage(data, ext='png').texture
-                    except Exception as e:
-                        print(f"Erro ao decodificar imagem do post {post.get('id', '')}: {e}")
-                        textura = None  # garante que falha não quebre o fluxo
+                        textura = CoreImage(data, ext='png').texture  # ou tente detectar o formato
+                    except Exception:
+                        try:
+                            data = io.BytesIO(base64.b64decode(imagem_b64))
+                            textura = CoreImage(data, ext='jpg').texture
+                        except Exception as e:
+                            print(f"Erro ao carregar imagem: {e}")
+                            textura = None
 
-                # Adiciona sempre a chave 'imagem', mesmo que seja None
-                listaposts.append({"imagem": textura})
+                imagens_dict[post_banco['id']] = textura
 
-            return listaposts
+            # Atualiza os posts originais com a textura correta
+            for post in posts:
+                post['imagem_obj'] = imagens_dict.get(post.get('id'), None)
+                print(f"Imagem no post {post.get('id', 'SEM ID')}: {bool(post.get('imagem_obj'))}")
+
+            return posts
 
         except Exception as e:
-            print(f"Erro ao buscar imagens dos posts: {e}")
-            return []
+            print(f"Erro ao carregar imagens dos posts: {e}")
+            return posts
+
+    def ExcluirComentario(self, post):
+        pass
 
     # Navegação entre telas
     def AlterarPerfilButton_Click(self):
@@ -470,7 +696,7 @@ class TelaAlterarPerfilProfissional(MDScreen):
 
         self.ids.UsuarioAlterarTextField.text = f'@{self.ControlePerfil.Usuario}'
         self.ids.NomeAlterarTextField.text = f'{self.ControlePerfil.Nome}'
-        self.ids.ProfissãoAlterarTextField.text = f'{self.ControlePerfil.Profissao}'
+        self.ids.ProfissaoAlterarTextField.text = f'{self.ControlePerfil.Profissao}'
         self.ids.DataNascimentoAlterarTextField.text = f'{self.ControlePerfil.DataNascimento}'
         self.ids.EstadoAlterarTextField.text = f'{self.ControlePerfil.UF}'
         self.ids.CidadeAlterarTextField.text = f'{self.ControlePerfil.Cidade}'
@@ -648,7 +874,444 @@ class TelaAlterarPerfilProfissional(MDScreen):
 #_________________________________________________________________________________________________________________________
 
 class TelaFavoritosPerfilProfissional(MDScreen):
-    pass
+    
+    ControlePerfil = None
+    ControleFavoritos = None
+    FeedFavoritos = None
+    ControlePost = None
+    ControleAlbuns = None
+    Favoritos = None
+    GridAlbuns = None
+    IDs = None
+    Resultado = None
+
+    def on_pre_enter(self, *args):
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        if tela_carregamento.Profissional:
+            self.ControlePerfil = tela_carregamento.Profissional
+        else:
+            self.ControlePerfil = None
+        self.FeedFavoritos = self.ids.FeedFavoritos
+        self.GridAlbuns = self.ids.GridAlbuns
+
+        self.ControleFavoritos = FavoritosController()
+        self.ControlePost = PostController()
+        self.ControleAlbuns = AlbumController()
+        self.Favoritos = self.ControleFavoritos.setListaFavoritos(f"USUARIO = '{self.ControlePerfil.Usuario}'")
+        try:
+            self.IDs = [item['PostID'] for item in self.Favoritos]
+        except Exception as e:
+            print(e)
+            self.IDs = []
+        self.Resultado = self.ControlePost.ListarPostPorID(self.IDs)
+        self.Resultado = self.CarregarImagensPosts(self.Resultado)
+        print("Favoritos:", self.Favoritos)
+        print("IDs:", self.IDs)
+        print(self.Resultado)
+        self.ListarAlbuns()
+        self.ListarFavoritos()
+
+    def ListarAlbuns(self):
+        self.GridAlbuns.clear_widgets()
+        try:
+            self.Albuns = self.ControleAlbuns.ListarAlbumPorUsuario(self.ControlePerfil.Usuario)
+
+            if not self.Albuns:
+                Label = MDLabel(
+                    text="Nenhum álbum encontrado.",
+                    halign="center",
+                    valign="top",
+                    theme_text_color="Custom",
+                    text_color=(1, 1, 1, 1)
+                )
+                self.GridAlbuns.add_widget(Label)
+                return
+
+            for album in self.Albuns:
+                # 🔹 Card maior e espaçado
+                card = MDCard(
+                    size_hint=(1, None),
+                    height=dp(100),        # altura do card (aumente aqui)
+                    padding=dp(15),
+                    orientation="horizontal",
+                    spacing=dp(25),
+                    radius=[15, 15, 15, 15],
+                    md_bg_color=(0.152, 0.251, 0.152, 1),
+                    elevation=3
+                )
+
+                # 🔹 Ícone grande
+                Icone = MDIcon(
+                    icon="book",
+                    size_hint=(None, None),
+                    size=(dp(150), dp(150)),  # controla o tamanho real do ícone
+                    font_size=dp(150),
+                    theme_text_color="Custom",
+                    text_color=(1, 1, 1, 1),  # amarelo
+                    pos_hint={"center_y": 0.5}
+                )
+
+                # 🔹 Título do álbum
+                titulo = MDLabel(
+                    text=album.get('nome', ''),
+                    halign="left",
+                    valign="middle",
+                    font_style="H5",
+                    theme_text_color="Custom",
+                    text_color=(1, 1, 1, 1),
+                    size_hint_x=1
+                )
+
+                # adiciona ao card
+                card.add_widget(Icone)
+                card.add_widget(titulo)
+
+                # adiciona ao grid
+                self.GridAlbuns.add_widget(card)
+
+        except Exception as e:
+            print(f"Erro ao listar álbuns: {e}")
+
+    # Carrega imagens decodificando Base64 e associando pelo id do post
+    def ListarFavoritos(self):
+        self.FeedFavoritos.clear_widgets()
+        try:
+            if not self.Resultado:
+                Label = MDLabel(
+                    text="Nenhum favorito encontrado.",
+                    halign="center",
+                    valign="top",
+                )
+
+                self.FeedFavoritos.add_widget(Label)
+                return
+            
+            for post in self.Resultado:
+                box_post = MDBoxLayout(
+                    orientation="vertical",
+                    size_hint_y=None,
+                    padding=dp(5),
+                )
+
+                card = MDCard(
+                    size_hint_y=None,
+                    padding=dp(10),
+                    orientation="vertical",
+                    spacing=dp(10)
+                )
+
+                # Cabeçalho
+                box_cabecalho = MDBoxLayout(
+                    orientation="horizontal",
+                    size_hint_y=None,
+                    height=dp(30),
+                    spacing=dp(10)
+                )
+
+                usuario = MDLabel(
+                    text=f"@{post.get('usuario', '')}",
+                    font_size="16sp",
+                    halign="left",
+                    theme_text_color="Primary",
+                    size_hint_x=0.7
+                )
+                usuario.bind(texture_size=usuario.setter('size'))
+
+                btn_menu = MDIconButton(
+                    icon="dots-vertical",
+                    size_hint=(None, None),
+                    size=(dp(24), dp(24)),
+                    pos=(dp(0), dp(5))
+                )
+
+                # Cria menu
+                menu = MDDropdownMenu(caller=btn_menu, width_mult=4)
+                menu.items = [
+                    {
+                        "text": "Excluir",
+                        "icon": "delete",
+                        "on_release": lambda x=post: (menu.dismiss(), self.excluir_post(x))
+                    }
+                ]
+
+                btn_menu.on_release = menu.open
+
+                box_cabecalho.add_widget(usuario)
+                box_cabecalho.add_widget(btn_menu)
+                card.add_widget(box_cabecalho)
+
+                # Imagem do post
+                imagem_obj = post.get('imagem_obj', None)
+                if imagem_obj:
+                    imagem_widget = Image(
+                        texture=imagem_obj,
+                        size_hint_y=None,
+                        height=dp(600),
+                        allow_stretch=True,
+                        keep_ratio=True
+                    )
+                    card.add_widget(imagem_widget)
+
+                # Legenda
+                legenda = MDLabel(
+                    text=post.get('legenda', ''),
+                    halign="left",
+                    theme_text_color="Secondary",
+                    size_hint_y=None
+                )
+                legenda.bind(texture_size=legenda.setter('size'))
+                card.add_widget(legenda)
+
+                # Rodapé
+                box_rodape = MDBoxLayout(
+                    orientation="horizontal",
+                    size_hint_y=None,
+                    height=dp(30),
+                    spacing=dp(10)
+                )
+
+                Comentarios_button = MDIconButton(
+                    icon="comment-outline",
+                    size_hint=(None, None),
+                    size=(dp(24), dp(24))
+                )
+                Comentarios_button.post_id = post.get("id")
+                Comentarios_button.bind(on_release=self.abrir_comentarios)
+
+                box_rodape.add_widget(Comentarios_button)
+                card.add_widget(box_rodape)
+
+                card.bind(minimum_height=card.setter('height'))
+                box_post.add_widget(card)
+                box_post.bind(minimum_height=box_post.setter('height'))
+                self.FeedFavoritos.add_widget(box_post)
+        except IndexError:
+            pass
+
+    def excluir_post(self, post):
+        print(f"🗑️ Excluindo post de {post.get('usuario')}")
+
+    def abrir_comentarios(self, instance):
+        self.instanciacomentario = instance
+        self.post_id = getattr(instance, "post_id", None)
+        resultado = self.Comentario.setListaComentarios(f'IDPOST = {self.post_id}')
+        # BoxLayout que vai conter tudo
+        BoxComentarios = MDBoxLayout(
+            orientation="vertical",
+            padding = dp(10),
+            spacing = dp(10),
+            size_hint_y = None,
+            height = dp(500),  # define altura do box
+            md_bg_color = (1, 1, 1, 1)
+        )
+        if resultado:
+            BoxComentario = MDBoxLayout(
+                orientation="vertical",
+                padding=dp(10),
+                spacing=dp(20),
+                size_hint_y=None,
+                md_bg_color=(1, 1, 1, 1)
+            )
+            BoxComentario.bind(minimum_height=BoxComentario.setter('height'))
+
+            for comentario in resultado:
+                Card = MDCard(
+                    size_hint_y=None,
+                    padding=dp(10),
+                    orientation="vertical",
+                    spacing=dp(5),
+                    md_bg_color=(0.8, 0.8, 0.8, 1)
+                )
+
+                BoxCabecalho = MDBoxLayout(
+                    orientation="horizontal",
+                    padding=dp(0),
+                    spacing=dp(20),
+                    size_hint_y=None,
+                    md_bg_color=(1, 1, 1, 1)
+                )
+
+                btn_menu = MDIconButton(
+                    icon="dots-vertical",
+                    size_hint=(None, None),
+                    size=(dp(24), dp(24)),
+                    pos=(dp(0), dp(0))
+                )
+
+                btn_menu.theme_icon_color = "Custom"
+                btn_menu.text_color  = (0, 0, 0, 0)
+
+                BoxCabecalho.md_bg_color = (0.8, 0.8, 0.8, 1)
+                BoxCabecalho.bind(minimum_height=BoxCabecalho.setter('height'))
+                BoxCabecalho.add_widget(MDLabel(text=f"@{comentario['Usuario']}"))
+                if comentario['Usuario'] == self.ControlePerfil.Usuario:
+                    btn_menu.text_color  = (0, 0, 0, 1)
+                    menu = MDDropdownMenu(caller=btn_menu, width_mult=4)
+                    menu.items = [
+                        {
+                            "text": "Excluir",
+                            "icon": "delete",
+                            "on_release": lambda x=comentario: (menu.dismiss(), self.ExcluirComentario(x))
+                        }
+                    ]
+                    btn_menu.on_release = menu.open
+
+                BoxCabecalho.add_widget(btn_menu)
+                Card.add_widget(BoxCabecalho)
+                TextoComentario = MDLabel(
+                    text=comentario['Texto'],
+                    size_hint_y = None
+                )
+                Card.add_widget(TextoComentario)
+
+                Card.bind(minimum_height=Card.setter('height'))
+                BoxComentario.add_widget(Card)
+        else:
+            BoxComentario = MDBoxLayout(
+                orientation="vertical",
+                padding=dp(10),
+                spacing=dp(10),
+                size_hint_y=None,
+                md_bg_color=(1, 1, 1, 1)
+            )
+            BoxComentario.bind(minimum_height=BoxComentario.setter('height'))
+            BoxComentario.add_widget(
+                MDLabel(
+                    text='Sem Comentários. Seja o Primeiro!',
+                    halign="center",
+                    valign="center",
+                )
+            )
+
+        BoxPostarComentario = MDBoxLayout(
+            orientation="horizontal",
+            padding=dp(10),
+            spacing=dp(10),
+            size_hint_y=None,
+            height=dp(80),  # define altura do box
+            md_bg_color=(1, 1, 1, 1),
+        )
+
+        self.tf = TextInput(
+            size_hint_x=0.8,
+            cursor_color=(0, 0, 0, 1),
+            foreground_color=(0, 0, 0, 1),
+            multiline=True,
+        )
+
+        # limite de caracteres
+        self.tf.max_chars = 500
+
+        # evento que monitora a digitação
+        self.tf.bind(text=self.limitar_texto)
+
+        # Botão circular com seta
+        btn_cima = MDFloatingActionButton(
+            icon="arrow-up",
+            md_bg_color=(1, 1, 1, 1),
+            text_color=(0, 0, 0, 1),
+        )
+
+        btn_cima.bind(on_release=lambda _: self.on_release_Comentarios_button())
+        BoxPostarComentario.add_widget(self.tf)
+        BoxPostarComentario.add_widget(btn_cima)
+
+        # ScrollView para permitir rolagem se necessário
+        scroll = ScrollView(
+            do_scroll_x=False, do_scroll_y=True,
+            size_hint=(1, None),
+            height=dp(400)
+        )
+
+        scroll.add_widget(BoxComentario)
+        BoxComentarios.add_widget(scroll)
+        BoxComentarios.add_widget(BoxPostarComentario)
+
+        # Cria o Dialog
+        self.dialog = MDDialog(
+            title="Comentários",
+            type="custom",
+            content_cls=BoxComentarios,
+            size_hint=(0.5, None),
+            height=dp(180),  # altura do diálogo
+        )
+
+        # Abre o Dialog
+        self.dialog.open()
+
+    def limitar_texto(self, instance, value):
+        if len(value) > instance.max_chars:
+            instance.text = value[:instance.max_chars]
+
+    def AtualizarComentarios(self, instance):
+        if self.dialog:
+            self.dialog.dismiss()
+        self.abrir_comentarios(instance)
+
+    def on_release_Comentarios_button(self):
+        try:
+            self.Comentario.setNewComentario(self)
+            self.Comentario.Comentar()
+            self.AtualizarComentarios(self.instanciacomentario)
+        except Exception as e:
+            print(e)
+    
+    def GetFavoritos(self):
+        ListaPostsHelper = Posts()
+        lista = []
+        try:
+            for id in self.IDs:
+                Resultado = ListaPostsHelper.GetPorId(id)
+                if Resultado:
+                    for post in Resultado:
+                        lista.append({
+                            'id': post['id'],
+                            'usuario': post['usuario'],
+                            'imagem': post['imagem']
+                        })
+            return lista
+        except Exception as e:
+            print(f"Erro ao obter favoritos: {e}")
+            return []
+    # Carrega imagens decodificando Base64 e associando pelo id do post
+    def CarregarImagensPosts(self, posts):
+        try:
+            posts_no_banco = self.GetFavoritos()  # pega todos os posts do banco
+
+            # Cria um dicionário de imagens pelo id do post
+            print(posts_no_banco)
+            imagens_dict = {}
+            for post_banco in posts_no_banco:
+                imagem_b64 = post_banco.get('imagem', None)
+                textura = None
+                if imagem_b64 and imagem_b64 not in ("NULL", "null", ""):
+                    try:
+                        data = io.BytesIO(base64.b64decode(imagem_b64))
+                        textura = CoreImage(data, ext='png').texture  # ou tente detectar o formato
+                    except Exception:
+                        try:
+                            data = io.BytesIO(base64.b64decode(imagem_b64))
+                            textura = CoreImage(data, ext='jpg').texture
+                        except Exception as e:
+                            print(f"Erro ao carregar imagem: {e}")
+                            textura = None
+
+                imagens_dict[post_banco['id']] = textura
+
+            # Atualiza os posts originais com a textura correta
+            for post in posts:
+                post['imagem_obj'] = imagens_dict.get(post.get('id'), None)
+                print(f"Imagem no post {post.get('id', 'SEM ID')}: {bool(post.get('imagem_obj'))}")
+
+            return posts
+
+        except Exception as e:
+            print(f"Erro ao carregar imagens dos posts: {e}")
+            return posts
+
+    def ExcluirComentario(self, post):
+        pass
+
 #_________________________________________________________________________________________________________________________
 class TelaAlunosProfissional(MDScreen):
     Sessao = LoginController()
@@ -742,8 +1405,8 @@ class TelaAlunosProfissional(MDScreen):
         indice_celula = instance_row.index
         linha = indice_celula // colunas
         coluna = indice_celula % colunas
-        self.aluno_usuario = str(instance_row.table.row_data[linha][2])
-        print(self.aluno_usuario)
+        self.aluno_RA = instance_row.table.row_data[linha][0]
+        print(self.aluno_RA)
         if self.manager:
             self.manager.current = "AlunoEspecifico"
 
@@ -1648,7 +2311,7 @@ class TelaAlunoEspecifico(MDScreen):
     OBSERVACOES = StringProperty("")
     NIVELDELEITURA = StringProperty("")
     NIVELDEESCRITA = StringProperty("")
-    AlunoUsuario = StringProperty("")
+    AlunoRA = None
     dialog = None  # variável para controlar o diálogo
     titulo = StringProperty("")
     nivel = StringProperty("")
@@ -1657,11 +2320,11 @@ class TelaAlunoEspecifico(MDScreen):
     def on_pre_enter(self):
         # Pegar referência do aluno da tela anterior
         tela_carregamento = self.manager.get_screen("AlunosProfissional")
-        self.AlunoUsuario = tela_carregamento.aluno_usuario
+        self.AlunoRA = tela_carregamento.aluno_RA
 
         # Inicializar o controller e carregar os dados do aluno
         self.Aluno = AlunoController()
-        self.Aluno.setAluno(self.AlunoUsuario)
+        self.Aluno.setAluno(self.AlunoRA)
 
         # Preencher os campos da tela com os dados do aluno
         self.RA = str(self.Aluno.RE) if self.Aluno.RE is not None else ""
@@ -1895,6 +2558,21 @@ class TelaAlterarAlunoProfissional(MDScreen):
         self.NIVELDELEITURA = str(self.Tela_especifico.NIVELDELEITURA) if self.Tela_especifico.NIVELDELEITURA is not None else ""
         self.NIVELDEESCRITA = str(self.Tela_especifico.NIVELDEESCRITA) if self.Tela_especifico.NIVELDEESCRITA is not None else ""
 
+        #Insere as informações nos TextFields
+        self.ids.NomeAlunosTextField.text = self.NOME
+        self.ids.UsuarioAlunosTextField.text = self.USUARIO
+        self.ids.EscolaAlunosTextField.text = self.ESCOLA
+        self.ids.DataNascimentoAlunosTextField.text = self.DATANASCIMENTO
+        self.ids.GeneroAlunosTextField.text = self.GENERO
+        self.ids.TurmaAlunosTextField.text = self.TURMA
+        self.ids.UFAlunosTextField.text = self.UF
+        self.ids.CidadeAlunosTextField.text = self.CIDADE
+        self.ids.DiagnosticoAlunosTextField.text = self.DIAGNOSTICO
+        self.ids.ObservacaoAlunosTextField.text = self.OBSERVACOES
+        self.ids.NivelLeituraAlunosTextField.text = self.NIVELDELEITURA
+        self.ids.NivelEscritaAlunosTextField.text = self.NIVELDEESCRITA
+
+
     def DataNascimentoAlunosTextField_Active(self, instancia):
             # Remove tudo que não for número
             puro = "".join(ch for ch in instancia.text if ch.isdigit())
@@ -2058,3 +2736,4 @@ class TelaAlterarAlunoProfissional(MDScreen):
                 self.manager.current = "AlunosProfissional"
         except Exception as e:
             print("Erro ao alterar aluno:", e)
+    

@@ -157,7 +157,7 @@ class PostController:
             lista = []
             for post in Resultado:
                 lista.append({
-                    "ID": post[0] or "",
+                    "id": post[0] or "",
                     "usuario": post[1] or "",
                     "legenda": post[2] or ""
                 })
@@ -172,3 +172,21 @@ class PostController:
         if not Resultado:
             return False
         return Resultado
+    
+    def ListarPostPorID(self, ids):
+        lista = []
+        for id in ids:
+            Resultado = self.PesquisarPorID(id)
+            if Resultado and isinstance(Resultado, list):
+                for post in Resultado:
+                    try:
+                        lista.append({
+                            "id": post[0],
+                            "usuario": post[1],
+                            "legenda": post[2]
+                        })
+                    except IndexError:
+                        print(f"⚠️ Dados incompletos para o post com ID {id}.")
+                        pass 
+        return lista
+        

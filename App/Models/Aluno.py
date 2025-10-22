@@ -22,23 +22,23 @@ class Aluno:
 
 
     def setAluno(self, dados):
-        self.RE = dados[0]
-        self.Nome = dados[1]
-        self.Usuario = dados[2]
-        self.Escola = dados[3]
-        self.DataNascimento = dados[4]
-        self.Genero = dados[5]
-        self.Turma = dados[6]
-        self.ProfissionalResponsavel = dados[7]
-        self.UF = dados[8]
-        self.Cidade = dados[9]
-        self.Diagnostico = dados[10]
-        self.Observacao = dados[11]
-        self.NivelLeitura = dados[12]
-        self.NivelEscrita = dados[13]
+        self.RE = dados[0] if dados[0] else None
+        self.Nome = dados[1] if dados[1] else None
+        self.Usuario = dados[2] if dados[2] else None
+        self.Escola = dados[3] if dados[3] else None
+        self.DataNascimento = dados[4] if dados[4] else None
+        self.Genero = dados[5] if dados[5] else None
+        self.Turma = dados[6] if dados[6] else None
+        self.ProfissionalResponsavel = dados[7] if dados[7] else None
+        self.UF = dados[8] if dados[8] else None
+        self.Cidade = dados[9] if dados[9] else None
+        self.Diagnostico = dados[10] if dados[10] else None
+        self.Observacao = dados[11] if dados[11] else None
+        self.NivelLeitura = dados[12] if dados[12] else None
+        self.NivelEscrita = dados[13] if dados[13] else None
 
-    def getAluno(self, usuario):
-        Resultado = Banco.consultar('*','ALUNOS',f"USUARIO ='{usuario}'")
+    def getAluno(self, RE):
+        Resultado = Banco.consultar('*','ALUNOS',f"RE = {RE}")
         if not Resultado or Resultado is False:
             self.Erros.SetErro('Aluno não encontrado')
             print(self.Erros.GetErros())
@@ -144,7 +144,6 @@ class Aluno:
     def Atualizar(self):
         try:
             valores = [
-                f"RE = {self.RE}",
                 f"NOME = '{self.Nome}'",
                 f"USUARIO = '{self.Usuario}'",
                 f"ESCOLA = '{self.Escola}'",

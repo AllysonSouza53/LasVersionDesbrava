@@ -1,5 +1,7 @@
 from Models.Aluno import Aluno
 from Helpers.TratamentoErros import Erros
+from kivymd.app import MDApp
+
 class AlunoController:
     RE = None
     Nome = None
@@ -15,13 +17,19 @@ class AlunoController:
     Observacao = None
     NivelLeitura = None
     NivelEscrita = None
+    app = None
 
     def __init__(self):
         self.Erros = Erros()
         self.Aluno = Aluno()
+        self.app = MDApp.get_running_app()
 
     def setCadastro(self,app):
-        self.RE = app.ids.RAAlunosTextField.text
+        if 'RAAlunosTextField' in app.ids:
+            self.RE = app.ids.RAAlunosTextField.text 
+        else:
+            self.RE = app.RA
+            
         self.Nome = app.ids.NomeAlunosTextField.text
         self.Usuario = app.ids.UsuarioAlunosTextField.text
         listadata = app.ids.DataNascimentoAlunosTextField.text.split('/')
@@ -55,8 +63,8 @@ class AlunoController:
             self.NivelEscrita
         ]
 
-    def setAluno(self, aluno):
-        aluno = self.Aluno.getAluno(aluno)
+    def setAluno(self, RE):
+        aluno = self.Aluno.getAluno(RE)
 
         if not aluno:
             self.Erros.SetErro('Aluno não encontrado')
@@ -101,17 +109,18 @@ class AlunoController:
     def Salvar(self):
         try:
             self.Aluno.setAluno(self.getAluno())
-            if not self.Aluno.getAluno(self.Usuario):
+            if not self.Aluno.getAluno(self.RE):
                 print('Cadastro')
                 self.Aluno.Cadastrar()
                 return None
             else:
+                self.Aluno.setAluno(self.getAluno())
                 self.Aluno.Atualizar()
                 print('Atualiza')
                 return None
         except Exception as e:
             self.Erros.SetErro(f'Não foi possivel salvar aluno. Erro{e}')
-            print('Erro Controller')
+            print(f'Erro Controller.{e}')
             return self.Erros.GetErros()
         
     def ExcluirAluno(self, usuario):

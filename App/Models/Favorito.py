@@ -73,8 +73,8 @@ class Favorito:
             favoritos = []
             for linha in Resultado:
                 ID = linha[0]
-                Usuario = linha[1]
-                PostID = linha[2]
+                Usuario = linha[2]
+                PostID = linha[1]
                 AlbumID = linha[3]
                 favoritos.append({
                     "ID": ID,
@@ -86,4 +86,4 @@ class Favorito:
 
         except Exception as e:
             self.TE.SetErro(f"Erro ao extrair dados do favorito: {e}")
-            return False
+            return []
