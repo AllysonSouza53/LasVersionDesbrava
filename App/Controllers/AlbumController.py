@@ -11,9 +11,9 @@ class AlbumController:
         self.Erros = Erros()
         self.Album = Album()
 
-    def setNewAlbum(self, app):
+    def setNewAlbum(self, app, nome):
         self.Usuario = app.ProfissionalControle.Usuario
-        self.Nome = app.NomeAlbumTextField.text
+        self.Nome = nome
 
     def getAlbum(self):
         return [
@@ -36,11 +36,6 @@ class AlbumController:
             self.Album.setAlbum(self.getAlbum())
             resultado = self.Album.Salvar()
             if resultado:
-                self.ID = self.Album.Pesquisar('ID', f"USUARIO = '{self.Usuario}' ORDER BY ID DESC")[0][0]
-                self.Albuns.Album(
-                    self.ID,
-                    self.Usuario
-                )
                 return True
             return False
         except Exception as e:

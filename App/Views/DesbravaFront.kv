@@ -33,6 +33,8 @@
         name:"EstatisticasJogos"
     TelaAlterarAlunoProfissional:
         name:"AlterarAlunoProfissional"
+    TelaAlbumEspecifico:
+        name:"AlbumEspecifico"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -1298,6 +1300,7 @@
                     theme_text_color:'Custom'
                     icon_color:1, 1, 1, 1
                     on_release:root.AdicionarAlunoButton_Click()
+                    radius:20, 20, 20, 20
 
                 Widget:
 
@@ -3388,5 +3391,65 @@
                                 size_hint_y: None
                                 height: dp(30)
                                 on_release: root.AlterarAlunos_Click()
+
+                Widget:
+
+
+<TelaAlbumEspecifico>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.18
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo,app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                ScrollView:
+                    do_scroll_x: False  # desativa rolagem horizontal
+                    do_scroll_y: True   # ativa rolagem vertical
+
+                    MDBoxLayout:
+                        id:FeedAlbumEspecifico
+                        orientation: "vertical"
+                        size_hint_y: None
+                        height: self.minimum_height  # ajusta a altura ao conteúdo interno
+                        padding: dp(20)
+                        spacing: dp(10)
+                        cols:1
 
                 Widget:

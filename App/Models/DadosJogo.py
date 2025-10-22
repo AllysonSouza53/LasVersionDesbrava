@@ -3,7 +3,7 @@ from Helpers.TratamentoErros import Erros
 
 class DadosJogo:
     ID = None
-    USUARIO_ALUNO = None
+    ID_ALUNO = None
     USUARIO_PROFISSIONAL = None
     ID_JOGO = None
     ID_NIVEL = None
@@ -26,7 +26,7 @@ class DadosJogo:
         """
         (
             self.ID,
-            self.USUARIO_ALUNO,
+            self.ID_ALUNO,
             self.USUARIO_PROFISSIONAL,
             self.ID_JOGO,
             self.ID_NIVEL,
@@ -41,7 +41,7 @@ class DadosJogo:
 
     def Salvar(self):
         # Validações básicas
-        if not self.USUARIO_ALUNO or not str(self.USUARIO_ALUNO).strip():
+        if not self.ID_ALUNO or not str(self.ID_ALUNO).strip():
             self.TE.SetErro("Usuário aluno não informado!")
         if not self.USUARIO_PROFISSIONAL or not str(self.USUARIO_PROFISSIONAL).strip():
             self.TE.SetErro("Usuário profissional não informado!")
@@ -53,9 +53,9 @@ class DadosJogo:
             return False
 
         try:
-            colunas = "USUARIO_ALUNO,USUARIO_PROFISSIONAL,ID_JOGO,ID_NIVEL,PONTUACAO,PORCENTAGEM_COMPLETADA,TEMPO_GASTO,ACERTOS,ERROS,TENTATIVAS"
+            colunas = "ID_ALUNO,USUARIO_PROFISSIONAL,ID_JOGO,ID_NIVEL,PONTUACAO,PORCENTAGEM_COMPLETADA,TEMPO_GASTO,ACERTOS,ERROS,TENTATIVAS"
             valores = [
-                self.USUARIO_ALUNO,
+                self.ID_ALUNO,
                 self.USUARIO_PROFISSIONAL,
                 self.ID_JOGO,
                 self.ID_NIVEL,
@@ -106,7 +106,7 @@ class DadosJogo:
             for linha in resultado:
                 dados.append({
                     "ID": linha[0],
-                    "USUARIO_ALUNO": linha[1],
+                    "ID_ALUNO": linha[1],
                     "USUARIO_PROFISSIONAL": linha[2],
                     "ID_JOGO": linha[3],
                     "ID_NIVEL": linha[4],

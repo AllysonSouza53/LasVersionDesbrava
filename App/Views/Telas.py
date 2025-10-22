@@ -32,6 +32,8 @@ from functools import partial
 from kivymd.uix.button import MDRoundFlatButton  # compatível
 from Helpers.TratamentoErros import Erros
 from Controllers.AlbumController import AlbumController
+from kivymd.toast import toast
+from kivymd.uix.textfield import MDTextField
 
 
 #-------------------------------------------------------------------
@@ -875,7 +877,7 @@ class TelaAlterarPerfilProfissional(MDScreen):
 
 class TelaFavoritosPerfilProfissional(MDScreen):
     
-    ControlePerfil = None
+    ProfissionalControle = None
     ControleFavoritos = None
     FeedFavoritos = None
     ControlePost = None
@@ -884,20 +886,21 @@ class TelaFavoritosPerfilProfissional(MDScreen):
     GridAlbuns = None
     IDs = None
     Resultado = None
+    Nome = None
 
     def on_pre_enter(self, *args):
         tela_carregamento = self.manager.get_screen("CarregamentoInicial")
         if tela_carregamento.Profissional:
-            self.ControlePerfil = tela_carregamento.Profissional
+            self.ProfissionalControle = tela_carregamento.Profissional
         else:
-            self.ControlePerfil = None
+            self.ProfissionalControle = None
         self.FeedFavoritos = self.ids.FeedFavoritos
         self.GridAlbuns = self.ids.GridAlbuns
 
         self.ControleFavoritos = FavoritosController()
         self.ControlePost = PostController()
         self.ControleAlbuns = AlbumController()
-        self.Favoritos = self.ControleFavoritos.setListaFavoritos(f"USUARIO = '{self.ControlePerfil.Usuario}'")
+        self.Favoritos = self.ControleFavoritos.setListaFavoritos(f"USUARIO = '{self.ProfissionalControle.Usuario}'")
         try:
             self.IDs = [item['PostID'] for item in self.Favoritos]
         except Exception as e:
@@ -914,7 +917,7 @@ class TelaFavoritosPerfilProfissional(MDScreen):
     def ListarAlbuns(self):
         self.GridAlbuns.clear_widgets()
         try:
-            self.Albuns = self.ControleAlbuns.ListarAlbumPorUsuario(self.ControlePerfil.Usuario)
+            self.Albuns = self.ControleAlbuns.ListarAlbumPorUsuario(self.ProfissionalControle.Usuario)
 
             if not self.Albuns:
                 Label = MDLabel(
@@ -937,7 +940,8 @@ class TelaFavoritosPerfilProfissional(MDScreen):
                     spacing=dp(25),
                     radius=[15, 15, 15, 15],
                     md_bg_color=(0.152, 0.251, 0.152, 1),
-                    elevation=3
+                    elevation=3,
+                    on_release=lambda x, nome=album.get('nome', ''): self.AbrirAlbum(nome)
                 )
 
                 # 🔹 Ícone grande
@@ -1255,7 +1259,7 @@ class TelaFavoritosPerfilProfissional(MDScreen):
             self.AtualizarComentarios(self.instanciacomentario)
         except Exception as e:
             print(e)
-    
+
     def GetFavoritos(self):
         ListaPostsHelper = Posts()
         lista = []
@@ -1312,6 +1316,100 @@ class TelaFavoritosPerfilProfissional(MDScreen):
     def ExcluirComentario(self, post):
         pass
 
+    def AdicionarAlbum(self):
+        from kivymd.uix.boxlayout import MDBoxLayout
+        from kivymd.uix.textfield import MDTextField
+        from kivymd.uix.button import MDFloatingActionButton
+        from kivymd.uix.label import MDLabel
+        from kivymd.uix.dialog import MDDialog
+        from kivy.metrics import dp
+        from kivy.uix.widget import Widget
+
+        # Layout principal do diálogo
+        BoxAlbum = MDBoxLayout(
+            orientation="vertical",
+            padding=dp(20),
+            spacing=dp(25),
+            size_hint_y=None,
+            height=dp(300),
+            md_bg_color=(1, 1, 1, 1)
+        )
+
+        # Título interno
+        Titulo = MDLabel(
+            text="Adicionar Álbum",
+            halign="center",
+            theme_text_color="Custom",
+            text_color=(0.2, 0.2, 0.2, 1),
+            font_style="H6",
+            bold=True
+        )
+
+        # Campo de texto
+        NomeText = MDTextField(
+            id = 'NomeAlbumTextField',
+            hint_text="Digite op nome do album",
+            mode="rectangle",
+            size_hint_x=1,
+            line_color_normal=(0.7, 0.7, 0.7, 1),
+            line_color_focus=(0.2, 0.6, 0.3, 1),
+            text_color_normal=(0, 0, 0, 1),
+            text_color_focus=(0, 0, 0, 1),
+            cursor_color=(0.2, 0.6, 0.3, 1),
+            icon_right="account",
+            radius=[10, 10, 10, 10],
+        )
+
+        # Espaço entre campo e botão
+        Spacer = Widget(size_hint_y=None, height=dp(10))
+
+        # Botão flutuante para confirmar
+        from kivymd.uix.button import MDRectangleFlatIconButton
+
+        Botao = MDRectangleFlatIconButton(
+            text="Adicionar",
+            icon="plus",
+            line_color=(0.2, 0.6, 0.3, 1),
+            text_color=(0.2, 0.6, 0.3, 1),
+            pos_hint={"center_x": 0.5},
+            on_release=lambda x: self.ConfirmarAlbum(NomeText.text)
+        )
+
+        # Adiciona elementos ao layout
+        BoxAlbum.add_widget(Titulo)
+        BoxAlbum.add_widget(NomeText)
+        BoxAlbum.add_widget(Spacer)
+        BoxAlbum.add_widget(Botao)
+
+        # Diálogo principal
+        self.dialog = MDDialog(
+            title="",
+            type="custom",
+            content_cls=BoxAlbum,
+            radius=[20, 20, 20, 20],
+            md_bg_color=(0.97, 0.97, 0.97, 1),
+            size_hint=(0.6, None),
+            height=dp(400),
+        )
+
+        self.dialog.open()
+
+    def ConfirmarAlbum(self, nome_album):
+        album = AlbumController()
+        if not nome_album.strip():
+            toast("Por favor, digite o registro do album.")
+            return
+
+        album.setNewAlbum(self, nome_album)
+        album.Salvar()
+        self.ListarAlbuns()
+        self.dialog.dismiss()
+        toast(f"Álbum '{nome_album}' adicionado com sucesso!")
+
+    def AbrirAlbum(self, nome):
+        self.nome = nome
+        if self.manager:
+            self.manager.current = 'AlbumEspecifico'
 #_________________________________________________________________________________________________________________________
 class TelaAlunosProfissional(MDScreen):
     Sessao = LoginController()
@@ -1671,7 +1769,8 @@ class TelaComunidadeProfissionais(MDScreen):
                 icon="dots-vertical",
                 size_hint=(None, None),
                 size=(dp(24), dp(24)),
-                pos=(dp(0), dp(5))
+                pos=(dp(0), dp(5)),
+                radius=[20, 20, 20, 20]  # <- evita ValueError
             )
 
             # Cria menu
@@ -1723,7 +1822,8 @@ class TelaComunidadeProfissionais(MDScreen):
             Favoritar_button = MDIconButton(
                 icon="star-outline",
                 size_hint=(None, None),
-                size=(dp(24), dp(24))
+                size=(dp(24), dp(24)),
+                radius=[20, 20, 20, 20]  # <- evita ValueError
             )
             Favoritar_button.post_id = post.get("id")
 
@@ -1733,7 +1833,8 @@ class TelaComunidadeProfissionais(MDScreen):
             Comentarios_button = MDIconButton(
                 icon="comment-outline",
                 size_hint=(None, None),
-                size=(dp(24), dp(24))
+                size=(dp(24), dp(24)),
+                radius=[20, 20, 20, 20]  # <- evita ValueError
             )
             Comentarios_button.post_id = post.get("id")
             Comentarios_button.bind(on_release=self.abrir_comentarios)
@@ -1794,7 +1895,8 @@ class TelaComunidadeProfissionais(MDScreen):
                     icon="dots-vertical",
                     size_hint=(None, None),
                     size=(dp(24), dp(24)),
-                    pos=(dp(0), dp(0))
+                    pos=(dp(0), dp(0)),
+                    radius=[20, 20, 20, 20]  # <- evita ValueError
                 )
 
                 btn_menu.theme_icon_color = "Custom"
@@ -2288,6 +2390,7 @@ class TelaAdicionarAluno(MDScreen):
     def AdicionarAlunos_Click(self):
         try:
             print("IDs disponíveis:", self.ids.keys())
+            print(self.ControleProfissional.CPF)
             self.AlunoControle.setCadastro(self)
             print("Aluno:", self.AlunoControle.getAluno())
             self.AlunoControle.Salvar()
@@ -2461,7 +2564,7 @@ class TelaAlunoEspecifico(MDScreen):
             self.manager.current = "AlterarAlunoProfissional"
 
 class TelaEstatisticasJogos(MDScreen):
-    AlunoUsuario = StringProperty("")
+    AlunoRA = None
     Jogo = StringProperty("")
     Nivel = StringProperty("")
     Profissional = None
@@ -2477,8 +2580,7 @@ class TelaEstatisticasJogos(MDScreen):
 
     def on_pre_enter(self, *args):
         tela_carregamento = self.manager.get_screen("AlunoEspecifico")
-        self.AlunoUsuario = tela_carregamento.AlunoUsuario
-        self.AlunoRA = tela_carregamento.RA
+        self.AlunoRA = tela_carregamento.AlunoRA
         self.Jogo = tela_carregamento.titulo
         self.Nivel = str(tela_carregamento.nivel)
         tela_carregamento = self.manager.get_screen("CarregamentoInicial")
@@ -2490,7 +2592,7 @@ class TelaEstatisticasJogos(MDScreen):
 
     def PegarDados(self):
         try:
-            if self.ControleDados.setDadoJogo(f"USUARIO_ALUNO = '{self.AlunoUsuario}' AND NOME_JOGO = '{self.Jogo}' AND ID_NIVEL = {self.Nivel} AND USUARIO_PROFISSIONAL = '{self.UsuarioProfissional}'"):
+            if self.ControleDados.setDadoJogo(f"ID_ALUNO = '{self.AlunoRA}' AND NOME_JOGO = '{self.Jogo}' AND ID_NIVEL = {self.Nivel} AND USUARIO_PROFISSIONAL = '{self.UsuarioProfissional}'"):
                 self.PONTUACAO = str(self.ControleDados.PONTUACAO)
                 self.PORCENTAGEM_COMPLETADA = str(self.ControleDados.PORCENTAGEM_COMPLETADA)
                 self.TEMPO_GASTO = str(self.ControleDados.TEMPO_GASTO)
@@ -2737,3 +2839,39 @@ class TelaAlterarAlunoProfissional(MDScreen):
         except Exception as e:
             print("Erro ao alterar aluno:", e)
     
+class TelaAlbumEspecifico(MDScreen):
+    ProfissionalControle = None
+    ControleFavoritos = None
+    FeedAlbumEspecifico = None
+    ControlePost = None
+    ControleAlbuns = None
+    Favoritos = None
+    GridAlbuns = None
+    IDs = None
+    Resultado = None
+    Nome = None
+
+    def on_pre_enter(self, *args):
+        tela_carregamento = self.manager.get_screen("CarregamentoInicial")
+        if tela_carregamento.Profissional:
+            self.ProfissionalControle = tela_carregamento.Profissional
+        else:
+            self.ProfissionalControle = None
+        self.FeedAlbumEspecifico = self.ids.FeedAlbumEspecifico
+
+        self.ControleFavoritos = FavoritosController()
+        self.ControlePost = PostController()
+        self.ControleAlbuns = AlbumController()
+        self.Favoritos = self.ControleFavoritos.setListaFavoritos(f"USUARIO = '{self.ProfissionalControle.Usuario}'")
+        try:
+            self.IDs = [item['PostID'] for item in self.Favoritos]
+        except Exception as e:
+            print(e)
+            self.IDs = []
+        self.Resultado = self.ControlePost.ListarPostPorID(self.IDs)
+        self.Resultado = self.CarregarImagensPosts(self.Resultado)
+        print("Favoritos:", self.Favoritos)
+        print("IDs:", self.IDs)
+        print(self.Resultado)
+        self.ListarAlbuns()
+        self.ListarFavoritos()

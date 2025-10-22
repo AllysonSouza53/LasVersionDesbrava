@@ -36,6 +36,7 @@ class Aluno:
         self.Observacao = dados[11] if dados[11] else None
         self.NivelLeitura = dados[12] if dados[12] else None
         self.NivelEscrita = dados[13] if dados[13] else None
+        print(self.ProfissionalResponsavel)
 
     def getAluno(self, RE):
         Resultado = Banco.consultar('*','ALUNOS',f"RE = {RE}")
@@ -118,7 +119,7 @@ class Aluno:
             return False
 
         try:
-            colunas = "RE,NOME,USUARIO,ESCOLA,DATANASCIMENTO,GENERO,TURMA,UF,CIDADE,DIAGNOSTICO,OBSERVACOES,NIVELDELEITURA,NIVELDEESCRITA"
+            colunas = "RE,NOME,USUARIO,ESCOLA,DATANASCIMENTO,GENERO,TURMA,PROFISSIONALRESPONSAVEL,UF,CIDADE,DIAGNOSTICO,OBSERVACOES,NIVELDELEITURA,NIVELDEESCRITA"
             valores = [
                 self.RE,
                 self.Nome,
@@ -127,6 +128,7 @@ class Aluno:
                 self.DataNascimento,
                 self.Genero,
                 self.Turma,
+                self.ProfissionalResponsavel,
                 self.UF,
                 self.Cidade,
                 self.Diagnostico,

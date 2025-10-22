@@ -3,7 +3,7 @@ from Helpers.TratamentoErros import Erros as E
 
 class DadosJogosController:
     ID = None
-    USUARIO_ALUNO = None
+    ID_ALUNO = None
     USUARIO_PROFISSIONAL = None
     ID_JOGO = None
     ID_NIVEL = None
@@ -20,8 +20,8 @@ class DadosJogosController:
         self.DadosJogos = DadosJogo()
 
     # 🔹 Define um novo conjunto de dados do jogo
-    def setNewDadoJogo(self, usuario_aluno, usuario_profissional, id_jogo, id_nivel, pontuacao, porcentagem, tempo, acertos, erros, tentativas):
-        self.USUARIO_ALUNO = usuario_aluno
+    def setNewDadoJogo(self, ID_ALUNO, usuario_profissional, id_jogo, id_nivel, pontuacao, porcentagem, tempo, acertos, erros, tentativas):
+        self.ID_ALUNO = ID_ALUNO
         self.USUARIO_PROFISSIONAL = usuario_profissional
         self.ID_JOGO = id_jogo
         self.ID_NIVEL = id_nivel
@@ -36,7 +36,7 @@ class DadosJogosController:
     def getDadoJogo(self):
         return [
             self.ID,
-            self.USUARIO_ALUNO,
+            self.ID_ALUNO,
             self.USUARIO_PROFISSIONAL,
             self.ID_JOGO,
             self.ID_NIVEL,
@@ -58,7 +58,7 @@ class DadosJogosController:
 
         (
             self.ID,
-            self.USUARIO_ALUNO,
+            self.ID_ALUNO,
             self.USUARIO_PROFISSIONAL,
             self.ID_JOGO,
             self.ID_NIVEL,
@@ -86,8 +86,8 @@ class DadosJogosController:
             return False
 
     # 🔹 Pesquisa registros por aluno
-    def PesquisarPorAluno(self, usuario_aluno):
-        resultado = self.DadosJogos.Pesquisar('*', f"USUARIO_ALUNO = '{usuario_aluno}'")
+    def PesquisarPorAluno(self, ID_ALUNO):
+        resultado = self.DadosJogos.Pesquisar('*', f"ID_ALUNO = '{ID_ALUNO}'")
         if not resultado:
             return False
         return resultado

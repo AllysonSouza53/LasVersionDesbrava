@@ -108,8 +108,8 @@ class AlunoController:
 
     def Salvar(self):
         try:
-            self.Aluno.setAluno(self.getAluno())
             if not self.Aluno.getAluno(self.RE):
+                self.Aluno.setAluno(self.getAluno())
                 print('Cadastro')
                 self.Aluno.Cadastrar()
                 return None

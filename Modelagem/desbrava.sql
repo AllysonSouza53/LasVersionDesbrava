@@ -1,11 +1,5 @@
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1:3306
--- Tempo de geração: 16-Out-2025 às 05:08
--- Versão do servidor: 5.7.40
--- versão do PHP: 8.0.26
+CREATE DATABASE IF NOT EXISTS DESBRAVA;
+USE DESBRAVA;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
