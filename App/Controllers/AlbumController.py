@@ -12,7 +12,7 @@ class AlbumController:
         self.Album = Album()
 
     def setNewAlbum(self, app, nome):
-        self.Usuario = app.ProfissionalControle.Usuario
+        self.Usuario = app.ControlePerfil.Usuario
         self.Nome = nome
 
     def getAlbum(self):
@@ -82,3 +82,13 @@ class AlbumController:
                         print(f"⚠️ Dados incompletos para o álbum com ID {id}.")
                         pass
         return lista
+
+    def ExcluirAlbum(self):
+        try:
+            resultado = self.Album.Deletar()
+            if resultado:
+                return True
+            return False
+        except Exception as e:
+            print(f"Erro ao excluir álbum: {e}")
+            return False
