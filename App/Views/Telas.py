@@ -3374,4 +3374,18 @@ class TelaCarregamentoInicialAluno(MDScreen):
             self.manager.current = "InicialAluno"
 
 class TelaInicialAluno(MDScreen):
-    pass
+    
+    def JogosMDTextButton_Click(self):
+        pass
+    
+    def PerfilMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilAluno"
+
+class TelaPerfilAluno(MDScreen):
+    def PerfilMDTextButton_Click(self):
+        pass
+    
+    def JogosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "InicialAluno"
