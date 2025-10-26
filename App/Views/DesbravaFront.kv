@@ -47,6 +47,8 @@
         name:"InicialAluno"
     TelaPerfilAluno:
         name:"PerfilAluno"
+    TelaConquistas:
+        name:"Conquistas"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -4106,7 +4108,7 @@
                                 text_color: 1, 1, 1, 1
                                 font_size: "18sp"
                                 bold: True
-                                on_release: root.PerfilMDTextButton_Click()
+                                on_release: root.ConquistasMDTextButton_Click()
             MDBoxLayout: 
                 orientation:'horizontal'
                 MDBoxLayout:
@@ -4530,7 +4532,202 @@
                         keep_ratio: True         # mantém proporção
                         pos_hint: {"center_x": 0.5}  # centraliza
 
-                            
+<TelaConquistas>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
 
+        BoxLayout:
+            orientation: 'vertical'
 
-                    
+            # ----------------- TOPO -----------------
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: 0.2
+
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            source: 'Imagens/Logo.png'
+                            size: app.resp.Size_x_Logo, app.resp.Size_y_Logo
+                            pos: self.center_x - self.width * 0.48, self.center_y - self.height * 0.55
+
+                BoxLayout:
+                    spacing: 25
+                    pos_hint: {"center_y": 0.9}
+                    orientation: 'horizontal'
+                    Widget:
+
+                    MDBoxLayout:
+                        spacing: dp(30)
+                        orientation: 'horizontal'
+
+                        MDTextButton:
+                            text: "Jogos"
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+                            font_size: "18sp"
+                            bold: True
+                            on_release: root.JogosMDTextButton_Click()
+
+                        MDBoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            spacing: dp(5)
+                            pos_hint: {"center_y": 0}
+
+                            MDTextButton:
+                                text: "Perfil"
+                                theme_text_color: "Custom"
+                                text_color: 1, 1, 1, 1
+                                font_size: "18sp"
+                                bold: True
+                                on_release: root.PerfilMDTextButton_Click()
+
+                            MDTextButton:
+                                text: "Conquistas"
+                                theme_text_color: "Custom"
+                                text_color: 1, 1, 1, 1
+                                font_size: "18sp"
+                                bold: True
+                                on_release: root.ConquistasMDTextButton_Click()
+
+            # ----------------- CONTEÚDO -----------------
+            MDBoxLayout:
+                orientation: 'horizontal'
+                padding: dp(20)
+
+                Widget:
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(10)
+                    size_hint_x: 0.8
+
+                    MDLabel:
+                        text: 'Conquistas'
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        font_size: "30sp"
+                        halign: 'center'
+                        bold: True
+                        size_hint_y: None
+                        height: self.texture_size[1] + dp(20)
+
+                    # 🔹 Área com botões laterais + carrossel
+                    FloatLayout:
+
+                        # 🔸 Botão ESQUERDA
+                        MDFloatingActionButton:
+                            icon: "chevron-left"
+                            md_bg_color: 0.1, 0.6, 0.3, 1
+                            pos_hint: {"center_y": 0.5, "x": 0}
+                            on_release: root.carousel_prev()
+
+                        # 🔸 Carrossel central
+                        MDCarousel:
+                            id: carousel
+                            size_hint: (0.8, None)
+                            height: dp(320)
+                            pos_hint: {"center_x": 0.5, "center_y": 0.7}
+                            loop: True
+
+                            # 🔹 Página 1
+                            ScrollView:
+                                do_scroll_x: False
+                                do_scroll_y: True
+                                MDBoxLayout:
+                                    orientation: 'vertical'
+                                    size_hint_y: None
+                                    height: self.minimum_height
+                                    spacing: dp(15)
+                                    padding: dp(20)
+
+                                    MDCard:
+                                        orientation: 'vertical'
+                                        size_hint_y: None
+                                        height: dp(120)
+                                        radius: [20]
+                                        md_bg_color: 0.1, 0.6, 0.3, 1
+                                        padding: dp(15)
+                                        MDLabel:
+                                            text: 'Jogo 1'
+                                            halign: 'center'
+                                            theme_text_color: "Custom"
+                                            text_color: 1, 1, 1, 1
+                                            font_size: "20sp"
+                                            bold: True
+
+                                    MDCard:
+                                        orientation: 'vertical'
+                                        size_hint_y: None
+                                        height: dp(120)
+                                        radius: [20]
+                                        md_bg_color: 0.1, 0.6, 0.3, 1
+                                        padding: dp(15)
+                                        MDLabel:
+                                            text: 'Jogo 2'
+                                            halign: 'center'
+                                            theme_text_color: "Custom"
+                                            text_color: 1, 1, 1, 1
+                                            font_size: "20sp"
+                                            bold: True
+
+                            # 🔹 Página 2
+                            ScrollView:
+                                do_scroll_x: False
+                                do_scroll_y: True
+                                MDBoxLayout:
+                                    orientation: 'vertical'
+                                    size_hint_y: None
+                                    height: self.minimum_height
+                                    spacing: dp(15)
+                                    padding: dp(20)
+
+                                    MDCard:
+                                        orientation: 'vertical'
+                                        size_hint_y: None
+                                        height: dp(120)
+                                        radius: [20]
+                                        md_bg_color: 0.1, 0.6, 0.3, 1
+                                        padding: dp(15)
+                                        MDLabel:
+                                            text: 'Jogo 3'
+                                            halign: 'center'
+                                            theme_text_color: "Custom"
+                                            text_color: 1, 1, 1, 1
+                                            font_size: "20sp"
+                                            bold: True
+
+                                    MDCard:
+                                        orientation: 'vertical'
+                                        size_hint_y: None
+                                        height: dp(120)
+                                        radius: [20]
+                                        md_bg_color: 0.1, 0.6, 0.3, 1
+                                        padding: dp(15)
+                                        MDLabel:
+                                            text: 'Jogo 4'
+                                            halign: 'center'
+                                            theme_text_color: "Custom"
+                                            text_color: 1, 1, 1, 1
+                                            font_size: "20sp"
+                                            bold: True
+
+                        # 🔸 Botão DIREITA
+                        MDFloatingActionButton:
+                            icon: "chevron-right"
+                            md_bg_color: 0.1, 0.6, 0.3, 1
+                            pos_hint: {"center_y": 0.5, "right": 1}
+                            on_release: root.carousel_next()
+
+                Widget:
+

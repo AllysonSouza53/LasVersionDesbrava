@@ -3389,3 +3389,31 @@ class TelaPerfilAluno(MDScreen):
     def JogosMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "InicialAluno"
+
+    def ConquistasMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "Conquistas"
+
+class TelaConquistas(MDScreen):
+    def PerfilMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilAluno"
+    
+    def JogosMDTextButton_Click(self):
+        if self.manager:
+            self.manager.current = "InicialAluno"
+
+    def ConquistasMDTextButton_Click(self):
+        pass
+
+    def carousel_prev(self):
+        try:
+            self.ids.carousel.load_previous()
+        except Exception as e:
+            print("Erro ao ir para slide anterior:", e)
+
+    def carousel_next(self):
+        try:
+            self.ids.carousel.load_next()
+        except Exception as e:
+            print("Erro ao ir para próximo slide:", e)
