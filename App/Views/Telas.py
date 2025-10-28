@@ -3393,6 +3393,51 @@ class TelaPerfilAluno(MDScreen):
     def ConquistasMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "Conquistas"
+    
+    def JogosCard_Click(self, jogo):
+        if jogo == 1:
+            self.manager.current = "JogoDosSeteErros"
+        elif jogo == 2:
+            self.Titulo = 'WaterSort'
+            self.Objetivo = 'Treinar o Planejamento Multiestágio e o Raciocínio Lógico Dedutivo, ensinando a criança a antecipar e otimizar movimentos sob regras de restrição.'
+            self.Competencias = 'Raciocínio Lógico, Pensamento Estratégico, Antecipação, Resolução de Problemas (fase de "tentativa e erro" e análise de consequências) e Concentração.'
+            self.BaseTeorica = 'Baseado na Teoria da Resolução de Problemas (Heurística) e no desenvolvimento de Funções Executivas, como o planejamento e a memória de trabalho (para reter o estado atual dos tubos).'
+            self.Instrucoes = 'Incentive a criança a pensar sobre o movimento atual e suas consequências a longo prazo ("O que este movimento me permite fazer no futuro?"). Em caso de travamento, peça que reinicie, revisando mentalmente a estratégia inicial.'
+            self.Classificar = 'Raciocínio'
+            self.Explicacoes = 'O jogador deve classificar líquidos coloridos em tubos de ensaio, de modo que cada tubo contenha apenas uma cor. As regras de restrição (só pode despejar em um tubo se a cor for a mesma do topo e houver espaço) exigem a criação de uma sequência lógica de movimentos para liberar os tubos e permitir a classificação completa.'
+        elif jogo == 3:
+            self.Titulo = 'SílabasMix'
+            self.Objetivo = 'Desenvolver a Consciência Silábica e Fonológica, permitindo a análise (separação) e a síntese (junção) de sílabas para a construção de palavras.'
+            self.Competencias = 'Consciência Fonológica, Análise e Síntese, Rastreamento Visual da Palavra, Reconhecimento de Padrões Ortográficos e Vocabulário.'
+            self.BaseTeorica = 'Fundamentado no Modelo Construtivista da aquisição da escrita e em pesquisas sobre a importância do conhecimento das unidades menores (sílabas) para o avanço no processo de alfabetização.'
+            self.Instrucoes = 'Peça que a criança pronuncie a palavra em voz alta, batendo palmas a cada sílaba, antes de manipular as peças. Proponha desafios como: "Se tirarmos a primeira sílaba de "sapato", o que sobra?".'
+            self.Classificar = 'Palavras'
+            self.Explicacoes = 'O jogo apresenta diferentes atividades com sílabas (digitação, arrasto, clique) que requerem a identificação e a manipulação de sílabas simples e complexas para completar ou formar palavras ilustradas. Estimula o reconhecimento de que a palavra escrita é formada pela união de unidades silábicas.'
+        elif jogo == 4:
+            self.Titulo = 'Som e Sílaba'
+            self.Objetivo = 'Estabelecer a conexão sólida entre os sons da fala (fonemas/sílabas orais) e suas representações escritas (grafemas), fundamentando o princípio alfabético.'
+            self.Competencias = 'Discriminação Auditiva, Memória Sonora, Associação Fonema-Grafema, Reconhecimento de Letras e Sílabas Iniciais e Leitura Fonética.'
+            self.BaseTeorica = 'Apoiado nos estudos da Consciência Fonológica e do Processamento Fonológico, essenciais para a decodificação de palavras e o diagnóstico/intervenção em dificuldades de leitura (dislexia).'
+            self.Instrucoes = 'Use o método multisensorial, pedindo à criança para tocar na letra ou sílaba enquanto emite o som. Concentre-se nos sons, não apenas nos nomes das letras. O feedback imediato sobre acerto/erro é crucial.'
+            self.Classificar = 'Palavras'
+            self.Explicacoes = 'Apresenta desafios onde a criança deve ouvir um som (de letra ou sílaba) e selecionar a representação gráfica correspondente, ou vice-versa. Utiliza recursos visuais e auditivos para reforçar a ideia de que a escrita representa a fala, tornando o aprendizado da leitura mais consistente e significativo.'
+        elif jogo == 5:
+            self.Titulo = 'Jogo da Memória'
+            self.Objetivo = 'Fortalecer a Memória de Trabalho e a Associação Semântica, ligando o conceito visual (imagem) à sua forma escrita (palavra) para acelerar o reconhecimento de leitura.'
+            self.Competencias = 'Memória Visual e Espacial, Concentração, Raciocínio Lógico (estratégia de localização), Reconhecimento de Palavras (vocabulário) e Leitura Global.'
+            self.BaseTeorica = 'Utiliza princípios da Teoria Cognitiva da Aprendizagem (processamento de informação e memória de curto prazo) e da Abordagem Lexical, que prioriza o reconhecimento da palavra completa.'
+            self.Instrucoes = 'Comece com poucos pares e aumente gradualmente a dificuldade. Antes de virar as cartas, peça à criança para tentar ler as palavras viradas ou nomear as figuras para reforçar a associação.'
+            self.Classificar = 'Memória'
+            self.Explicacoes = 'As cartas são dispostas viradas para baixo; uma carta contém a imagem de um objeto e a outra contém o nome escrito desse objeto. O jogador deve virar duas cartas por vez para encontrar o par correspondente (imagem e palavra), exercitando a lembrança da localização e a leitura.'
+        elif jogo == 6:
+            self.Titulo = 'Memória das Cores'
+            self.Objetivo = 'Desenvolver a Memória Visual, a Sequenciação e o Reconhecimento de Padrões, habilidades que servem como pré-requisitos para a organização do pensamento em tarefas complexas.'
+            self.Competencias = 'Memória Visual de Curto Prazo, Discriminação Visual, Rastreamento e Reprodução de Padrões, Concentração e Organização da Informação.'
+            self.BaseTeorica = 'Enraizado na Psicologia Cognitiva (estudo da memória de curto prazo e da capacidade de codificação e recuperação de estímulos visuais) e na importância do reconhecimento de padrões para o raciocínio.'
+            self.Instrucoes = 'Para jogos de sequência (como o Genius), peça que a criança verbalize a sequência de cores antes de reproduzi-la (codificação verbal). Para jogos de pares, estimule a criação de estratégias de localização espacial.'
+            self.Classificar = 'Memória'
+            self.Explicacoes = 'Em sua forma clássica, é um jogo de memória simples de encontrar pares de cores idênticas. Em sua forma avançada (sequência), o jogo exibe um padrão de luzes e sons coloridos que o jogador deve memorizar e reproduzir. A dificuldade aumenta progressivamente, exigindo um esforço crescente da memória para reter sequências longas.'
+
 
 class TelaConquistas(MDScreen):
     def PerfilMDTextButton_Click(self):
@@ -3417,3 +3462,29 @@ class TelaConquistas(MDScreen):
             self.ids.carousel.load_next()
         except Exception as e:
             print("Erro ao ir para próximo slide:", e)
+
+class TelaJogoDosSeteErros(MDScreen):
+    def botao_clicado(self, valor ,botao):
+        if valor == 1:
+            botao.disabled = True
+            print("Botão 1 clicado - Erro encontrado!")
+        elif valor == 2:
+            botao.disabled = True
+            print("Botão 2 clicado - Erro encontrado!")
+        elif valor == 3:
+            botao.disabled = True
+            print("Botão 3 clicado - Erro encontrado!")
+        elif valor == 4:
+            botao.disabled = True
+            print("Botão 4 clicado - Erro encontrado!")
+        elif valor == 5:
+            botao.disabled = True
+            print("Botão 5 clicado - Erro encontrado!")
+        elif valor == 6:
+            botao.disabled = True
+            print("Botão 6 clicado - Erro encontrado!")
+        elif valor == 7:
+            botao.disabled = True
+            print("Botão 7 clicado - Erro encontrado!")
+        else:
+            print("Botão inválido.")

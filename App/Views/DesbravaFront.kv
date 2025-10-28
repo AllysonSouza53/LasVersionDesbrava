@@ -49,6 +49,8 @@
         name:"PerfilAluno"
     TelaConquistas:
         name:"Conquistas"
+    TelaJogoDosSeteErros:
+        name:"JogoDosSeteErros"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -4731,3 +4733,155 @@
 
                 Widget:
 
+<TelaJogoDosSeteErros>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.1
+                BoxLayout:
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+
+            MDBoxLayout:
+                id: 'JogoDosSeteErros'
+                orientation: 'horizontal'
+                padding: dp(20)
+                spacing: dp(20)
+                size_hint_y: 0.95
+
+                MDCard:
+                    radius: [15, 15, 15, 15]
+                    elevation: 10
+                    size_hint: 0.48, 1
+                    MDFloatLayout:
+                        # Imagem preenchendo quase todo o card
+                        Image:
+                            source: 'Imagens/7ErrosImagem1.png'
+                            allow_stretch: True
+                            keep_ratio: False
+                            size_hint: 2.5, 1.35
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+                MDCard:
+                    radius: [15, 15, 15, 15]
+                    elevation: 10
+                    size_hint: 0.48, 1
+                    MDFloatLayout:
+                        Image:
+                            source: 'Imagens/7ErrosImagem2.png'
+                            allow_stretch: True
+                            keep_ratio: False
+                            size_hint: 2.5, 1.35
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+                        # Botão com ícone check invisível
+                        MDIconButton:
+                            radius:10, 10, 10, 10
+                            id: btn1
+                            icon: "check-circle"
+                            user_font_size: "32sp"
+                            pos_hint: {'x': 0.245, 'y': 0.3}
+                            theme_text_color: "Custom"
+                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            on_release:
+                                root.botao_clicado(1,self)
+                                self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
+
+                        MDIconButton:
+                            radius:10, 10, 10, 10
+                            id: btn2
+                            icon: "check-circle"
+                            user_font_size: "32sp"
+                            pos_hint: {'x': 0.548, 'y': 0.02}
+                            theme_text_color: "Custom"
+                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            on_release:
+                                root.botao_clicado(2,self)
+                                self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
+
+                        MDIconButton:
+                            radius:10, 10, 10, 10
+                            id: btn3
+                            icon: "check-circle"
+                            user_font_size: "32sp"
+                            pos_hint: {'x': 0.52, 'y': 0.2}
+                            theme_text_color: "Custom"
+                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            on_release:
+                                root.botao_clicado(3,self)
+                                self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
+
+                        MDIconButton:
+                            radius:10, 10, 10, 10
+                            id: btn4
+                            icon: "check-circle"
+                            user_font_size: "32sp"
+                            pos_hint: {'x': 0.52, 'y': 0.55}
+                            theme_text_color: "Custom"
+                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            radius:[]
+                            on_release:
+                                root.botao_clicado(4,self)
+                                self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
+
+                        MDIconButton:
+                            radius:10, 10, 10, 10
+                            id: btn5
+                            icon: "check-circle"
+                            user_font_size: "32sp"
+                            pos_hint: {'x': 0.42, 'y': 0.43}
+                            theme_text_color: "Custom"
+                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            on_release:
+                                root.botao_clicado(5,self)
+                                self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
+
+                        MDIconButton:
+                            radius:10, 10, 10, 10
+                            id: btn6
+                            icon: "check-circle"
+                            user_font_size: "32sp"
+                            pos_hint: {'x': 0.17, 'y': 0.4}
+                            theme_text_color: "Custom"
+                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            on_release:
+                                root.botao_clicado(6,self)
+                                self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
+
+                        MDIconButton:
+                            radius:10, 10, 10, 10
+                            id: btn7
+                            icon: "check-circle"
+                            user_font_size: "32sp"
+                            pos_hint: {'x': 0.21, 'y': 0.12}
+                            theme_text_color: "Custom"
+                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            on_release:
+                                root.botao_clicado(7,self)
+                                self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
