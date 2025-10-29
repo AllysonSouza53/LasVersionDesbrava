@@ -51,6 +51,10 @@
         name:"Conquistas"
     TelaJogoDosSeteErros:
         name:"JogoDosSeteErros"
+    TelaWaterSort:
+        name:"WaterSort"
+    TelaSilabaMix:
+        name:'SilabaMix'
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -4808,7 +4812,7 @@
                             user_font_size: "32sp"
                             pos_hint: {'x': 0.245, 'y': 0.3}
                             theme_text_color: "Custom"
-                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            text_color: 0.6, 1, 0.6, 0  # verde claro visível ao clicar
                             on_release:
                                 root.botao_clicado(1,self)
                                 self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
@@ -4820,7 +4824,7 @@
                             user_font_size: "32sp"
                             pos_hint: {'x': 0.548, 'y': 0.02}
                             theme_text_color: "Custom"
-                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            text_color: 0.6, 1, 0.6, 0  # verde claro visível ao clicar
                             on_release:
                                 root.botao_clicado(2,self)
                                 self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
@@ -4832,7 +4836,7 @@
                             user_font_size: "32sp"
                             pos_hint: {'x': 0.52, 'y': 0.2}
                             theme_text_color: "Custom"
-                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            text_color: 0.6, 1, 0.6, 0  # verde claro visível ao clicar
                             on_release:
                                 root.botao_clicado(3,self)
                                 self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
@@ -4844,7 +4848,7 @@
                             user_font_size: "32sp"
                             pos_hint: {'x': 0.52, 'y': 0.55}
                             theme_text_color: "Custom"
-                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            text_color: 0.6, 1, 0.6, 0  # verde claro visível ao clicar
                             radius:[]
                             on_release:
                                 root.botao_clicado(4,self)
@@ -4857,7 +4861,7 @@
                             user_font_size: "32sp"
                             pos_hint: {'x': 0.42, 'y': 0.43}
                             theme_text_color: "Custom"
-                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            text_color: 0.6, 1, 0.6, 0  # verde claro visível ao clicar
                             on_release:
                                 root.botao_clicado(5,self)
                                 self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
@@ -4869,7 +4873,7 @@
                             user_font_size: "32sp"
                             pos_hint: {'x': 0.17, 'y': 0.4}
                             theme_text_color: "Custom"
-                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            text_color: 0.6, 1, 0.6, 0  # verde claro visível ao clicar
                             on_release:
                                 root.botao_clicado(6,self)
                                 self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
@@ -4881,7 +4885,98 @@
                             user_font_size: "32sp"
                             pos_hint: {'x': 0.21, 'y': 0.12}
                             theme_text_color: "Custom"
-                            text_color = 0.6, 1, 0.6, 0  # verde claro visível ao clicar
+                            text_color: 0.6, 1, 0.6, 0  # verde claro visível ao clicar
                             on_release:
                                 root.botao_clicado(7,self)
                                 self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
+
+<TelaWaterSort>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.1
+                BoxLayout:
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                    size_hint_x:0.2
+                BoxLayout:
+                    id:JogoWaterSort
+                    orientation:'vertical'
+                
+                Widget:
+                    size_hint_x:0.2
+
+<TelaSilabaMix>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.1
+                BoxLayout:
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                    size_hint_x:0.2
+                MDBoxLayout:
+                    orientation:'horizontal'
+                    id:JogoSilabaMiix
+
+
+                Widget:
+                    size_hint_x:0.2

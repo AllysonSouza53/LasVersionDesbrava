@@ -35,7 +35,25 @@ from Controllers.AlbumController import AlbumController
 from kivymd.toast import toast
 from kivymd.uix.textfield import MDTextField
 from Controllers.AlunoControllerLogin import LoginAlunoController
+import random
+from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.graphics import Color, RoundedRectangle, Line
+from kivy.properties import ListProperty
+from copy import deepcopy
+from kivymd.uix.screen import MDScreen
+from kivy.graphics import Rectangle, Color, RoundedRectangle
 
+COLOR_MAP = {
+    "vermelho": (1, 0, 0, 1),
+    "azul": (0, 0.5, 1, 1),
+    "verde": (0, 1, 0, 1),
+    "amarelo": (1, 1, 0, 1),
+    "roxo": (0.6, 0, 0.8, 1),
+    "laranja": (1, 0.5, 0, 1),
+}
 
 #-------------------------------------------------------------------
 class TelaEscolha(MDScreen):
@@ -3398,13 +3416,7 @@ class TelaPerfilAluno(MDScreen):
         if jogo == 1:
             self.manager.current = "JogoDosSeteErros"
         elif jogo == 2:
-            self.Titulo = 'WaterSort'
-            self.Objetivo = 'Treinar o Planejamento Multiestágio e o Raciocínio Lógico Dedutivo, ensinando a criança a antecipar e otimizar movimentos sob regras de restrição.'
-            self.Competencias = 'Raciocínio Lógico, Pensamento Estratégico, Antecipação, Resolução de Problemas (fase de "tentativa e erro" e análise de consequências) e Concentração.'
-            self.BaseTeorica = 'Baseado na Teoria da Resolução de Problemas (Heurística) e no desenvolvimento de Funções Executivas, como o planejamento e a memória de trabalho (para reter o estado atual dos tubos).'
-            self.Instrucoes = 'Incentive a criança a pensar sobre o movimento atual e suas consequências a longo prazo ("O que este movimento me permite fazer no futuro?"). Em caso de travamento, peça que reinicie, revisando mentalmente a estratégia inicial.'
-            self.Classificar = 'Raciocínio'
-            self.Explicacoes = 'O jogador deve classificar líquidos coloridos em tubos de ensaio, de modo que cada tubo contenha apenas uma cor. As regras de restrição (só pode despejar em um tubo se a cor for a mesma do topo e houver espaço) exigem a criação de uma sequência lógica de movimentos para liberar os tubos e permitir a classificação completa.'
+            self.manager.current = "WaterSort"
         elif jogo == 3:
             self.Titulo = 'SílabasMix'
             self.Objetivo = 'Desenvolver a Consciência Silábica e Fonológica, permitindo a análise (separação) e a síntese (junção) de sílabas para a construção de palavras.'
@@ -3488,3 +3500,254 @@ class TelaJogoDosSeteErros(MDScreen):
             print("Botão 7 clicado - Erro encontrado!")
         else:
             print("Botão inválido.")
+
+from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.graphics import Color, Rectangle, RoundedRectangle
+from kivy.properties import ListProperty
+from kivymd.uix.screen import MDScreen
+from kivy.clock import Clock
+import random
+
+# 🎨 Mapa de cores
+COLOR_MAP = {
+    "vermelho": (1, 0, 0, 1),
+    "azul": (0, 0.5, 1, 1),
+    "verde": (0, 1, 0, 1),
+    "amarelo": (1, 1, 0, 1),
+    "roxo": (0.6, 0, 0.8, 1),
+    "laranja": (1, 0.5, 0, 1),
+}
+
+
+from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.graphics import Color, Rectangle, RoundedRectangle
+from kivy.properties import ListProperty, NumericProperty
+from kivymd.uix.screen import MDScreen
+from kivy.clock import Clock
+import random
+
+# 🎨 Mapa de cores
+COLOR_MAP = {
+    "vermelho": (1, 0, 0, 1),
+    "azul": (0, 0.5, 1, 1),
+    "verde": (0, 1, 0, 1),
+    "amarelo": (1, 1, 0, 1),
+    "roxo": (0.6, 0, 0.8, 1),
+    "laranja": (1, 0.5, 0, 1),
+}
+
+
+class TelaWaterSort(MDScreen):
+
+    # 🔹 Classe interna que representa um tubo
+    class TubeWidget(Widget):
+        colors = ListProperty([])
+
+        # define margens como propriedades (existem já na criação do objeto)
+        image_margin = NumericProperty(10)
+        padding = NumericProperty(12)
+        tube_height = NumericProperty(200)
+
+        def __init__(self, index, on_click, **kwargs):
+            # garante que propriedades NumericProperty existam antes de qualquer callback
+            super().__init__(**kwargs)
+            self.index = index
+            self.on_click = on_click
+            self.size_hint = (1, None)
+            self.height = self.tube_height
+
+            # Bind para redesenhar quando tamanho, posição ou cores mudarem
+            self.bind(pos=self._trigger_redraw, size=self._trigger_redraw, colors=self._trigger_redraw)
+
+        def _trigger_redraw(self, *args):
+            # chama on_colors de forma segura
+            self.on_colors(self, self.colors)
+
+        def on_touch_down(self, touch):
+            if self.collide_point(*touch.pos):
+                self.on_click(self)
+                return True
+            return super().on_touch_down(touch)
+
+        def on_colors(self, instance, value):
+            # limpa os três canais (before, main, after)
+            self.canvas.before.clear()
+            self.canvas.clear()
+            self.canvas.after.clear()
+
+            # 🔹 1) desenha a imagem do tubo no canvas.before (fundo)
+            with self.canvas.before:
+                Rectangle(
+                    source="imagens/tubo.png",
+                    pos=(self.x - self.image_margin, self.y - self.image_margin),
+                    size=(self.width + 2 * self.image_margin, self.height + 2 * self.image_margin)
+                )
+
+            # 🔹 2) desenha as camadas de cor no canvas principal (entre imagem e vidro)
+            if self.colors:
+                layer_height = (self.height - 2 * self.padding) / 4
+                for i, color_name in enumerate(reversed(self.colors)):
+                    rgba = COLOR_MAP.get(color_name, (1, 1, 1, 1))
+                    with self.canvas:
+                        Color(*rgba)
+                        RoundedRectangle(
+                            pos=(self.x + self.padding, self.y + self.padding + i * layer_height),
+                            size=(self.width - 2 * self.padding, layer_height - 4),
+                            radius=[10]
+                        )
+
+            # 🔹 3) desenha o overlay do vidro no canvas.after (por cima, com leve transparência)
+            with self.canvas.after:
+                Color(1, 1, 1, 0.35)
+                Rectangle(
+                    source="imagens/tubo.png",
+                    pos=(self.x - self.image_margin, self.y - self.image_margin),
+                    size=(self.width + 2 * self.image_margin, self.height + 2 * self.image_margin)
+                )
+
+        # redimensiona automaticamente quando widget muda
+        def on_size(self, *args):
+            self._trigger_redraw()
+
+        def on_pos(self, *args):
+            self._trigger_redraw()
+
+    # 🎮 Classe do jogo principal
+    class WaterSortGame(BoxLayout):
+        def __init__(self, **kwargs):
+            super().__init__(orientation='vertical', padding=10, spacing=10, **kwargs)
+
+            # 6 tubos (2 linhas x 3 colunas)
+            self.tubes = [
+                ["vermelho", "azul", "verde", "amarelo"],
+                ["verde", "azul", "vermelho", "amarelo"],
+                ["laranja", "roxo", "azul", "verde"],
+                [], [], []
+            ]
+            self.shuffle_tubes()
+            self.selected = None
+
+            # Texto de instrução
+            self.label = Label(
+                text="Toque em um tubo para selecionar.",
+                size_hint=(1, 0.1),
+                color=(1, 1, 1, 1)
+            )
+            self.add_widget(self.label)
+
+            # Layout 2x3 dos tubos
+            self.layout_tubes = GridLayout(cols=3, rows=2, spacing=10, size_hint=(1, 0.9))
+            self.add_widget(self.layout_tubes)
+
+            self.draw_tubes()
+
+        # 🔀 Embaralha as cores
+        def shuffle_tubes(self):
+            all_colors = [c for tube in self.tubes for c in tube]
+            for tube in self.tubes:
+                tube.clear()
+            random.shuffle(all_colors)
+
+            for color in all_colors:
+                while True:
+                    idx = random.randint(0, len(self.tubes) - 1)
+                    if len(self.tubes[idx]) < 4:
+                        self.tubes[idx].append(color)
+                        break
+
+        # 🧱 Desenha os tubos
+        def draw_tubes(self):
+            self.layout_tubes.clear_widgets()
+            for i, tube in enumerate(self.tubes):
+                tw = TelaWaterSort.TubeWidget(index=i, on_click=self.on_tube_pressed)
+                # opcional: ajustar margens/altura por tubo se quiser
+                # tw.image_margin = 12
+                # tw.tube_height = 220
+                tw.colors = tube
+                self.layout_tubes.add_widget(tw)
+
+        # 👆 Clique em um tubo
+        def on_tube_pressed(self, tube_widget):
+            if self.selected is None:
+                if not self.tubes[tube_widget.index]:
+                    return
+                self.selected = tube_widget.index
+                self.label.text = f"Tubo {tube_widget.index + 1} selecionado. Escolha o destino."
+            else:
+                if self.selected != tube_widget.index:
+                    self.move_one_color(self.selected, tube_widget.index)
+                self.selected = None
+                self.label.text = "Toque em um tubo para selecionar."
+
+        # 🔁 Move uma cor entre tubos
+        def move_one_color(self, origem, destino):
+            if not self.tubes[origem]:
+                return
+
+            cor_topo = self.tubes[origem].pop(0)
+            if len(self.tubes[destino]) < 4:
+                self.tubes[destino].insert(0, cor_topo)
+                self.draw_tubes()
+
+            if self.check_win():
+                self.label.text = "🎉 Parabéns! Você venceu!"
+
+        # 🏁 Checa se o jogador venceu
+        def check_win(self):
+            for tube in self.tubes:
+                if len(tube) > 0 and len(set(tube)) > 1:
+                    return False
+            return True
+
+    # 🧩 Inicializa a tela e adiciona o jogo
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Clock.schedule_once(self.adicionar_jogo, 0)
+
+    def adicionar_jogo(self, dt):
+        self.game_widget = self.WaterSortGame()
+        # garante que o id exista no kv; se não, adicione diretamente self.add_widget(self.game_widget)
+        try:
+            self.ids.JogoWaterSort.add_widget(self.game_widget)
+        except Exception:
+            # fallback: adiciona direto na tela
+            self.add_widget(self.game_widget)
+
+
+class TelaSilabaMix(MDScreen):
+    def GerarJogo(self):
+        BoxJogo = MDBoxLayout(
+            orientation="Horizontal",
+            padding=dp(10),
+            spacing=dp(10),
+        )
+
+        BoxInteracao = MDBoxLayout(
+            orientation="horizontal",
+            padding=dp(10),
+            spacing=dp(10),
+        )
+
+        BoxCartas = MDBoxLayout(
+            orientation="vertical",
+            padding=dp(10),
+            spacing=dp(10),
+        )
+
+        BoxInteracao.add_widget(Image(
+            source="Imagens/Imagem1.png",
+            size_hint=(0.5, 0.5),
+            allow_stretch=True,
+            keep_ratio=True
+            ))
+        
+        BoxCartas.add_widget()
+
+
+        self.ids.SilabaMixJogo.add_widget(BoxCartas)
