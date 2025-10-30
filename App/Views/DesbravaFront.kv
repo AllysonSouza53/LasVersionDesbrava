@@ -55,6 +55,8 @@
         name:"WaterSort"
     TelaSilabaMix:
         name:'SilabaMix'
+    TelaJogoDaMemoria:
+        name:"JogoDaMemoria"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -4974,8 +4976,54 @@
                 Widget:
                     size_hint_x:0.2
                 MDBoxLayout:
-                    orientation:'horizontal'
+                    orientation:'vertical'
                     id:JogoSilabaMiix
+
+
+                Widget:
+                    size_hint_x:0.2
+
+<TelaJogoDaMemoria>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.1
+                BoxLayout:
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                    size_hint_x:0.2
+                MDBoxLayout:
+                    orientation:'vertical'
+                    id:JogoDaMemoria
 
 
                 Widget:

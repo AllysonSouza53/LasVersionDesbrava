@@ -45,6 +45,12 @@ from kivy.properties import ListProperty
 from copy import deepcopy
 from kivymd.uix.screen import MDScreen
 from kivy.graphics import Rectangle, Color, RoundedRectangle
+from kivy.animation import Animation
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.animation import Animation
+from kivy.properties import BooleanProperty, StringProperty, NumericProperty
+from kivymd.uix.screen import MDScreen
 
 COLOR_MAP = {
     "vermelho": (1, 0, 0, 1),
@@ -3418,21 +3424,9 @@ class TelaPerfilAluno(MDScreen):
         elif jogo == 2:
             self.manager.current = "WaterSort"
         elif jogo == 3:
-            self.Titulo = 'SílabasMix'
-            self.Objetivo = 'Desenvolver a Consciência Silábica e Fonológica, permitindo a análise (separação) e a síntese (junção) de sílabas para a construção de palavras.'
-            self.Competencias = 'Consciência Fonológica, Análise e Síntese, Rastreamento Visual da Palavra, Reconhecimento de Padrões Ortográficos e Vocabulário.'
-            self.BaseTeorica = 'Fundamentado no Modelo Construtivista da aquisição da escrita e em pesquisas sobre a importância do conhecimento das unidades menores (sílabas) para o avanço no processo de alfabetização.'
-            self.Instrucoes = 'Peça que a criança pronuncie a palavra em voz alta, batendo palmas a cada sílaba, antes de manipular as peças. Proponha desafios como: "Se tirarmos a primeira sílaba de "sapato", o que sobra?".'
-            self.Classificar = 'Palavras'
-            self.Explicacoes = 'O jogo apresenta diferentes atividades com sílabas (digitação, arrasto, clique) que requerem a identificação e a manipulação de sílabas simples e complexas para completar ou formar palavras ilustradas. Estimula o reconhecimento de que a palavra escrita é formada pela união de unidades silábicas.'
+            self.manager.current = "SilabaMix"
         elif jogo == 4:
-            self.Titulo = 'Som e Sílaba'
-            self.Objetivo = 'Estabelecer a conexão sólida entre os sons da fala (fonemas/sílabas orais) e suas representações escritas (grafemas), fundamentando o princípio alfabético.'
-            self.Competencias = 'Discriminação Auditiva, Memória Sonora, Associação Fonema-Grafema, Reconhecimento de Letras e Sílabas Iniciais e Leitura Fonética.'
-            self.BaseTeorica = 'Apoiado nos estudos da Consciência Fonológica e do Processamento Fonológico, essenciais para a decodificação de palavras e o diagnóstico/intervenção em dificuldades de leitura (dislexia).'
-            self.Instrucoes = 'Use o método multisensorial, pedindo à criança para tocar na letra ou sílaba enquanto emite o som. Concentre-se nos sons, não apenas nos nomes das letras. O feedback imediato sobre acerto/erro é crucial.'
-            self.Classificar = 'Palavras'
-            self.Explicacoes = 'Apresenta desafios onde a criança deve ouvir um som (de letra ou sílaba) e selecionar a representação gráfica correspondente, ou vice-versa. Utiliza recursos visuais e auditivos para reforçar a ideia de que a escrita representa a fala, tornando o aprendizado da leitura mais consistente e significativo.'
+            self.manager.current = "JogoDaMemoria"
         elif jogo == 5:
             self.Titulo = 'Jogo da Memória'
             self.Objetivo = 'Fortalecer a Memória de Trabalho e a Associação Semântica, ligando o conceito visual (imagem) à sua forma escrita (palavra) para acelerar o reconhecimento de leitura.'
@@ -3586,7 +3580,7 @@ class TelaWaterSort(MDScreen):
                 Rectangle(
                     source="imagens/tubo.png",
                     pos=(self.x - self.image_margin, self.y - self.image_margin),
-                    size=(self.width + 2 * self.image_margin, self.height + 2 * self.image_margin)
+                    size=(self.width + 2 * self.image_margin, self.height + 10 * self.image_margin)
                 )
 
             # 🔹 2) desenha as camadas de cor no canvas principal (entre imagem e vidro)
@@ -3598,18 +3592,9 @@ class TelaWaterSort(MDScreen):
                         Color(*rgba)
                         RoundedRectangle(
                             pos=(self.x + self.padding, self.y + self.padding + i * layer_height),
-                            size=(self.width - 2 * self.padding, layer_height - 4),
+                            size=(self.width - 1 * self.padding, layer_height - 2),
                             radius=[10]
                         )
-
-            # 🔹 3) desenha o overlay do vidro no canvas.after (por cima, com leve transparência)
-            with self.canvas.after:
-                Color(1, 1, 1, 0.35)
-                Rectangle(
-                    source="imagens/tubo.png",
-                    pos=(self.x - self.image_margin, self.y - self.image_margin),
-                    size=(self.width + 2 * self.image_margin, self.height + 2 * self.image_margin)
-                )
 
         # redimensiona automaticamente quando widget muda
         def on_size(self, *args):
@@ -3720,34 +3705,444 @@ class TelaWaterSort(MDScreen):
             self.add_widget(self.game_widget)
 
 
+
+
+
+from kivy.animation import Animation
+from kivy.clock import Clock
+from kivy.metrics import dp
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import Image
+from kivy.graphics import Color, Line
+from kivymd.app import App
+from kivymd.uix.button import MDFlatButton, MDFillRoundFlatIconButton
+from kivymd.uix.card import MDCard
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.label import MDLabel
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.screen import MDScreen
+import random
+
+
 class TelaSilabaMix(MDScreen):
-    def GerarJogo(self):
-        BoxJogo = MDBoxLayout(
-            orientation="Horizontal",
-            padding=dp(10),
-            spacing=dp(10),
-        )
 
-        BoxInteracao = MDBoxLayout(
-            orientation="horizontal",
-            padding=dp(10),
-            spacing=dp(10),
-        )
+    def on_enter(self, *args):
+        """Exibe o diálogo inicial com Play e Sair"""
 
-        BoxCartas = MDBoxLayout(
+        self.fases = [
+            # Nível 1
+            {"palavra": "GATO", "silabas": ["GA", "TO"], "imagem": "Imagem1.png"},
+            {"palavra": "BOLA", "silabas": ["BO", "LA"], "imagem": "Imagem2.png"},
+            {"palavra": "CASA", "silabas": ["CA", "SA"], "imagem": "Imagem3.png"},
+            {"palavra": "MALA", "silabas": ["MA", "LA"], "imagem": "Imagem4.png"},
+            {"palavra": "MESA", "silabas": ["ME", "SA"], "imagem": "Imagem5.png"},
+            {"palavra": "DADO", "silabas": ["DA", "DO"], "imagem": "Imagem6.png"},
+            {"palavra": "FOCA", "silabas": ["FO", "CA"], "imagem": "Imagem7.png"},
+            {"palavra": "RISO", "silabas": ["RI", "SO"], "imagem": "Imagem8.png"},
+
+            # Nível 2
+            {"palavra": "PIPOCA", "silabas": ["PI", "PO", "CA"], "imagem": "Imagem9.png"},
+            {"palavra": "BONECA", "silabas": ["BO", "NE", "CA"], "imagem": "Imagem10.png"},
+            {"palavra": "BANANA", "silabas": ["BA", "NA", "NA"], "imagem": "Imagem11.png"},
+            {"palavra": "SORVETE", "silabas": ["SOR", "VE", "TE"], "imagem": "Imagem12.png"},
+            {"palavra": "JANELA", "silabas": ["JA", "NE", "LA"], "imagem": "Imagem13.png"},
+            {"palavra": "MOCHILA", "silabas": ["MO", "CHI", "LA"], "imagem": "Imagem14.png"},
+            {"palavra": "ESCOLA", "silabas": ["ES", "CO", "LA"], "imagem": "Imagem15.png"},
+            {"palavra": "CORAÇÃO", "silabas": ["CO", "RA", "ÇÃO"], "imagem": "Imagem16.png"},
+
+            # Nível 3
+            {"palavra": "CHOCOLATE", "silabas": ["CHO", "CO", "LA", "TE"], "imagem": "Imagem17.png"},
+            {"palavra": "TELEFONE", "silabas": ["TE", "LE", "FO", "NE"], "imagem": "Imagem18.png"},
+            {"palavra": "BORBOLETA", "silabas": ["BOR", "BO", "LE", "TA"], "imagem": "Imagem19.png"},
+            {"palavra": "TELEVISÃO", "silabas": ["TE", "LE", "VI", "SÃO"], "imagem": "Imagem20.png"},
+            {"palavra": "ELEFANTE", "silabas": ["E", "LE", "FAN", "TE"], "imagem": "Imagem21.png"},
+            {"palavra": "ABACAXI", "silabas": ["A", "BA", "CA", "XI"], "imagem": "Imagem22.png"},
+            {"palavra": "BICICLETA", "silabas": ["BI", "CI", "CLE", "TA"], "imagem": "Imagem23.png"},
+            {"palavra": "ESTUDANTE", "silabas": ["ES", "TU", "DAN", "TE"], "imagem": "Imagem24.png"},
+        ]
+
+        self.fase_atual = 0
+        self.silabas_escolhidas = []
+
+        # ==== Diálogo inicial estilizado ====
+        self.dialog_inicial = MDDialog(
+            md_bg_color=(0, 0, 0, 0.7),
+            title="🎯 Bem-vindo ao jogo SílabaMix!",
+            type="custom",
+            radius=[25, 25, 25, 25],
+            auto_dismiss=False,
+            buttons=[
+                MDFillRoundFlatIconButton(
+                    icon="close",
+                    text="Sair",
+                    text_color="white",
+                    line_color=(1, 1, 1, 1),
+                    md_bg_color=(0, 0.5, 0, 1),
+                    on_release=self.SairDoJogo
+                ),
+                MDFillRoundFlatIconButton(
+                    icon="play",
+                    text="Jogar",
+                    text_color="white",
+                    line_color=(1, 1, 1, 1),
+                    md_bg_color=(0, 0.6, 0.1, 1),
+                    on_release=self.StartJogo
+                ),
+            ],
+        )
+        self.dialog_inicial.title_align = "center"
+        self.dialog_inicial.open()
+
+    def StartJogo(self, *args):
+        self.dialog_inicial.dismiss()
+        self.CarregarFase(self.fase_atual)
+
+    def SairDoJogo(self, *args):
+        App.get_running_app().stop()
+
+    def CarregarFase(self, index):
+        self.ids.JogoSilabaMiix.clear_widgets()
+        self.silabas_escolhidas = []
+
+        fase = self.fases[index]
+        palavra = fase["palavra"]
+        silabas = fase["silabas"]
+        imagem_fase = fase["imagem"]
+
+        silabas_embaralhadas = silabas.copy()
+        while silabas_embaralhadas == silabas:
+            random.shuffle(silabas_embaralhadas)
+
+        BoxJogo = MDBoxLayout(orientation="vertical", padding=dp(25), spacing=dp(25))
+        self.CardPrincipal = MDCard(
+            size_hint=(1, 1),
+            md_bg_color=(0.1, 0.4, 0.25, 1),
+            radius=[35],
+            elevation=15,
             orientation="vertical",
-            padding=dp(10),
-            spacing=dp(10),
+            padding=dp(20),
+            spacing=dp(20),
         )
 
-        BoxInteracao.add_widget(Image(
-            source="Imagens/Imagem1.png",
-            size_hint=(0.5, 0.5),
-            allow_stretch=True,
-            keep_ratio=True
-            ))
-        
-        BoxCartas.add_widget()
+        BoxInteracao = MDBoxLayout(orientation="horizontal", spacing=dp(40), size_hint_y=0.7)
+        imagem = Image(source=f"Imagens/SilabaMix/{imagem_fase}",
+                       size_hint=(0.5, 0.7),
+                       allow_stretch=True, keep_ratio=True)
 
+        self.BoxCartas = MDBoxLayout(orientation="horizontal",
+                                     spacing=dp(25),
+                                     size_hint=(0.5, 1),
+                                     padding=dp(10),
+                                     pos_hint={"center_y": 0.5})
 
-        self.ids.SilabaMixJogo.add_widget(BoxCartas)
+        for i, silaba in enumerate(silabas_embaralhadas):
+            card = MDCard(size_hint=(0.45, 0.6),
+                          md_bg_color=(1, 1, 1, 1),
+                          radius=[25],
+                          elevation=5,
+                          orientation="vertical",
+                          opacity=0)
+            card.texto = silaba
+            card.pos_original = i
+            card.on_release = lambda c=card: self.ClickCard(c)
+
+            with card.canvas.after:
+                Color(0, 0, 0, 1)
+                card.borda = Line(rounded_rectangle=(card.x, card.y, card.width, card.height, 25), width=2)
+            card.bind(pos=self.AtualizarBorda, size=self.AtualizarBorda)
+
+            card.add_widget(MDLabel(text=silaba, halign="center",
+                                    theme_text_color="Custom",
+                                    text_color=(0, 0, 0, 1),
+                                    font_style="H3"))
+            self.BoxCartas.add_widget(card)
+
+            anim = Animation(opacity=1, elevation=10, duration=0.45, t="out_back")
+            Clock.schedule_once(lambda dt, a=anim, c=card: a.start(c), 0.12 * i)
+
+        BoxInteracao.add_widget(imagem)
+        BoxInteracao.add_widget(self.BoxCartas)
+
+        BoxResposta = MDBoxLayout(orientation="vertical", padding=dp(10), spacing=dp(10), size_hint_y=0.45)
+        self.CardResposta = MDCard(size_hint=(1, 1), md_bg_color=(1, 1, 1, 0.95),
+                                   radius=[30], elevation=12, orientation="vertical")
+
+        self.LabelInstrucao = MDLabel(text="Monte a palavra correta!",
+                                      halign="center",
+                                      theme_text_color="Custom",
+                                      text_color=(0, 0, 0, 1),
+                                      font_style="H5",
+                                      size_hint_y=None,
+                                      height=dp(40))
+
+        self.BoxPalavra = BoxLayout(orientation="horizontal", spacing=dp(10), padding=dp(10))
+        self.CardResposta.add_widget(self.LabelInstrucao)
+        self.CardResposta.add_widget(self.BoxPalavra)
+        BoxResposta.add_widget(self.CardResposta)
+
+        self.CardPrincipal.add_widget(BoxInteracao)
+        self.CardPrincipal.add_widget(BoxResposta)
+        BoxJogo.add_widget(self.CardPrincipal)
+        self.ids.JogoSilabaMiix.add_widget(BoxJogo)
+
+        self.palavra_correta = palavra.upper()
+
+    # ================================
+    # MOVIMENTO DAS CARTAS
+    # ================================
+    def ClickCard(self, card):
+        if card.parent == self.BoxCartas:
+            self.BoxCartas.remove_widget(card)
+            self.BoxPalavra.add_widget(card)
+            self.silabas_escolhidas.append(card.texto)
+        elif card.parent == self.BoxPalavra:
+            self.BoxPalavra.remove_widget(card)
+            self.silabas_escolhidas.remove(card.texto)
+            children = list(self.BoxCartas.children)
+            insert_index = len(children) - card.pos_original
+            self.BoxCartas.add_widget(card, index=max(0, insert_index))
+
+        Animation(opacity=1, size_hint=(0.45, 0.6), duration=0.3, t="out_cubic").start(card)
+        self.VerificarPalavra()
+
+    # ================================
+    # VERIFICAÇÃO
+    # ================================
+    def VerificarPalavra(self):
+        palavra_formada = "".join(self.silabas_escolhidas)
+        if palavra_formada.upper() == self.palavra_correta:
+            self.LabelInstrucao.text = "✅ Parabéns! Palavra correta!"
+            self.LabelInstrucao.text_color = (0, 0.6, 0, 1)
+
+            self.dialog_acerto = MDDialog(
+                md_bg_color=(0, 0, 0, 0.7),
+                title="🎉 Muito bem!",
+                text="Você acertou! Deseja continuar jogando?",
+                type="custom",
+                radius=[25, 25, 25, 25],
+                auto_dismiss=False,
+                buttons=[
+                    MDFillRoundFlatIconButton(
+                        icon="close",
+                        text="Sair",
+                        text_color="white",
+                        line_color=(1, 1, 1, 1),
+                        md_bg_color=(0, 0.5, 0, 1),
+                        on_release=self.SairDoJogo
+                    ),
+                    MDFillRoundFlatIconButton(
+                        icon="arrow-right",
+                        text="Próxima",
+                        text_color="white",
+                        line_color=(1, 1, 1, 1),
+                        md_bg_color=(0, 0.6, 0.1, 1),
+                        on_release=self.ProximaFase
+                    ),
+                ],
+            )
+            self.dialog_acerto.title_align = "center"
+            self.dialog_acerto.open()
+        else:
+            self.LabelInstrucao.text = "Monte a palavra correta!"
+            self.LabelInstrucao.text_color = (0, 0, 0, 1)
+
+    def ProximaFase(self, *args):
+        self.dialog_acerto.dismiss()
+        self.fase_atual += 1
+        if self.fase_atual >= len(self.fases):
+            self.fase_atual = 0
+        self.CarregarFase(self.fase_atual)
+
+    def AtualizarBorda(self, instance, *args):
+        if hasattr(instance, "borda"):
+            instance.borda.rounded_rectangle = (instance.x, instance.y, instance.width, instance.height, 25)
+
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.animation import Animation
+from kivy.properties import BooleanProperty, StringProperty, NumericProperty
+from kivy.uix.anchorlayout import AnchorLayout
+from kivymd.uix.card import MDCard
+from kivymd.uix.screen import MDScreen
+from kivy.clock import Clock
+import random
+
+class TelaJogoDaMemoria(MDScreen):
+    def on_enter(self):
+        self.gerar_jogo()
+
+    class FlipCard(MDCard):
+        is_front = BooleanProperty(False)          # começa mostrando o back (False)
+        matched = BooleanProperty(False)           # True se já acertou o par
+        front_text = StringProperty("Front")
+        back_text = StringProperty("Back")
+        scale_x = NumericProperty(1)
+
+        def __init__(self, front_text="Front", back_text="Back", on_click=None, **kwargs):
+            super().__init__(**kwargs)
+            self.size_hint = (None, None)
+            self.size = (120, 160)
+            self.md_bg_color = (0.8, 0.8, 1, 1)
+            self.front_text = front_text
+            self.back_text = back_text
+            self.on_click_callback = on_click
+
+            # Container vertical para labels
+            self.container = BoxLayout(orientation='vertical')
+            self.add_widget(self.container)
+
+            # Front label (a letra) — inicialmente invisível
+            self.front_label = Label(
+                text=self.front_text,
+                halign="center",
+                valign="middle",
+                font_size=24,
+                color=(0, 0, 0, 1),
+                opacity=0
+            )
+            self.front_label.bind(size=self.front_label.setter('text_size'))
+
+            # Back label (o '?') — inicial visível
+            self.back_label = Label(
+                text=self.back_text,
+                halign="center",
+                valign="middle",
+                font_size=24,
+                opacity=1
+            )
+            self.back_label.bind(size=self.back_label.setter('text_size'))
+
+            self.container.add_widget(self.front_label)
+            self.container.add_widget(self.back_label)
+
+        def on_touch_down(self, touch):
+            # não deixa clicar se não colidiu, se já acertou, ou se não há callback
+            if self.collide_point(*touch.pos):
+                if self.matched:
+                    return True
+                if self.on_click_callback:
+                    self.on_click_callback(self)
+                return True
+            return super().on_touch_down(touch)
+
+        # animação para revelar (mostrar frente)
+        def reveal(self):
+            if self.matched or self.is_front:
+                return
+            anim = Animation(scale_x=0, duration=0.15)
+            anim.bind(on_complete=lambda *a: self._reveal_switch())
+            anim.start(self)
+
+        def _reveal_switch(self):
+            # troca visual: mostra frente
+            self.is_front = True
+            self.front_label.opacity = 1
+            self.back_label.opacity = 0
+            Animation(scale_x=1, duration=0.15).start(self)
+
+        # animação para esconder (voltar para '?')
+        def hide(self):
+            if self.matched or not self.is_front:
+                return
+            anim = Animation(scale_x=0, duration=0.15)
+            anim.bind(on_complete=lambda *a: self._hide_switch())
+            anim.start(self)
+
+        def _hide_switch(self):
+            self.is_front = False
+            self.front_label.opacity = 0
+            self.back_label.opacity = 1
+            Animation(scale_x=1, duration=0.15).start(self)
+
+        # quando dá matched, marca e impede futuros flips
+        def lock_matched(self):
+            self.matched = True
+            self.is_front = True
+            self.front_label.opacity = 1
+            self.back_label.opacity = 0
+            # opcional: mudar aparência para indicar acerto (ex.: cor), se desejar:
+            # self.md_bg_color = (0.7, 1, 0.7, 1)
+
+        def on_scale_x(self, instance, value):
+            # mantém a largura proporcional à escala para o efeito flip
+            self.width = 120 * value
+
+    def gerar_jogo(self):
+        self.ids.JogoDaMemoria.clear_widgets()
+        self.cards = []
+        self.cards_virados = []
+
+        # Lista de cartas (pares)
+        cards_texts = ["A", "A", "B", "B", "C", "C", "D", "D"]
+        random.shuffle(cards_texts)
+
+        # Layout principal vertical
+        main_layout = BoxLayout(
+            orientation='vertical',
+            spacing=20,
+            size_hint=(None, None)
+        )
+        # Calcula largura e altura
+        main_layout.width = 4 * 120 + 3 * 20
+        num_linhas = (len(cards_texts) + 3) // 4
+        main_layout.height = num_linhas * 160 + (num_linhas - 1) * 20
+
+        # criar rows e cards
+        row_layout = BoxLayout(spacing=20, size_hint_y=None, height=160)
+        for i, text in enumerate(cards_texts):
+            card = self.FlipCard(front_text=text, back_text="?", on_click=self.card_clicado)
+            # Garante que comece com back visível e não matched
+            card.is_front = False
+            card.matched = False
+            card.front_label.opacity = 0
+            card.back_label.opacity = 1
+
+            self.cards.append(card)
+            row_layout.add_widget(card)
+
+            if (i + 1) % 4 == 0:
+                main_layout.add_widget(row_layout)
+                row_layout = BoxLayout(spacing=20, size_hint_y=None, height=160)
+
+        if len(row_layout.children) > 0:
+            main_layout.add_widget(row_layout)
+
+        # AnchorLayout para centralizar vertical e horizontal
+        anchor = AnchorLayout(anchor_x='center', anchor_y='center')
+        anchor.add_widget(main_layout)
+
+        self.ids.JogoDaMemoria.add_widget(anchor)
+
+    def card_clicado(self, card):
+        # bloqueia clique adicional se já houver 2 virados
+        if card.matched:
+            return
+        if card in self.cards_virados:
+            return
+        if len(self.cards_virados) >= 2:
+            return
+
+        # revela o card clicado
+        card.reveal()
+        self.cards_virados.append(card)
+
+        if len(self.cards_virados) == 2:
+            # desabilita cliques temporariamente (por segurança) — alcançado com checagens acima
+            Clock.schedule_once(self.check_pair, 0.25)  # pequeno delay pra animação do reveal começar
+
+    def check_pair(self, dt=0):
+        c1, c2 = self.cards_virados
+
+        if c1.front_text == c2.front_text:
+            # par correto — trava ambos
+            c1.lock_matched()
+            c2.lock_matched()
+            self.cards_virados = []
+        else:
+            # par incorreto — esconde após curto delay (deixa usuário ver)
+            Clock.schedule_once(self.reset_cards, 0.5)
+
+    def reset_cards(self, dt):
+        for card in list(self.cards_virados):
+            card.hide()
+        self.cards_virados = []
