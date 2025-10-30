@@ -3957,66 +3957,96 @@ class TelaSilabaMix(MDScreen):
         if hasattr(instance, "borda"):
             instance.borda.rounded_rectangle = (instance.x, instance.y, instance.width, instance.height, 25)
 
+
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.animation import Animation
-from kivy.properties import BooleanProperty, StringProperty, NumericProperty
+from kivy.properties import BooleanProperty, StringProperty, NumericProperty, ListProperty
 from kivy.uix.anchorlayout import AnchorLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFillRoundFlatIconButton
 from kivy.clock import Clock
 import random
+from kivymd.app import MDApp
+
 
 class TelaJogoDaMemoria(MDScreen):
-    def on_enter(self):
-        self.gerar_jogo()
 
     class FlipCard(MDCard):
-        is_front = BooleanProperty(False)          # começa mostrando o back (False)
-        matched = BooleanProperty(False)           # True se já acertou o par
+        is_front = BooleanProperty(False)
+        matched = BooleanProperty(False)
         front_text = StringProperty("Front")
-        back_text = StringProperty("Back")
+        back_text = StringProperty("?")
+        image_source = StringProperty("")
         scale_x = NumericProperty(1)
 
-        def __init__(self, front_text="Front", back_text="Back", on_click=None, **kwargs):
+        def __init__(self, front_text="Front", image_source="", back_text="?", on_click=None, **kwargs):
             super().__init__(**kwargs)
             self.size_hint = (None, None)
             self.size = (120, 160)
-            self.md_bg_color = (0.8, 0.8, 1, 1)
+            self.radius = [12, 12, 12, 12]  # Corrigido: lista de 4 valores
+            self.md_bg_color = (0, 1, 0, 1)
             self.front_text = front_text
             self.back_text = back_text
+            self.image_source = image_source
             self.on_click_callback = on_click
 
-            # Container vertical para labels
-            self.container = BoxLayout(orientation='vertical')
+            # Container geral
+            self.container = AnchorLayout()
             self.add_widget(self.container)
 
-            # Front label (a letra) — inicialmente invisível
+            # Lado frente
+            self.front_layout = BoxLayout(
+                orientation='vertical', padding=6, spacing=4, size_hint=(1, 1)
+            )
+
+            with self.front_layout.canvas.before:
+                from kivy.graphics import Color, Rectangle
+                self.front_color = Color(1, 1, 1, 1)
+                self.front_rect = Rectangle()
+                self.front_layout.bind(pos=self._update_front_bg, size=self._update_front_bg)
+
+            self.front_image = Image(
+                source=self.image_source,
+                allow_stretch=True,
+                keep_ratio=True,
+                size_hint=(1, 0.7)
+            )
             self.front_label = Label(
                 text=self.front_text,
                 halign="center",
                 valign="middle",
-                font_size=24,
+                font_size=18,
                 color=(0, 0, 0, 1),
-                opacity=0
+                size_hint=(1, 0.3)
             )
             self.front_label.bind(size=self.front_label.setter('text_size'))
+            self.front_layout.add_widget(self.front_image)
+            self.front_layout.add_widget(self.front_label)
+            self.front_layout.opacity = 0
 
-            # Back label (o '?') — inicial visível
+            # Lado trás
             self.back_label = Label(
                 text=self.back_text,
                 halign="center",
                 valign="middle",
-                font_size=24,
+                font_size=28,
+                color=(1, 1, 1, 1),
                 opacity=1
             )
             self.back_label.bind(size=self.back_label.setter('text_size'))
 
-            self.container.add_widget(self.front_label)
+            self.container.add_widget(self.front_layout)
             self.container.add_widget(self.back_label)
 
+        def _update_front_bg(self, *args):
+            self.front_rect.pos = self.front_layout.pos
+            self.front_rect.size = self.front_layout.size
+
         def on_touch_down(self, touch):
-            # não deixa clicar se não colidiu, se já acertou, ou se não há callback
             if self.collide_point(*touch.pos):
                 if self.matched:
                     return True
@@ -4025,7 +4055,6 @@ class TelaJogoDaMemoria(MDScreen):
                 return True
             return super().on_touch_down(touch)
 
-        # animação para revelar (mostrar frente)
         def reveal(self):
             if self.matched or self.is_front:
                 return
@@ -4034,13 +4063,12 @@ class TelaJogoDaMemoria(MDScreen):
             anim.start(self)
 
         def _reveal_switch(self):
-            # troca visual: mostra frente
             self.is_front = True
-            self.front_label.opacity = 1
+            self.front_layout.opacity = 1
             self.back_label.opacity = 0
+            self.md_bg_color = (1, 1, 1, 1)
             Animation(scale_x=1, duration=0.15).start(self)
 
-        # animação para esconder (voltar para '?')
         def hide(self):
             if self.matched or not self.is_front:
                 return
@@ -4050,99 +4078,123 @@ class TelaJogoDaMemoria(MDScreen):
 
         def _hide_switch(self):
             self.is_front = False
-            self.front_label.opacity = 0
+            self.front_layout.opacity = 0
             self.back_label.opacity = 1
+            self.md_bg_color = (0, 1, 0, 1)
             Animation(scale_x=1, duration=0.15).start(self)
 
-        # quando dá matched, marca e impede futuros flips
         def lock_matched(self):
             self.matched = True
             self.is_front = True
-            self.front_label.opacity = 1
+            self.front_layout.opacity = 1
             self.back_label.opacity = 0
-            # opcional: mudar aparência para indicar acerto (ex.: cor), se desejar:
-            # self.md_bg_color = (0.7, 1, 0.7, 1)
+            self.md_bg_color = (1, 1, 1, 1)
 
         def on_scale_x(self, instance, value):
-            # mantém a largura proporcional à escala para o efeito flip
             self.width = 120 * value
 
-    def gerar_jogo(self):
+
+    # ======= MÉTODOS PRINCIPAIS =======
+    def on_enter(self):
+        self.fase_atual = 0
+        self.fases = [
+            {"pares": [("A", "Imagens/JogoDaMemoria/Imagem1.png"),
+                       ("B", "Imagens/JogoDaMemoria/Imagem2.png")]},
+            {"pares": [("A", "Imagens/JogoDaMemoria/Imagem1.png"),
+                       ("B", "Imagens/JogoDaMemoria/Imagem2.png"),
+                       ("C", "Imagens/JogoDaMemoria/Imagem3.png")]},
+            {"pares": [("A", "Imagens/JogoDaMemoria/Imagem1.png"),
+                       ("B", "Imagens/JogoDaMemoria/Imagem2.png"),
+                       ("C", "Imagens/JogoDaMemoria/Imagem3.png"),
+                       ("D", "Imagens/JogoDaMemoria/Imagem4.png")]},
+        ]
+        self.carregar_fase(self.fase_atual)
+
+    def carregar_fase(self, index):
         self.ids.JogoDaMemoria.clear_widgets()
         self.cards = []
         self.cards_virados = []
 
-        # Lista de cartas (pares)
-        cards_texts = ["A", "A", "B", "B", "C", "C", "D", "D"]
-        random.shuffle(cards_texts)
+        fase = self.fases[index]
+        pares = fase["pares"]
 
-        # Layout principal vertical
-        main_layout = BoxLayout(
-            orientation='vertical',
-            spacing=20,
-            size_hint=(None, None)
-        )
-        # Calcula largura e altura
-        main_layout.width = 4 * 120 + 3 * 20
-        num_linhas = (len(cards_texts) + 3) // 4
-        main_layout.height = num_linhas * 160 + (num_linhas - 1) * 20
+        cards_data = []
+        for letra, img in pares:
+            cards_data.append((letra, img))
+            cards_data.append((letra, img))
+        random.shuffle(cards_data)
 
-        # criar rows e cards
+        main_layout = BoxLayout(orientation='vertical', spacing=20, size_hint=(None, None))
+        cols = min(4, len(cards_data))
+        main_layout.width = cols * 120 + (cols - 1) * 20
+        rows = (len(cards_data) + cols - 1) // cols
+        main_layout.height = rows * 160 + (rows - 1) * 20
+
         row_layout = BoxLayout(spacing=20, size_hint_y=None, height=160)
-        for i, text in enumerate(cards_texts):
-            card = self.FlipCard(front_text=text, back_text="?", on_click=self.card_clicado)
-            # Garante que comece com back visível e não matched
-            card.is_front = False
-            card.matched = False
-            card.front_label.opacity = 0
-            card.back_label.opacity = 1
-
+        for i, (letra, img) in enumerate(cards_data):
+            card = self.FlipCard(front_text=letra, image_source=img, back_text="?", on_click=self.card_clicado)
             self.cards.append(card)
             row_layout.add_widget(card)
-
-            if (i + 1) % 4 == 0:
+            if (i + 1) % cols == 0:
                 main_layout.add_widget(row_layout)
                 row_layout = BoxLayout(spacing=20, size_hint_y=None, height=160)
-
         if len(row_layout.children) > 0:
             main_layout.add_widget(row_layout)
 
-        # AnchorLayout para centralizar vertical e horizontal
         anchor = AnchorLayout(anchor_x='center', anchor_y='center')
         anchor.add_widget(main_layout)
-
         self.ids.JogoDaMemoria.add_widget(anchor)
 
     def card_clicado(self, card):
-        # bloqueia clique adicional se já houver 2 virados
-        if card.matched:
+        if card.matched or card in self.cards_virados or len(self.cards_virados) >= 2:
             return
-        if card in self.cards_virados:
-            return
-        if len(self.cards_virados) >= 2:
-            return
-
-        # revela o card clicado
         card.reveal()
         self.cards_virados.append(card)
-
         if len(self.cards_virados) == 2:
-            # desabilita cliques temporariamente (por segurança) — alcançado com checagens acima
-            Clock.schedule_once(self.check_pair, 0.25)  # pequeno delay pra animação do reveal começar
+            Clock.schedule_once(self.check_pair, 0.3)
 
     def check_pair(self, dt=0):
         c1, c2 = self.cards_virados
-
         if c1.front_text == c2.front_text:
-            # par correto — trava ambos
             c1.lock_matched()
             c2.lock_matched()
             self.cards_virados = []
+            if all(card.matched for card in self.cards):
+                Clock.schedule_once(self.fase_completa, 0.5)
         else:
-            # par incorreto — esconde após curto delay (deixa usuário ver)
-            Clock.schedule_once(self.reset_cards, 0.5)
+            Clock.schedule_once(self.reset_cards, 0.7)
 
     def reset_cards(self, dt):
         for card in list(self.cards_virados):
             card.hide()
         self.cards_virados = []
+
+    def fase_completa(self, dt):
+        dialog = MDDialog(
+            title="🎉 Parabéns!",
+            text="Você completou esta fase!",
+            radius=[25, 25, 25, 25],  # Corrigido: lista de 4 valores
+            auto_dismiss=False,
+            buttons=[
+                MDFillRoundFlatIconButton(
+                    icon="close",
+                    text="Sair",
+                    on_release=lambda x: MDApp.get_running_app().stop()
+                ),
+                MDFillRoundFlatIconButton(
+                    icon="arrow-right",
+                    text="Próxima Fase",
+                    on_release=lambda x: self.proxima_fase(dialog)
+                )
+            ]
+        )
+        dialog.open()
+
+    def proxima_fase(self, dialog):
+        dialog.dismiss()
+        self.fase_atual += 1
+        if self.fase_atual >= len(self.fases):
+            self.fase_atual = 0
+        self.carregar_fase(self.fase_atual)
+
+
