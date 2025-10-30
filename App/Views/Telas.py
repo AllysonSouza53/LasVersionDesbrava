@@ -1,3 +1,4 @@
+from Cython.Plex.Actions import Return
 from kivy.properties import StringProperty
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
@@ -3428,22 +3429,9 @@ class TelaPerfilAluno(MDScreen):
         elif jogo == 4:
             self.manager.current = "JogoDaMemoria"
         elif jogo == 5:
-            self.Titulo = 'Jogo da Memória'
-            self.Objetivo = 'Fortalecer a Memória de Trabalho e a Associação Semântica, ligando o conceito visual (imagem) à sua forma escrita (palavra) para acelerar o reconhecimento de leitura.'
-            self.Competencias = 'Memória Visual e Espacial, Concentração, Raciocínio Lógico (estratégia de localização), Reconhecimento de Palavras (vocabulário) e Leitura Global.'
-            self.BaseTeorica = 'Utiliza princípios da Teoria Cognitiva da Aprendizagem (processamento de informação e memória de curto prazo) e da Abordagem Lexical, que prioriza o reconhecimento da palavra completa.'
-            self.Instrucoes = 'Comece com poucos pares e aumente gradualmente a dificuldade. Antes de virar as cartas, peça à criança para tentar ler as palavras viradas ou nomear as figuras para reforçar a associação.'
-            self.Classificar = 'Memória'
-            self.Explicacoes = 'As cartas são dispostas viradas para baixo; uma carta contém a imagem de um objeto e a outra contém o nome escrito desse objeto. O jogador deve virar duas cartas por vez para encontrar o par correspondente (imagem e palavra), exercitando a lembrança da localização e a leitura.'
+            self.manager.current = "JogoMemoriaDosCores"
         elif jogo == 6:
-            self.Titulo = 'Memória das Cores'
-            self.Objetivo = 'Desenvolver a Memória Visual, a Sequenciação e o Reconhecimento de Padrões, habilidades que servem como pré-requisitos para a organização do pensamento em tarefas complexas.'
-            self.Competencias = 'Memória Visual de Curto Prazo, Discriminação Visual, Rastreamento e Reprodução de Padrões, Concentração e Organização da Informação.'
-            self.BaseTeorica = 'Enraizado na Psicologia Cognitiva (estudo da memória de curto prazo e da capacidade de codificação e recuperação de estímulos visuais) e na importância do reconhecimento de padrões para o raciocínio.'
-            self.Instrucoes = 'Para jogos de sequência (como o Genius), peça que a criança verbalize a sequência de cores antes de reproduzi-la (codificação verbal). Para jogos de pares, estimule a criação de estratégias de localização espacial.'
-            self.Classificar = 'Memória'
-            self.Explicacoes = 'Em sua forma clássica, é um jogo de memória simples de encontrar pares de cores idênticas. Em sua forma avançada (sequência), o jogo exibe um padrão de luzes e sons coloridos que o jogador deve memorizar e reproduzir. A dificuldade aumenta progressivamente, exigindo um esforço crescente da memória para reter sequências longas.'
-
+            self.manager.current = "JogoSomSilaba"
 
 class TelaConquistas(MDScreen):
     def PerfilMDTextButton_Click(self):
@@ -3494,16 +3482,6 @@ class TelaJogoDosSeteErros(MDScreen):
             print("Botão 7 clicado - Erro encontrado!")
         else:
             print("Botão inválido.")
-
-from kivy.uix.widget import Widget
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.graphics import Color, Rectangle, RoundedRectangle
-from kivy.properties import ListProperty
-from kivymd.uix.screen import MDScreen
-from kivy.clock import Clock
-import random
 
 # 🎨 Mapa de cores
 COLOR_MAP = {
@@ -3708,20 +3686,12 @@ class TelaWaterSort(MDScreen):
 
 
 
-from kivy.animation import Animation
-from kivy.clock import Clock
 from kivy.metrics import dp
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.image import Image
 from kivy.graphics import Color, Line
 from kivymd.app import App
-from kivymd.uix.button import MDFlatButton, MDFillRoundFlatIconButton
-from kivymd.uix.card import MDCard
-from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.screen import MDScreen
-import random
 
 
 class TelaSilabaMix(MDScreen):
@@ -4196,5 +4166,312 @@ class TelaJogoDaMemoria(MDScreen):
         if self.fase_atual >= len(self.fases):
             self.fase_atual = 0
         self.carregar_fase(self.fase_atual)
+
+from kivy.clock import Clock
+from kivy.animation import Animation
+from kivy.properties import ListProperty, StringProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivymd.uix.card import MDCard
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFillRoundFlatIconButton
+from kivymd.app import MDApp
+
+
+class TelaJogoMemoriaDasCores(MDScreen):
+
+    class CardClicavel(MDCard):
+        cor_normal = ListProperty([1, 1, 1, 1])
+        cor_clara = ListProperty([1, 1, 1, 1])
+        nome_cor = StringProperty("")
+
+        def __init__(self, cor_normal, cor_clara, nome_cor, on_click, **kwargs):
+            super().__init__(**kwargs)
+            self.cor_normal = cor_normal
+            self.cor_clara = cor_clara
+            self.nome_cor = nome_cor
+            self.md_bg_color = cor_normal
+            self.radius = [20]
+            self.size_hint = (0.9, 0.9)
+            self.on_click = on_click
+            self.bind(on_release=lambda x: self.on_click(self))
+
+        def piscar(self, tempo=0.3):
+            anim = Animation(md_bg_color=self.cor_clara, duration=tempo)
+            anim += Animation(md_bg_color=self.cor_normal, duration=tempo)
+            anim.start(self)
+
+    def on_pre_enter(self, *args):
+        self.nivel_atual = 1
+        self.sequencia_atual_index = 0
+        self.posicao_seq = 0
+        self.erro_box = None
+        self.bloquear_clicks = False
+
+        # Criar linhas de cards
+        linha1 = BoxLayout(spacing=10, size_hint=(1, 0.5))
+        linha2 = BoxLayout(spacing=10, size_hint=(1, 0.5))
+
+        self.card_vermelho = self.CardClicavel([1, 0, 0, 1], [1, 0.5, 0.5, 1], "vermelho", self.on_card_click)
+        self.card_verde = self.CardClicavel([0, 0.6, 0, 1], [0.5, 1, 0.5, 1], "verde", self.on_card_click)
+        self.card_amarelo = self.CardClicavel([0.8, 0.7, 0, 1], [1, 1, 0.5, 1], "amarelo", self.on_card_click)
+        self.card_azul = self.CardClicavel([0, 0, 1, 1], [0.5, 0.5, 1, 1], "azul", self.on_card_click)
+
+        linha1.add_widget(self.card_vermelho)
+        linha1.add_widget(self.card_verde)
+        linha2.add_widget(self.card_amarelo)
+        linha2.add_widget(self.card_azul)
+
+        BoxJogo = MDBoxLayout(orientation='vertical', pos_hint={"center_x": 0.5, "center_y": 0.5})
+        BoxJogo.add_widget(linha1)
+        BoxJogo.add_widget(linha2)
+
+        if hasattr(self.ids, "JogoMemoriaDosCores"):
+            self.ids.JogoMemoriaDosCores.add_widget(BoxJogo)
+
+        self.cards = {
+            "vermelho": self.card_vermelho,
+            "verde": self.card_verde,
+            "amarelo": self.card_amarelo,
+            "azul": self.card_azul
+        }
+
+        # Sequências por nível
+        self.niveis = {
+            1: [["vermelho"],
+                ["vermelho", "azul"],
+                ["vermelho", "azul", "amarelo"],
+                ["vermelho", "azul", "amarelo", "verde"],
+                ["vermelho", "azul", "amarelo", "verde", "vermelho"],
+                ["vermelho", "azul", "amarelo", "verde", "vermelho", "azul"],
+                ["vermelho", "azul", "amarelo", "verde", "vermelho", "azul", "amarelo"]],
+            2: [["azul"],
+                ["azul", "verde"],
+                ["azul", "verde", "vermelho"],
+                ["azul", "verde", "vermelho", "amarelo"],
+                ["azul", "verde", "vermelho", "amarelo", "verde"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul", "vermelho"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo", "verde"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo", "verde","azul"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo", "verde","azul", "vermelho"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo", "verde","azul", "vermelho", "amarelo"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo", "verde","azul", "vermelho", "amarelo", "verde"],
+                ["azul", "verde", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo", "verde","azul", "vermelho", "amarelo", "verde", "azul"]],
+            3: [["verde"],
+                ["verde", "amarelo"],
+                ["verde", "amarelo", "azul"],
+                ["verde", "amarelo", "azul", "vermelho"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo","azul"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo","azul", "vermelho"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo","azul", "vermelho", "amarelo"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo","azul", "vermelho", "amarelo", "verde"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo","azul", "vermelho", "amarelo", "verde", "azul"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo","azul", "vermelho", "amarelo", "verde", "azul", "vermelho"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo", "azul", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo","azul", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo", "verde"],
+                ["verde", "amarelo", "azul", "vermelho", "amarelo", "azul", "vermelho", "verde", "amarelo", "azul", "vermelho", "amarelo", "verde", "azul", "vermelho", "amarelo", "verde", "azul"]
+                ]
+        }
+
+        self.mostrar_dialogo_play()
+
+    # ======= DIÁLOGOS =======
+    def mostrar_dialogo_play(self):
+        self.dialog = MDDialog(
+            title="🎮 Jogo da Memória das Cores",
+            text="Clique em Play para começar!",
+            radius=[25, 25, 25, 25],
+            auto_dismiss=False,
+            buttons=[
+                MDFillRoundFlatIconButton(
+                    icon="play",
+                    text="Play",
+                    on_release=self.iniciar_jogo
+                )
+            ]
+        )
+        self.dialog.open()
+
+    def iniciar_jogo(self, *args):
+        self.dialog.dismiss()
+        self.mostrar_sequencia_atual()
+
+    def mostrar_dialogo_nivel_completo(self):
+        self.dialog = MDDialog(
+            title="🎉 Nível concluído!",
+            text=f"Você completou o nível {self.nivel_atual}!",
+            radius=[25, 25, 25, 25],
+            auto_dismiss=False,
+            buttons=[
+                MDFillRoundFlatIconButton(
+                    icon="close",
+                    text="Sair",
+                    on_release=lambda x: MDApp.get_running_app().stop()
+                ),
+                MDFillRoundFlatIconButton(
+                    icon="arrow-right",
+                    text="Próxima Fase",
+                    on_release=self.proxima_fase
+                )
+            ]
+        )
+        self.dialog.open()
+
+    # ======= MÉTODOS PRINCIPAIS =======
+    def mostrar_sequencia_atual(self):
+        sequencia = self.niveis[self.nivel_atual][self.sequencia_atual_index]
+        self.bloquear_clicks = True
+        self.piscar_sequencia(sequencia)
+        self.posicao_seq = 0
+
+    def piscar_sequencia(self, sequencia, intervalo=0.5):
+        tempo_inicial = 0
+        for cor in sequencia:
+            Clock.schedule_once(lambda dt, c=cor: self.cards[c].piscar(), tempo_inicial)
+            tempo_inicial += intervalo
+        Clock.schedule_once(lambda dt: self.liberar_clicks(), tempo_inicial)
+
+    def liberar_clicks(self):
+        self.bloquear_clicks = False
+
+    def on_card_click(self, card):
+        if self.bloquear_clicks:
+            return  # Ignora clicks enquanto bloqueado
+        card.piscar(tempo=0.15)
+        if self.Verificar(card):
+            sequencia_corrente = self.niveis[self.nivel_atual][self.sequencia_atual_index]
+            if self.posicao_seq >= len(sequencia_corrente):
+                self.sequencia_atual_index += 1
+                if self.sequencia_atual_index >= len(self.niveis[self.nivel_atual]):
+                    self.mostrar_dialogo_nivel_completo()
+                else:
+                    Clock.schedule_once(lambda dt: self.mostrar_sequencia_atual(), 0.5)
+
+    def Verificar(self, card):
+        cor_esperada = self.niveis[self.nivel_atual][self.sequencia_atual_index][self.posicao_seq]
+        if card.nome_cor == cor_esperada:
+            self.posicao_seq += 1
+            return True
+        else:
+            self.mostrar_aviso_erro()
+            self.posicao_seq = 0
+            self.sequencia_atual_index = 0
+            Clock.schedule_once(lambda dt: self.mostrar_sequencia_atual(), 0.5)
+            return False
+
+    def proxima_fase(self, *args):
+        self.dialog.dismiss()
+        self.nivel_atual += 1
+        if self.nivel_atual > len(self.niveis):
+            self.nivel_atual = 1
+        self.sequencia_atual_index = 0
+        self.posicao_seq = 0
+        self.mostrar_dialogo_play()
+
+    # ======= AVISO DE ERRO =======
+    def mostrar_aviso_erro(self):
+        if self.erro_box:
+            self.remove_widget(self.erro_box)
+
+        self.erro_box = MDBoxLayout(
+            size_hint=(0.5, 0.1),
+            pos_hint={"center_x": 0.5, "center_y": 0.9},
+            md_bg_color=(1, 0, 0, 0.8),
+            radius=[15, 15, 15, 15],
+            padding=10
+        )
+        label = MDLabel(
+            text="❌ Errou! Tente novamente",
+            halign="center",
+            theme_text_color="Custom",
+            text_color=(1, 1, 1, 1),
+            font_style="H6"
+        )
+        self.erro_box.add_widget(label)
+        self.add_widget(self.erro_box)
+        Clock.schedule_once(lambda dt: self.remove_aviso_erro(), 1.5)
+
+    def remove_aviso_erro(self):
+        if self.erro_box:
+            self.remove_widget(self.erro_box)
+            self.erro_box = None
+
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.card import MDCard
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
+from kivy.animation import Animation
+from kivy.properties import StringProperty
+from kivy.metrics import dp
+
+
+class TelaJogoSomSilaba(MDScreen):
+
+    class TeclaSilaba(MDCard):
+        silaba = StringProperty("")
+
+        def __init__(self, silaba, on_click, **kwargs):
+            super().__init__(**kwargs)
+            self.silaba = silaba
+            self.on_click = on_click
+            self.size_hint = (None, None)
+            self.size = (dp(70), dp(120))
+            self.radius = [10]
+            self.elevation = 3
+            self.shadow_softness = 2
+            self.shadow_offset = (0, -2)
+            self.md_bg_color = [1, 1, 1, 1]  # cor branca padrão
+            self.padding = dp(5)
+
+            # Label centralizada dentro da tecla
+            self.add_widget(MDLabel(
+                text=self.silaba,
+                halign="center",
+                valign="center",
+                theme_text_color="Custom",
+                text_color=(0, 0, 0, 1),
+                font_style="H6"
+            ))
+
+            # Evento de clique
+            self.bind(on_release=lambda x: self.tocar_tecla())
+
+        def tocar_tecla(self):
+            """Pisca e executa a ação associada."""
+            anim = (Animation(md_bg_color=[0.8, 0.8, 0.8, 1], duration=0.1) +
+                    Animation(md_bg_color=[1, 1, 1, 1], duration=0.1))
+            anim.start(self)
+
+            if self.on_click:
+                self.on_click(self.silaba)
+
+    # ======== Lógica principal ========
+    def on_pre_enter(self, *args):
+        """Monta as teclas ao entrar na tela."""
+        self.montar_teclas()
+
+    def montar_teclas(self):
+        """Cria teclas com sílabas dentro do card azul."""
+        container = self.ids.JogoSomSilaba
+        container.clear_widgets()
+
+        silabas = ["PA", "PE", "PI", "PO", "PU", "BA", "BE", "BI", "BO", "BU"]
+
+        for silaba in silabas:
+            tecla = self.TeclaSilaba(silaba, self.on_tecla_clicada)
+            container.add_widget(tecla)
+
+    def on_tecla_clicada(self, silaba):
+        """Ação ao clicar numa tecla."""
+        print(f"Tecla '{silaba}' clicada!")
 
 

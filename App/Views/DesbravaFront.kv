@@ -57,6 +57,10 @@
         name:'SilabaMix'
     TelaJogoDaMemoria:
         name:"JogoDaMemoria"
+    TelaJogoMemoriaDasCores:
+        name:"JogoMemoriaDosCores"
+    TelaJogoSomSilaba:
+        name:"JogoSomSilaba"
 
 <TelaEscolha>:
     MDFloatLayout:
@@ -4957,3 +4961,118 @@
 
                 Widget:
                     size_hint_x:0.2
+
+<TelaJogoMemoriaDasCores>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.1
+                BoxLayout:
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                    size_hint_x:0.6
+
+                MDBoxLayout:
+                    orientation:'vertical'
+                    Widget:
+                        size_hint_y:0.4
+                    MDCard:
+                        size_hint:0.8,0.8
+                        md_bg_color:0.95, 0.95, 0.95, 0.3
+                        radius:20,
+                        pos_hint:{"center_x": 0.5, "center_y": 0.5}
+                        MDBoxLayout:
+                            padding:10
+                            orientation:'vertical'
+                            id:JogoMemoriaDosCores
+                    Widget:
+                        size_hint_y:0.4
+                Widget:
+                    size_hint_x:0.6
+
+<TelaJogoSomSilaba>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation:'vertical'
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint_y: 0.1
+                BoxLayout:
+                BoxLayout:
+                    spacing:35
+                    pos_hint:{"center_y":0.9}
+                    orientation:'horizontal'
+                    Widget:
+
+                    MDRectangleFlatIconButton:
+                        id: 'VoltarLoginButton'
+                        text: "Voltar"
+                        icon: "arrow-left"
+                        md_bg_color: 0.0, 0.4, 0.0, 0
+                        font_size: "18sp"
+                        bold: True
+                        on_release: root.Voltar_Click()
+                        size_hint: None, None
+                        size: "200dp", "50dp"
+                        text_color: 1, 1, 1, 1
+                        icon_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 0
+            BoxLayout:
+                orientation:'horizontal'
+                Widget:
+                    size_hint_x:0.4
+
+                MDBoxLayout:
+                    orientation:'vertical'
+                    Widget:
+                        size_hint_y:0.3
+                    MDCard:
+                        size_hint:0.8,0.8
+                        md_bg_color:0, 0.2, 0.6, 1
+                        radius:20
+                        pos_hint:{"center_x": 0.5, "center_y": 0.5}
+                        MDBoxLayout:
+                            padding:20
+                            spacing:10
+                            orientation:'horizontal'
+                            id:JogoSomSilaba
+                    Widget:
+                        size_hint_y:0.3
+                Widget:
+                    size_hint_x:0.4
