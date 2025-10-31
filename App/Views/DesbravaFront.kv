@@ -4862,13 +4862,20 @@
             BoxLayout:
                 orientation:'horizontal'
                 Widget:
-                    size_hint_x:0.2
+                    size_hint_x:0.6
                 BoxLayout:
-                    id:JogoWaterSort
                     orientation:'vertical'
-                
+                    Widget:
+                        size_hint_x:0.2
+                    BoxLayout:
+                        id:JogoWaterSort
+                        orientation:'vertical'
+                        spacing:30
+                        
+                    Widget:
+                        size_hint_x:0.2        
                 Widget:
-                    size_hint_x:0.2
+                    size_hint_x:0.6
 
 <TelaSilabaMix>:
     MDFloatLayout:
@@ -5054,25 +5061,141 @@
                         icon_color: 1, 1, 1, 1
                         line_color: 1, 1, 1, 0
             BoxLayout:
-                orientation:'horizontal'
+                orientation: 'horizontal'
                 Widget:
-                    size_hint_x:0.4
+                    size_hint_x: 0.2
 
                 MDBoxLayout:
-                    orientation:'vertical'
+                    orientation: 'vertical'
                     Widget:
-                        size_hint_y:0.3
+                        size_hint_y: 0.3
+
                     MDCard:
-                        size_hint:0.8,0.8
-                        md_bg_color:0, 0.2, 0.6, 1
-                        radius:20
-                        pos_hint:{"center_x": 0.5, "center_y": 0.5}
+                        orientation: 'vertical'
+                        size_hint: 0.8, 0.8
+                        md_bg_color: 0, 0.2, 0.6, 1
+                        radius: 20
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+                        MDIconButton:
+                            icon: "volume-high"
+                            icon_size: "54sp"
+                            theme_icon_color: "Custom"
+                            icon_color: 1, 1, 1, 1
+                            pos_hint: {"center_x": 0.08, "center_y": 0.8}
+
                         MDBoxLayout:
-                            padding:20
-                            spacing:10
-                            orientation:'horizontal'
-                            id:JogoSomSilaba
+                            padding: 20
+                            spacing: 10
+                            orientation: 'horizontal'
+                            id: JogoSomSilaba
+
+                            MDCard:
+                                size_hint_y: 0.9
+                                elevation: 3
+                                orientation:'vertical'
+                                on_release:root.CliqueTecla(1)
+                                MDLabel:
+                                    text: f'{root.Tecla1Texto}'
+                                    halign: 'center'
+                                    valign: 'bottom'
+                                    text_size: self.size
+                                Widget:
+                                    size_hint_y:0.1
+
+                            MDCard:
+                                size_hint_y: 0.9
+                                elevation: 3
+                                orientation:'vertical'
+                                on_release:root.CliqueTecla(2)
+                                MDLabel:
+                                    text: f'{root.Tecla2Texto}'
+                                    halign: 'center'
+                                    valign: 'bottom'
+                                    text_size: self.size
+                                Widget:
+                                    size_hint_y:0.1
+
+                            MDCard:
+                                size_hint_y: 0.9
+                                elevation: 3
+                                orientation:'vertical'
+                                on_release:root.CliqueTecla(3)
+                                MDLabel:
+                                    text: f'{root.Tecla3Texto}'
+                                    halign: 'center'
+                                    valign: 'bottom'
+                                    text_size: self.size
+                                Widget:
+                                    size_hint_y:0.1
+
+                            MDCard:
+                                size_hint_y: 0.9
+                                elevation: 3
+                                orientation:'vertical'
+                                on_release:root.CliqueTecla(4)
+                                MDLabel:
+                                    text: f'{root.Tecla4Texto}'
+                                    halign: 'center'
+                                    valign: 'bottom'
+                                    text_size: self.size
+                                Widget:
+                                    size_hint_y:0.1
+
+                            MDCard:
+                                size_hint_y: 0.9
+                                elevation: 3
+                                orientation:'vertical'
+                                on_release:root.CliqueTecla(5)
+                                MDLabel:
+                                    text: f'{root.Tecla5Texto}'
+                                    halign: 'center'
+                                    valign: 'bottom'
+                                    text_size: self.size
+                                Widget:
+                                    size_hint_y:0.1
+
+                            MDCard:
+                                size_hint_y: 0.9
+                                elevation: 3
+                                orientation:'vertical'
+                                on_release:root.CliqueTecla(6)
+                                MDLabel:
+                                    text: f'{root.Tecla6Texto}'
+                                    halign: 'center'
+                                    valign: 'bottom'
+                                    text_size: self.size
+                                Widget:
+                                    size_hint_y:0.1
+
+                            MDCard:
+                                size_hint_y: 0.9
+                                elevation: 3
+                                orientation:'vertical'
+                                on_release:root.CliqueTecla(7)
+                                MDLabel:
+                                    text: f'{root.Tecla7Texto}'
+                                    halign: 'center'
+                                    valign: 'bottom'
+                                    text_size: self.size
+                                Widget:
+                                    size_hint_y:0.1
+
+                            MDCard:
+                                size_hint_y: 0.9
+                                elevation: 3
+                                orientation:'vertical'
+                                on_release:root.CliqueTecla(8)
+                                MDLabel:
+                                    text: f'{root.Tecla8Texto}'
+                                    halign: 'center'
+                                    valign: 'bottom'
+                                    text_size: self.size
+                                Widget:
+                                    size_hint_y:0.1
+
                     Widget:
-                        size_hint_y:0.3
+                        size_hint_y: 0.3
+
                 Widget:
-                    size_hint_x:0.4
+                    size_hint_x: 0.2

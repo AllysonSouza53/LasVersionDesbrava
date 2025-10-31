@@ -53,14 +53,6 @@ from kivy.animation import Animation
 from kivy.properties import BooleanProperty, StringProperty, NumericProperty
 from kivymd.uix.screen import MDScreen
 
-COLOR_MAP = {
-    "vermelho": (1, 0, 0, 1),
-    "azul": (0, 0.5, 1, 1),
-    "verde": (0, 1, 0, 1),
-    "amarelo": (1, 1, 0, 1),
-    "roxo": (0.6, 0, 0.8, 1),
-    "laranja": (1, 0.5, 0, 1),
-}
 
 #-------------------------------------------------------------------
 class TelaEscolha(MDScreen):
@@ -3483,28 +3475,17 @@ class TelaJogoDosSeteErros(MDScreen):
         else:
             print("Botão inválido.")
 
-# 🎨 Mapa de cores
-COLOR_MAP = {
-    "vermelho": (1, 0, 0, 1),
-    "azul": (0, 0.5, 1, 1),
-    "verde": (0, 1, 0, 1),
-    "amarelo": (1, 1, 0, 1),
-    "roxo": (0.6, 0, 0.8, 1),
-    "laranja": (1, 0.5, 0, 1),
-}
 
-
-from kivy.uix.widget import Widget
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.graphics import Color, Rectangle, RoundedRectangle
-from kivy.properties import ListProperty, NumericProperty
-from kivymd.uix.screen import MDScreen
 from kivy.clock import Clock
+from kivy.uix.widget import Widget
+from kivy.uix.image import Image
+from kivy.graphics import Color, RoundedRectangle
+from kivy.properties import ListProperty
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.animation import Animation
 import random
 
-# 🎨 Mapa de cores
 COLOR_MAP = {
     "vermelho": (1, 0, 0, 1),
     "azul": (0, 0.5, 1, 1),
@@ -3514,173 +3495,163 @@ COLOR_MAP = {
     "laranja": (1, 0.5, 0, 1),
 }
 
-
 class TelaWaterSort(MDScreen):
+    tubo_selecionado = None  # Armazena o tubo de origem
 
-    # 🔹 Classe interna que representa um tubo
-    class TubeWidget(Widget):
-        colors = ListProperty([])
+    class Tubo(Widget):
+        cores = ListProperty([])
+        capacidade = 4  # número de blocos por tubo
 
-        # define margens como propriedades (existem já na criação do objeto)
-        image_margin = NumericProperty(10)
-        padding = NumericProperty(12)
-        tube_height = NumericProperty(200)
-
-        def __init__(self, index, on_click, **kwargs):
-            # garante que propriedades NumericProperty existam antes de qualquer callback
+        def __init__(self, tela=None, **kwargs):
             super().__init__(**kwargs)
-            self.index = index
-            self.on_click = on_click
-            self.size_hint = (1, None)
-            self.height = self.tube_height
+            self.tela = tela  # referência da tela
+            self.bind(pos=self.Desenhar, size=self.Desenhar, cores=self.Desenhar)
 
-            # Bind para redesenhar quando tamanho, posição ou cores mudarem
-            self.bind(pos=self._trigger_redraw, size=self._trigger_redraw, colors=self._trigger_redraw)
+            # Imagem do contorno
+            self.contorno = Image(
+                source="Imagens/tubo.png",
+                allow_stretch=True,
+                keep_ratio=False
+            )
+            self.add_widget(self.contorno)
 
-        def _trigger_redraw(self, *args):
-            # chama on_colors de forma segura
-            self.on_colors(self, self.colors)
+        # ----------------- DESENHO DOS BLOCO -----------------
+        def Desenhar(self, *args):
+            self.canvas.before.clear()
+            with self.canvas.before:
+                padding = 3
+                espacamento_superior = 6
+                altura_bloco = (self.height - padding*2 - espacamento_superior) / self.capacidade
 
+                n = len(self.cores)
+                for i, cor_nome in enumerate(reversed(self.cores)):
+                    cor = COLOR_MAP.get(cor_nome, (1, 1, 1, 1))
+                    Color(*cor)
+
+                    y_pos = self.y + padding + i * altura_bloco
+                    radius = [0, 0, altura_bloco/2, altura_bloco/2] if i == 0 else [0,0,0,0]
+
+                    RoundedRectangle(
+                        pos=(self.x + padding, y_pos),
+                        size=(self.width - 2*padding, altura_bloco),
+                        radius=radius
+                    )
+
+                # Ajusta a imagem do contorno de forma responsiva
+                proporcao_largura = 4.2
+                proporcao_altura = 1.05
+
+                self.contorno.pos = (
+                    self.x - (self.width * (proporcao_largura - 1)/2),
+                    self.y - (self.height * (proporcao_altura - 1)/2)
+                )
+                self.contorno.size = (
+                    self.width * proporcao_largura,
+                    self.height * proporcao_altura
+                )
+
+        # ----------------- ANIMAÇÃO DE TRANSFERÊNCIA -----------------
+        def TransferirPara(self, outro_tubo):
+            if not self.cores:
+                return  # tubo vazio
+
+            # Limite de espaço no tubo de destino
+            if len(outro_tubo.cores) >= outro_tubo.capacidade:
+                return  # destino cheio
+
+            padding = 3
+            espacamento_superior = 6
+            altura_bloco = (self.height - padding*2 - espacamento_superior) / self.capacidade
+
+            # Pega o bloco do topo visual (último da lista)
+            cor_nome = self.cores[-1]
+            cor_rgba = COLOR_MAP.get(cor_nome, (1,1,1,1))
+
+            # Posição inicial do topo (visualmente é o último desenhado)
+            idx_topo_visual = self.capacidade - len(self.cores) - 1  # inverte a posição
+            y_inicial = self.y + padding + idx_topo_visual * altura_bloco
+            x_inicial = self.x + padding
+
+            # cria widget temporário
+            bloco = Widget(size=(self.width - 2*padding, altura_bloco))
+            bloco.pos = (x_inicial, y_inicial)
+
+            with bloco.canvas:
+                Color(*cor_rgba)
+                RoundedRectangle(pos=bloco.pos, size=bloco.size, radius=[0,0,altura_bloco/2,altura_bloco/2])
+
+            self.parent.add_widget(bloco)
+
+            # posição final no topo do tubo destino
+            destino_y = outro_tubo.y + padding + (outro_tubo.capacidade - outro_tubo.capacidade + len(outro_tubo.cores)) * altura_bloco
+            destino_pos = (outro_tubo.x + padding, outro_tubo.y + padding + len(outro_tubo.cores) * altura_bloco)
+
+            anim = Animation(pos=destino_pos, duration=0.5)
+
+            def terminar_animacao(animation, bloco=bloco, cor_nome=cor_nome):
+                outro_tubo.cores.append(cor_nome)  # adiciona no topo do destino
+                self.Desenhar()
+                outro_tubo.Desenhar()
+                if bloco.parent:
+                    bloco.parent.remove_widget(bloco)
+
+            anim.bind(on_complete=terminar_animacao)
+            anim.start(bloco)
+
+        # ----------------- INTERAÇÃO POR CLIQUES -----------------
         def on_touch_down(self, touch):
-            if self.collide_point(*touch.pos):
-                self.on_click(self)
+            if self.collide_point(*touch.pos) and self.tela:
+                if self.tela.tubo_selecionado is None:
+                    self.tela.tubo_selecionado = self
+                    print("Tubo selecionado como origem")
+                else:
+                    origem = self.tela.tubo_selecionado
+                    destino = self
+                    if origem is not destino:
+                        origem.TransferirPara(destino)
+                    self.tela.tubo_selecionado = None
+                    print("Transferência concluída")
                 return True
             return super().on_touch_down(touch)
 
-        def on_colors(self, instance, value):
-            # limpa os três canais (before, main, after)
-            self.canvas.before.clear()
-            self.canvas.clear()
-            self.canvas.after.clear()
+    # ----------------- CRIAÇÃO DE TUBOS -----------------
+    def on_pre_enter(self, *args):
+        Clock.schedule_once(lambda dt: self.CriarTubos(), 0.05)
 
-            # 🔹 1) desenha a imagem do tubo no canvas.before (fundo)
-            with self.canvas.before:
-                Rectangle(
-                    source="imagens/tubo.png",
-                    pos=(self.x - self.image_margin, self.y - self.image_margin),
-                    size=(self.width + 2 * self.image_margin, self.height + 10 * self.image_margin)
-                )
+    def CriarTubos(self):
+        self.ids.JogoWaterSort.clear_widgets()
 
-            # 🔹 2) desenha as camadas de cor no canvas principal (entre imagem e vidro)
-            if self.colors:
-                layer_height = (self.height - 2 * self.padding) / 4
-                for i, color_name in enumerate(reversed(self.colors)):
-                    rgba = COLOR_MAP.get(color_name, (1, 1, 1, 1))
-                    with self.canvas:
-                        Color(*rgba)
-                        RoundedRectangle(
-                            pos=(self.x + self.padding, self.y + self.padding + i * layer_height),
-                            size=(self.width - 1 * self.padding, layer_height - 2),
-                            radius=[10]
-                        )
+        cores_disponiveis = list(COLOR_MAP.keys())
+        random.shuffle(cores_disponiveis)
+        cores_nivel = cores_disponiveis[:4]
 
-        # redimensiona automaticamente quando widget muda
-        def on_size(self, *args):
-            self._trigger_redraw()
+        pool = []
+        for c in cores_nivel:
+            pool.extend([c]*4)
+        random.shuffle(pool)
 
-        def on_pos(self, *args):
-            self._trigger_redraw()
+        tubos = []
+        for i in range(6):
+            tubo = self.Tubo(tela=self, size_hint=(1/6.5, 1))  # passa referência da tela
+            tubos.append(tubo)
 
-    # 🎮 Classe do jogo principal
-    class WaterSortGame(BoxLayout):
-        def __init__(self, **kwargs):
-            super().__init__(orientation='vertical', padding=10, spacing=10, **kwargs)
+        for idx in range(4):
+            inicio = idx*4
+            fim = inicio+4
+            tubos[idx].cores = pool[inicio:fim]
 
-            # 6 tubos (2 linhas x 3 colunas)
-            self.tubes = [
-                ["vermelho", "azul", "verde", "amarelo"],
-                ["verde", "azul", "vermelho", "amarelo"],
-                ["laranja", "roxo", "azul", "verde"],
-                [], [], []
-            ]
-            self.shuffle_tubes()
-            self.selected = None
+        linha = MDBoxLayout(
+            orientation='horizontal',
+            spacing=30,
+            size_hint=(0.95, 1),
+            pos_hint={'center_x':0.5,'center_y':0.5}
+        )
 
-            # Texto de instrução
-            self.label = Label(
-                text="Toque em um tubo para selecionar.",
-                size_hint=(1, 0.1),
-                color=(1, 1, 1, 1)
-            )
-            self.add_widget(self.label)
+        for tubo in tubos:
+            linha.add_widget(tubo)
 
-            # Layout 2x3 dos tubos
-            self.layout_tubes = GridLayout(cols=3, rows=2, spacing=10, size_hint=(1, 0.9))
-            self.add_widget(self.layout_tubes)
+        self.ids.JogoWaterSort.add_widget(linha)
 
-            self.draw_tubes()
-
-        # 🔀 Embaralha as cores
-        def shuffle_tubes(self):
-            all_colors = [c for tube in self.tubes for c in tube]
-            for tube in self.tubes:
-                tube.clear()
-            random.shuffle(all_colors)
-
-            for color in all_colors:
-                while True:
-                    idx = random.randint(0, len(self.tubes) - 1)
-                    if len(self.tubes[idx]) < 4:
-                        self.tubes[idx].append(color)
-                        break
-
-        # 🧱 Desenha os tubos
-        def draw_tubes(self):
-            self.layout_tubes.clear_widgets()
-            for i, tube in enumerate(self.tubes):
-                tw = TelaWaterSort.TubeWidget(index=i, on_click=self.on_tube_pressed)
-                # opcional: ajustar margens/altura por tubo se quiser
-                # tw.image_margin = 12
-                # tw.tube_height = 220
-                tw.colors = tube
-                self.layout_tubes.add_widget(tw)
-
-        # 👆 Clique em um tubo
-        def on_tube_pressed(self, tube_widget):
-            if self.selected is None:
-                if not self.tubes[tube_widget.index]:
-                    return
-                self.selected = tube_widget.index
-                self.label.text = f"Tubo {tube_widget.index + 1} selecionado. Escolha o destino."
-            else:
-                if self.selected != tube_widget.index:
-                    self.move_one_color(self.selected, tube_widget.index)
-                self.selected = None
-                self.label.text = "Toque em um tubo para selecionar."
-
-        # 🔁 Move uma cor entre tubos
-        def move_one_color(self, origem, destino):
-            if not self.tubes[origem]:
-                return
-
-            cor_topo = self.tubes[origem].pop(0)
-            if len(self.tubes[destino]) < 4:
-                self.tubes[destino].insert(0, cor_topo)
-                self.draw_tubes()
-
-            if self.check_win():
-                self.label.text = "🎉 Parabéns! Você venceu!"
-
-        # 🏁 Checa se o jogador venceu
-        def check_win(self):
-            for tube in self.tubes:
-                if len(tube) > 0 and len(set(tube)) > 1:
-                    return False
-            return True
-
-    # 🧩 Inicializa a tela e adiciona o jogo
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        Clock.schedule_once(self.adicionar_jogo, 0)
-
-    def adicionar_jogo(self, dt):
-        self.game_widget = self.WaterSortGame()
-        # garante que o id exista no kv; se não, adicione diretamente self.add_widget(self.game_widget)
-        try:
-            self.ids.JogoWaterSort.add_widget(self.game_widget)
-        except Exception:
-            # fallback: adiciona direto na tela
-            self.add_widget(self.game_widget)
 
 
 
@@ -4405,73 +4376,61 @@ class TelaJogoMemoriaDasCores(MDScreen):
             self.remove_widget(self.erro_box)
             self.erro_box = None
 
+from kivy.core.audio import SoundLoader
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.card import MDCard
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.label import MDLabel
-from kivy.animation import Animation
-from kivy.properties import StringProperty
-from kivy.metrics import dp
-
+from kivy.properties import StringProperty, NumericProperty
 
 class TelaJogoSomSilaba(MDScreen):
+    Tecla1Texto = StringProperty("")
+    Tecla2Texto = StringProperty("")
+    Tecla3Texto = StringProperty("")
+    Tecla4Texto = StringProperty("")
+    Tecla5Texto = StringProperty("")
+    Tecla6Texto = StringProperty("")
+    Tecla7Texto = StringProperty("")
+    Tecla8Texto = StringProperty("")
+    Fase = NumericProperty(0)
 
-    class TeclaSilaba(MDCard):
-        silaba = StringProperty("")
-
-        def __init__(self, silaba, on_click, **kwargs):
-            super().__init__(**kwargs)
-            self.silaba = silaba
-            self.on_click = on_click
-            self.size_hint = (None, None)
-            self.size = (dp(70), dp(120))
-            self.radius = [10]
-            self.elevation = 3
-            self.shadow_softness = 2
-            self.shadow_offset = (0, -2)
-            self.md_bg_color = [1, 1, 1, 1]  # cor branca padrão
-            self.padding = dp(5)
-
-            # Label centralizada dentro da tecla
-            self.add_widget(MDLabel(
-                text=self.silaba,
-                halign="center",
-                valign="center",
-                theme_text_color="Custom",
-                text_color=(0, 0, 0, 1),
-                font_style="H6"
-            ))
-
-            # Evento de clique
-            self.bind(on_release=lambda x: self.tocar_tecla())
-
-        def tocar_tecla(self):
-            """Pisca e executa a ação associada."""
-            anim = (Animation(md_bg_color=[0.8, 0.8, 0.8, 1], duration=0.1) +
-                    Animation(md_bg_color=[1, 1, 1, 1], duration=0.1))
-            anim.start(self)
-
-            if self.on_click:
-                self.on_click(self.silaba)
-
-    # ======== Lógica principal ========
     def on_pre_enter(self, *args):
-        """Monta as teclas ao entrar na tela."""
-        self.montar_teclas()
+        self.silabas = [
+            ['PA', 'DA', 'CO', 'NE', 'FI', 'ZE', 'CHI', 'RO'],
+            ['BA', 'TE', 'CU', 'MA', 'VA', 'SI', 'JA', 'LI'],
+        ]
+        self.AtualizarFase()
+        #self.TocarSilaba(self.Tecla1Texto)
 
-    def montar_teclas(self):
-        """Cria teclas com sílabas dentro do card azul."""
-        container = self.ids.JogoSomSilaba
-        container.clear_widgets()
+    def AtualizarFase(self):
+        silabas_fase = self.silabas[self.Fase]
+        self.Tecla1Texto = silabas_fase[0]
+        self.Tecla2Texto = silabas_fase[1]
+        self.Tecla3Texto = silabas_fase[2]
+        self.Tecla4Texto = silabas_fase[3]
+        self.Tecla5Texto = silabas_fase[4]
+        self.Tecla6Texto = silabas_fase[5]
+        self.Tecla7Texto = silabas_fase[6]
+        self.Tecla8Texto = silabas_fase[7]
 
-        silabas = ["PA", "PE", "PI", "PO", "PU", "BA", "BE", "BI", "BO", "BU"]
+    def TocarSilaba(self, silaba):
+        sound = SoundLoader.load(f"sounds/{silaba}.mp3")  # coloque os arquivos mp3 dentro da pasta 'sounds'
+        if sound:
+            sound.play()
+        else:
+            print(f"Arquivo de áudio não encontrado para {silaba}")
 
-        for silaba in silabas:
-            tecla = self.TeclaSilaba(silaba, self.on_tecla_clicada)
-            container.add_widget(tecla)
-
-    def on_tecla_clicada(self, silaba):
-        """Ação ao clicar numa tecla."""
-        print(f"Tecla '{silaba}' clicada!")
-
-
+    def CliqueTecla(self, tecla):
+        mapping = {
+            1: self.Tecla1Texto,
+            2: self.Tecla2Texto,
+            3: self.Tecla3Texto,
+            4: self.Tecla4Texto,
+            5: self.Tecla5Texto,
+            6: self.Tecla6Texto,
+            7: self.Tecla7Texto,
+            8: self.Tecla8Texto
+        }
+        silaba = mapping.get(tecla)
+        if silaba:
+            print(f"Clicou: {silaba}")
+            #self.TocarSilaba(silaba)
+        else:
+            print("Tecla inválida")
