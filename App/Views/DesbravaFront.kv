@@ -51,8 +51,8 @@
         name:"Conquistas"
     TelaJogoDosSeteErros:
         name:"JogoDosSeteErros"
-    TelaWaterSort:
-        name:"WaterSort"
+    TelaOrganizeAsCores:
+        name:"OrganizeAsCores"
     TelaSilabaMix:
         name:'SilabaMix'
     TelaJogoDaMemoria:
@@ -4825,7 +4825,7 @@
                                 root.botao_clicado(7,self)
                                 self.text_color = 0.6, 1, 0.6, 1  # verde claro visível ao clicar
 
-<TelaWaterSort>:
+<TelaOrganizeAsCores>:
     MDFloatLayout:
         canvas.before:
             Color:
@@ -4862,20 +4862,20 @@
             BoxLayout:
                 orientation:'horizontal'
                 Widget:
-                    size_hint_x:0.6
+                    size_hint_x:0.2
                 BoxLayout:
                     orientation:'vertical'
                     Widget:
-                        size_hint_x:0.2
+                        size_hint_x:0.1
                     BoxLayout:
-                        id:JogoWaterSort
+                        id:JogoOrganizarCores
                         orientation:'vertical'
                         spacing:30
                         
                     Widget:
-                        size_hint_x:0.2        
+                        size_hint_x:0.1
                 Widget:
-                    size_hint_x:0.6
+                    size_hint_x:0.2
 
 <TelaSilabaMix>:
     MDFloatLayout:

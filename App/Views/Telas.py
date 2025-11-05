@@ -39,6 +39,7 @@ from Controllers.AlunoControllerLogin import LoginAlunoController
 import random
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.graphics import Color, RoundedRectangle, Line
@@ -3415,7 +3416,7 @@ class TelaPerfilAluno(MDScreen):
         if jogo == 1:
             self.manager.current = "JogoDosSeteErros"
         elif jogo == 2:
-            self.manager.current = "WaterSort"
+            self.manager.current = "OrganizeAsCores"
         elif jogo == 3:
             self.manager.current = "SilabaMix"
         elif jogo == 4:
@@ -3478,13 +3479,19 @@ class TelaJogoDosSeteErros(MDScreen):
 
 from kivy.clock import Clock
 from kivy.uix.widget import Widget
-from kivy.uix.image import Image
-from kivy.graphics import Color, RoundedRectangle
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, NumericProperty
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.card import MDCard
+from kivy.metrics import dp
 from kivy.animation import Animation
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFillRoundFlatIconButton
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.label import MDLabel
+from kivy.app import App
 import random
+
 
 COLOR_MAP = {
     "vermelho": (1, 0, 0, 1),
@@ -3493,168 +3500,313 @@ COLOR_MAP = {
     "amarelo": (1, 1, 0, 1),
     "roxo": (0.6, 0, 0.8, 1),
     "laranja": (1, 0.5, 0, 1),
+    "rosa": (1, 0.3, 0.6, 1),
+    "ciano": (0, 1, 1, 1),
+    "marrom": (0.6, 0.3, 0.1, 1),
 }
 
-class TelaWaterSort(MDScreen):
-    tubo_selecionado = None  # Armazena o tubo de origem
 
-    class Tubo(Widget):
-        cores = ListProperty([])
-        capacidade = 4  # número de blocos por tubo
+class TelaOrganizeAsCores(MDScreen):
+    card_selecionado = None
+    fase_atual = NumericProperty(1)
 
-        def __init__(self, tela=None, **kwargs):
-            super().__init__(**kwargs)
-            self.tela = tela  # referência da tela
-            self.bind(pos=self.Desenhar, size=self.Desenhar, cores=self.Desenhar)
+    def on_enter(self, *args):
+        # Abre diálogo inicial (sem alterar layout/anim)
+        self.dialog_inicial = MDDialog(
+            md_bg_color=(1, 1, 1, 0.7),
+            title="🎨 Organize as Cores",
+            text="Deseja iniciar o jogo?",
+            type="custom",
+            radius=[20, 20, 20, 20],
+            auto_dismiss=False,
+            buttons=[
+                MDFillRoundFlatIconButton(
+                    icon="close",
+                    text="Sair",
+                    text_color="white",
+                    md_bg_color=(0.7, 0, 0, 1),
+                    on_release=self.SairDoJogo
+                ),
+                MDFillRoundFlatIconButton(
+                    icon="play",
+                    text="Jogar",
+                    text_color="white",
+                    md_bg_color=(0, 0.6, 0.1, 1),
+                    on_release=self.StartJogo
+                ),
+            ],
+        )
+        self.dialog_inicial.title_align = "center"
+        self.dialog_inicial.open()
 
-            # Imagem do contorno
-            self.contorno = Image(
-                source="Imagens/tubo.png",
-                allow_stretch=True,
-                keep_ratio=False
-            )
-            self.add_widget(self.contorno)
+    def StartJogo(self, *args):
+        # Fecha diálogo e desenha a fase atual
+        try:
+            self.dialog_inicial.dismiss()
+        except Exception:
+            pass
+        self.Desenhar()
 
-        # ----------------- DESENHO DOS BLOCO -----------------
-        def Desenhar(self, *args):
-            self.canvas.before.clear()
-            with self.canvas.before:
-                padding = 3
-                espacamento_superior = 6
-                altura_bloco = (self.height - padding*2 - espacamento_superior) / self.capacidade
+    def SairDoJogo(self, *args):
+        try:
+            self.dialog_inicial.dismiss()
+        except Exception:
+            pass
+        App.get_running_app().stop()
 
-                n = len(self.cores)
-                for i, cor_nome in enumerate(reversed(self.cores)):
-                    cor = COLOR_MAP.get(cor_nome, (1, 1, 1, 1))
-                    Color(*cor)
+    def Desenhar(self):
+        """Desenha o jogo de acordo com a fase atual"""
+        self.ids.JogoOrganizarCores.clear_widgets()
 
-                    y_pos = self.y + padding + i * altura_bloco
-                    radius = [0, 0, altura_bloco/2, altura_bloco/2] if i == 0 else [0,0,0,0]
+        # ===============================
+        # CONFIGURAÇÃO DA FASE (mantido igual)
+        # ===============================
+        if self.fase_atual <= 2:
+            num_colunas = 3
+            slots_por_coluna = 2
+        elif self.fase_atual <= 4:
+            num_colunas = 4
+            slots_por_coluna = 3
+        else:
+            num_colunas = 5
+            slots_por_coluna = 4
 
-                    RoundedRectangle(
-                        pos=(self.x + padding, y_pos),
-                        size=(self.width - 2*padding, altura_bloco),
-                        radius=radius
-                    )
-
-                # Ajusta a imagem do contorno de forma responsiva
-                proporcao_largura = 4.2
-                proporcao_altura = 1.05
-
-                self.contorno.pos = (
-                    self.x - (self.width * (proporcao_largura - 1)/2),
-                    self.y - (self.height * (proporcao_altura - 1)/2)
-                )
-                self.contorno.size = (
-                    self.width * proporcao_largura,
-                    self.height * proporcao_altura
-                )
-
-        # ----------------- ANIMAÇÃO DE TRANSFERÊNCIA -----------------
-        def TransferirPara(self, outro_tubo):
-            if not self.cores:
-                return  # tubo vazio
-
-            # Limite de espaço no tubo de destino
-            if len(outro_tubo.cores) >= outro_tubo.capacidade:
-                return  # destino cheio
-
-            padding = 3
-            espacamento_superior = 6
-            altura_bloco = (self.height - padding*2 - espacamento_superior) / self.capacidade
-
-            # Pega o bloco do topo visual (último da lista)
-            cor_nome = self.cores[-1]
-            cor_rgba = COLOR_MAP.get(cor_nome, (1,1,1,1))
-
-            # Posição inicial do topo (visualmente é o último desenhado)
-            idx_topo_visual = self.capacidade - len(self.cores) - 1  # inverte a posição
-            y_inicial = self.y + padding + idx_topo_visual * altura_bloco
-            x_inicial = self.x + padding
-
-            # cria widget temporário
-            bloco = Widget(size=(self.width - 2*padding, altura_bloco))
-            bloco.pos = (x_inicial, y_inicial)
-
-            with bloco.canvas:
-                Color(*cor_rgba)
-                RoundedRectangle(pos=bloco.pos, size=bloco.size, radius=[0,0,altura_bloco/2,altura_bloco/2])
-
-            self.parent.add_widget(bloco)
-
-            # posição final no topo do tubo destino
-            destino_y = outro_tubo.y + padding + (outro_tubo.capacidade - outro_tubo.capacidade + len(outro_tubo.cores)) * altura_bloco
-            destino_pos = (outro_tubo.x + padding, outro_tubo.y + padding + len(outro_tubo.cores) * altura_bloco)
-
-            anim = Animation(pos=destino_pos, duration=0.5)
-
-            def terminar_animacao(animation, bloco=bloco, cor_nome=cor_nome):
-                outro_tubo.cores.append(cor_nome)  # adiciona no topo do destino
-                self.Desenhar()
-                outro_tubo.Desenhar()
-                if bloco.parent:
-                    bloco.parent.remove_widget(bloco)
-
-            anim.bind(on_complete=terminar_animacao)
-            anim.start(bloco)
-
-        # ----------------- INTERAÇÃO POR CLIQUES -----------------
-        def on_touch_down(self, touch):
-            if self.collide_point(*touch.pos) and self.tela:
-                if self.tela.tubo_selecionado is None:
-                    self.tela.tubo_selecionado = self
-                    print("Tubo selecionado como origem")
-                else:
-                    origem = self.tela.tubo_selecionado
-                    destino = self
-                    if origem is not destino:
-                        origem.TransferirPara(destino)
-                    self.tela.tubo_selecionado = None
-                    print("Transferência concluída")
-                return True
-            return super().on_touch_down(touch)
-
-    # ----------------- CRIAÇÃO DE TUBOS -----------------
-    def on_pre_enter(self, *args):
-        Clock.schedule_once(lambda dt: self.CriarTubos(), 0.05)
-
-    def CriarTubos(self):
-        self.ids.JogoWaterSort.clear_widgets()
-
-        cores_disponiveis = list(COLOR_MAP.keys())
-        random.shuffle(cores_disponiveis)
-        cores_nivel = cores_disponiveis[:4]
-
-        pool = []
-        for c in cores_nivel:
-            pool.extend([c]*4)
-        random.shuffle(pool)
-
-        tubos = []
-        for i in range(6):
-            tubo = self.Tubo(tela=self, size_hint=(1/6.5, 1))  # passa referência da tela
-            tubos.append(tubo)
-
-        for idx in range(4):
-            inicio = idx*4
-            fim = inicio+4
-            tubos[idx].cores = pool[inicio:fim]
-
-        linha = MDBoxLayout(
-            orientation='horizontal',
-            spacing=30,
-            size_hint=(0.95, 1),
-            pos_hint={'center_x':0.5,'center_y':0.5}
+        CardFundo = MDCard(
+            size_hint=(1, 1),
+            pos_hint={"center_x": 0.5, "center_y": 0.5},
+            radius=[20, 20, 20, 20],
+            md_bg_color=(0.95, 0.95, 0.95, 0.3),
+            padding=dp(10),
         )
 
-        for tubo in tubos:
-            linha.add_widget(tubo)
+        cores_disponiveis = list(COLOR_MAP.values())
+        random.shuffle(cores_disponiveis)
+        indice_branco = random.randint(0, num_colunas - 1)
 
-        self.ids.JogoWaterSort.add_widget(linha)
+        CorLista = []
+        SubCardsPorColuna = []
 
+        for i in range(num_colunas):
+            if i == indice_branco:
+                cor_rgba = (1, 1, 1, 1)
+            else:
+                cor_rgba = cores_disponiveis.pop()
 
+            CorLista.append(cor_rgba)
 
+            if i == 0:
+                radius = [15, 0, 0, 15]
+            elif i == num_colunas - 1:
+                radius = [0, 15, 15, 0]
+            else:
+                radius = [0, 0, 0, 0]
 
+            BoxCor = MDBoxLayout(
+                orientation='vertical',
+                size_hint=(1 / num_colunas, 1),
+                spacing=dp(8),
+            )
+
+            FundoCor = MDCard(
+                radius=radius,
+                md_bg_color=cor_rgba,
+                size_hint=(1, 1),
+                elevation=0,
+            )
+
+            linha_lugares = MDBoxLayout(
+                orientation='horizontal',
+                spacing=dp(8),
+                padding=dp(6),
+                size_hint=(1, 1),
+            )
+
+            sub_cards = []
+            for _ in range(slots_por_coluna):
+                BoxLugares = MDCard(
+                    size_hint=(1 / slots_por_coluna, 1),
+                    radius=[12, 12, 12, 12],
+                    md_bg_color=(0, 0, 0, 0.12),
+                    elevation=-5,
+                )
+                BoxLugares.bind(on_release=self.ClickLugar)
+                linha_lugares.add_widget(BoxLugares)
+                sub_cards.append(BoxLugares)
+
+            FundoCor.add_widget(linha_lugares)
+            BoxCor.add_widget(FundoCor)
+            SubCardsPorColuna.append(sub_cards)
+            CardFundo.add_widget(BoxCor)
+
+        # ===============================
+        # CARDS MÓVEIS (igual)
+        # ===============================
+        objetos_para_posicionar = []
+        for idx_col, cor_rgba in enumerate(CorLista):
+            if cor_rgba == (1, 1, 1, 1):
+                continue
+
+            cor_escura = tuple(max(c - 0.2, 0) for c in cor_rgba[:3]) + (1,)
+
+            for _ in range(slots_por_coluna):
+                obj = MDCard(
+                    size_hint=(1, 1),
+                    radius=[10, 10, 10, 10],
+                    md_bg_color=cor_escura,
+                    elevation=3,
+                )
+                obj.col_origem = idx_col
+                obj.bind(on_release=self.ClickCard)
+                objetos_para_posicionar.append(obj)
+
+        # ===============================
+        # POSICIONAMENTO INICIAL (igual)
+        # ===============================
+        for obj in objetos_para_posicionar:
+            possiveis_cols = [i for i in range(len(SubCardsPorColuna)) if i != obj.col_origem]
+            random.shuffle(possiveis_cols)
+            colocado = False
+            for col_dest in possiveis_cols:
+                subcards_livres = [s for s in SubCardsPorColuna[col_dest] if len(s.children) == 0]
+                if subcards_livres:
+                    random.choice(subcards_livres).add_widget(obj)
+                    colocado = True
+                    break
+            if not colocado:
+                random.choice(random.choice(SubCardsPorColuna)).add_widget(obj)
+
+        # ===============================
+        # SALVA REFERÊNCIAS
+        # ===============================
+        self.CorLista = CorLista
+        self.SubCardsPorColuna = SubCardsPorColuna
+        self.ids.JogoOrganizarCores.add_widget(CardFundo)
+
+    # ===============================
+    # CLIQUES (mantido sem mudanças)
+    # ===============================
+    def ClickCard(self, card):
+        """Seleciona/desmarca um card colorido para mover."""
+        if self.card_selecionado is None:
+            self.card_selecionado = card
+            Animation(size_hint=(1.15, 1.15), duration=0.12, t="out_back").start(card)
+            return
+
+        if self.card_selecionado is card:
+            Animation(size_hint=(1, 1), duration=0.12, t="out_back").start(card)
+            self.card_selecionado = None
+            return
+
+        Animation(size_hint=(1, 1), duration=0.12).start(self.card_selecionado)
+        self.card_selecionado = card
+        Animation(size_hint=(1.15, 1.15), duration=0.12, t="out_back").start(card)
+
+    def ClickLugar(self, lugar):
+        """Move o card selecionado para o lugar clicado."""
+        if self.card_selecionado is None:
+            return
+
+        if len(lugar.children) == 0:
+            card = self.card_selecionado
+            if card.parent:
+                card.parent.remove_widget(card)
+            lugar.add_widget(card)
+            Animation(size_hint=(1, 1), duration=0.18, t="out_back").start(card)
+
+        if self.card_selecionado:
+            Animation(size_hint=(1, 1), duration=0.12).start(self.card_selecionado)
+        self.card_selecionado = None
+
+        self.VerificarAcerto()
+
+    # ===============================
+    # VERIFICAR ACERTO (igual lógica, com diálogo de acerto)
+    # ===============================
+    def VerificarAcerto(self):
+        """Verifica se todos os cards estão nas colunas corretas."""
+        todas_certas = True
+
+        for i, subcards in enumerate(self.SubCardsPorColuna):
+            cor_coluna = self.CorLista[i]
+            if cor_coluna == (1, 1, 1, 1):
+                continue
+
+            cor_esperada = tuple(max(c - 0.2, 0) for c in cor_coluna[:3])
+
+            for lugar in subcards:
+                if not lugar.children:
+                    todas_certas = False
+                    break
+
+                card = lugar.children[0]
+                cor_card = card.md_bg_color[:3]
+                if not all(abs(c1 - c2) < 0.15 for c1, c2 in zip(cor_card, cor_esperada)):
+                    todas_certas = False
+                    break
+
+        if todas_certas:
+            # abre diálogo de acerto sem alterar layout/estética
+            self.dialog_acerto = MDDialog(
+                md_bg_color=(1, 1, 1, 0.7),
+                title="🎉 Parabéns!",
+                text=f"Fase {self.fase_atual} completa! Deseja continuar?",
+                type="custom",
+                radius=[20, 20, 20, 20],
+                auto_dismiss=False,
+                buttons=[
+                    MDFillRoundFlatIconButton(
+                        icon="close",
+                        text="Sair",
+                        text_color="white",
+                        md_bg_color=(0.7, 0, 0, 1),
+                        on_release=self._sair_dialog_acerto
+                    ),
+                    MDFillRoundFlatIconButton(
+                        icon="arrow-right",
+                        text="Próxima",
+                        text_color="white",
+                        md_bg_color=(0, 0.6, 0.1, 1),
+                        on_release=self._proxima_dialog_acerto
+                    ),
+                ],
+            )
+            self.dialog_acerto.title_align = "center"
+            self.dialog_acerto.open()
+
+    def _sair_dialog_acerto(self, *args):
+        try:
+            self.dialog_acerto.dismiss()
+        except Exception:
+            pass
+        App.get_running_app().stop()
+
+    def _proxima_dialog_acerto(self, *args):
+        try:
+            self.dialog_acerto.dismiss()
+        except Exception:
+            pass
+        self.ProximaFase()
+
+    # ===============================
+    # PRÓXIMA FASE (mantido)
+    # ===============================
+    def ProximaFase(self):
+        if self.fase_atual < 6:
+            self.fase_atual += 1
+            print(f"➡️ Indo para a fase {self.fase_atual}")
+            self.Desenhar()
+        else:
+            print("🏆 Todas as fases concluídas!")
+            # opcional: mostrar um diálogo final
+            final = MDDialog(
+                md_bg_color=(1, 1, 1, 0.7),
+                title="🏁 Parabéns!",
+                text="Você concluiu todas as fases!",
+                size_hint=(0.8, None),
+                radius=[20, 20, 20, 20],
+                buttons=[MDFlatButton(text="OK", on_release=lambda *a: final.dismiss())],
+            )
+            final.open()
 
 
 from kivy.metrics import dp
@@ -4378,7 +4530,10 @@ class TelaJogoMemoriaDasCores(MDScreen):
 
 from kivy.core.audio import SoundLoader
 from kivymd.uix.screen import MDScreen
-from kivy.properties import StringProperty, NumericProperty
+from kivy.properties import StringProperty, NumericProperty, ListProperty
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
+import random
 
 class TelaJogoSomSilaba(MDScreen):
     Tecla1Texto = StringProperty("")
@@ -4389,35 +4544,116 @@ class TelaJogoSomSilaba(MDScreen):
     Tecla6Texto = StringProperty("")
     Tecla7Texto = StringProperty("")
     Tecla8Texto = StringProperty("")
+
+    Nivel = NumericProperty(1)
     Fase = NumericProperty(0)
+    SilabaCorreta = StringProperty("")
+    PalavraCorreta = StringProperty("")
+    PalavraFormada = ListProperty([])
 
     def on_pre_enter(self, *args):
-        self.silabas = [
-            ['PA', 'DA', 'CO', 'NE', 'FI', 'ZE', 'CHI', 'RO'],
-            ['BA', 'TE', 'CU', 'MA', 'VA', 'SI', 'JA', 'LI'],
-        ]
+        # Estrutura: níveis -> fases -> sílabas da fase
+        self.niveis = {
+            1: [  # Nível 1 – sílabas únicas
+                ['PA', 'DA', 'CO', 'NE', 'FI', 'ZE', 'CHI', 'RO'],
+                ['BA', 'TE', 'CU', 'MA', 'VA', 'SI', 'JA', 'LI'],
+                ['LU', 'RA', 'PO', 'ME', 'DI', 'FE', 'NO', 'TI'],
+                ['GA', 'RE', 'SU', 'NA', 'VI', 'PI', 'JO', 'LE'],
+                ['CA', 'MU', 'DO', 'SA', 'TA', 'KI', 'VO', 'XE']
+            ],
+            2: [  # Nível 2 – palavras de 2 sílabas
+                ['PA', 'BA', 'CA', 'SA', 'TO', 'LA', 'GA', 'TA'],  # pato
+                ['BA', 'PA', 'LO', 'MA', 'RI', 'PO', 'BO', 'NO'],  # BOLO
+                ['GA', 'TO', 'BE', 'BE', 'LU', 'PA', 'PI', 'CA'],  # gato
+                ['MA', 'CA', 'CO', 'PI', 'BA', 'SA', 'LA', 'SO'],  # CASA
+                ['BO', 'LE', 'CA', 'RO', 'LE', 'LA', 'SO', 'PA']   # bola
+            ],
+            3: [  # Nível 3 – palavras de 3 sílabas
+                ['BO', 'NE', 'RA', 'PI', 'LI', 'CA', 'TA', 'RA'],  # boneca
+                ['CA', 'MA', 'PE', 'RA', 'PI', 'PO', 'CO', 'NA'],  # MACACO
+                ['GA', 'PE', 'XI', 'TA', 'TO', 'PA', 'RA', 'LA'],  # PETALA
+                ['PA', 'COL', 'SOL', 'LU', 'TO', 'MOL', 'RA', 'ME'],  # parasol
+                ['BA', 'FI', 'NA', 'TI', 'ME', 'RA', 'SO', 'NA']   # banana
+            ]
+        }
+
+        # Mapeamento das palavras corretas
+        self.palavras_por_nivel = {
+            1: ['PA', 'TE', 'LU', 'GA', 'SA'],
+            2: ['PATO', 'BOLO', 'GATO', 'CASA', 'BOLA'],
+            3: ['BONECA', 'MACACO', 'PETALA', 'PARASOL', 'BANANA']
+        }
+
         self.AtualizarFase()
-        #self.TocarSilaba(self.Tecla1Texto)
 
     def AtualizarFase(self):
-        silabas_fase = self.silabas[self.Fase]
-        self.Tecla1Texto = silabas_fase[0]
-        self.Tecla2Texto = silabas_fase[1]
-        self.Tecla3Texto = silabas_fase[2]
-        self.Tecla4Texto = silabas_fase[3]
-        self.Tecla5Texto = silabas_fase[4]
-        self.Tecla6Texto = silabas_fase[5]
-        self.Tecla7Texto = silabas_fase[6]
-        self.Tecla8Texto = silabas_fase[7]
+        """Atualiza as sílabas e define a palavra correta"""
+        silabas_fase = self.niveis[self.Nivel][self.Fase]
+
+        (
+            self.Tecla1Texto,
+            self.Tecla2Texto,
+            self.Tecla3Texto,
+            self.Tecla4Texto,
+            self.Tecla5Texto,
+            self.Tecla6Texto,
+            self.Tecla7Texto,
+            self.Tecla8Texto,
+        ) = silabas_fase
+
+        # Define a palavra correta e limpa a palavra formada
+        self.PalavraCorreta = self.palavras_por_nivel[self.Nivel][self.Fase]
+        self.PalavraFormada = []
+
+        print(f"Nível: {self.Nivel} | Fase: {self.Fase + 1} | Palavra correta: {self.PalavraCorreta}")
+
+        # Toca o som correspondente (opcional)
+        # self.TocarSilaba(self.PalavraCorreta)
 
     def TocarSilaba(self, silaba):
-        sound = SoundLoader.load(f"sounds/{silaba}.mp3")  # coloque os arquivos mp3 dentro da pasta 'sounds'
+        """Toca o som da sílaba ou palavra"""
+        sound = SoundLoader.load(f"Audios/SomSilaba/{silaba}.mp3")
         if sound:
             sound.play()
         else:
             print(f"Arquivo de áudio não encontrado para {silaba}")
 
+    def MostrarDialogo(self, titulo, mensagem, proxima_fase=False):
+        botoes = [
+            MDFlatButton(
+                text="PRÓXIMO" if proxima_fase else "OK",
+                on_release=lambda x: self.FecharDialogo(proxima_fase)
+            )
+        ]
+        self.dialog = MDDialog(
+            title=titulo,
+            text=mensagem,
+            buttons=botoes,
+        )
+        self.dialog.open()
+
+    def FecharDialogo(self, proxima_fase=False):
+        self.dialog.dismiss()
+        if proxima_fase:
+            self.AvancarFase()
+
+    def AvancarFase(self):
+        """Avança de fase e muda de nível se necessário"""
+        self.Fase += 1
+        total_fases = len(self.niveis[self.Nivel])
+
+        if self.Fase >= total_fases:
+            self.Fase = 0
+            self.Nivel += 1
+            if self.Nivel > 3:
+                self.Nivel = 1
+                self.MostrarDialogo("Fim do jogo!", "Você completou todos os níveis!", proxima_fase=False)
+                return
+
+        self.AtualizarFase()
+
     def CliqueTecla(self, tecla):
+        """Verifica sílabas e forma a palavra corretamente"""
         mapping = {
             1: self.Tecla1Texto,
             2: self.Tecla2Texto,
@@ -4429,8 +4665,30 @@ class TelaJogoSomSilaba(MDScreen):
             8: self.Tecla8Texto
         }
         silaba = mapping.get(tecla)
-        if silaba:
-            print(f"Clicou: {silaba}")
-            #self.TocarSilaba(silaba)
-        else:
+        if not silaba:
             print("Tecla inválida")
+            return
+
+        print(f"Clicou: {silaba}")
+
+        # Nível 1: acerta apenas uma sílaba
+        if self.Nivel == 1:
+            if silaba == self.PalavraCorreta:
+                self.MostrarDialogo("Acertou!", f"Você escolheu corretamente: {silaba}", proxima_fase=True)
+            else:
+                self.MostrarDialogo("Errou!", "Tente novamente!")
+            return
+
+        # Nível 2 e 3: formar palavra completa
+        self.PalavraFormada.append(silaba)
+        palavra_atual = "".join(self.PalavraFormada)
+
+        # Verifica se até agora está correta
+        if not self.PalavraCorreta.startswith(palavra_atual):
+            self.PalavraFormada = []  # zera o progresso
+            self.MostrarDialogo("Errou!", "Você errou a sequência! Tente novamente!")
+            return
+
+        # Se completou a palavra certa
+        if palavra_atual == self.PalavraCorreta:
+            self.MostrarDialogo("Acertou!", f"Você formou corretamente: {self.PalavraCorreta}", proxima_fase=True)
