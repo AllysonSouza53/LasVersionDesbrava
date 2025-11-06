@@ -1,4 +1,3 @@
-from Cython.Plex.Actions import Return
 from kivy.properties import StringProperty
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
@@ -24,6 +23,7 @@ from Controllers.FavoritosController import FavoritosController
 from Controllers.PostController import PostController
 from Controllers.ProfissionalController import ProfissionalControler
 from Controllers.ProfissionaisLoginController import LoginController
+from Controllers.DadosJogosController import DadosJogosController
 from Helpers.Requerimentos import Escolas,Perfis,Posts,Cidades
 from Banco import Banco
 import io, base64
@@ -64,7 +64,6 @@ class TelaEscolha(MDScreen):
     def irLoginAluno(self):
         if self.manager:
             self.manager.current = "LoginAluno"
-
 #--------------------------------------------------------------------
 class TelaLoginProfissionais(MDScreen):
     def VoltarEscolhaButton_Click(self):
@@ -81,7 +80,6 @@ class TelaLoginProfissionais(MDScreen):
         if self.manager:
             if Sessao.Sessao():
                 self.manager.current = "CarregamentoInicial"
-
 #--------------------------------------------------------------------
 class TelaCadastroProfissional1(MDScreen):
     def VoltarEscolhaButton_Click(self):
@@ -140,7 +138,6 @@ class TelaCadastroProfissional1(MDScreen):
     def ParaCadastroProfissionais2Button_Click(self):
         if self.manager:
             self.manager.current = "CadastroProfissional2"
-
 #-------------------------------------------------------------------------------------------------
 class TelaCadastroProfissional2(MDScreen):
     def VoltarEscolhaButton_Click(self):
@@ -285,7 +282,6 @@ class TelaCadastroProfissional2(MDScreen):
                 self.manager.current = "LoginProfissional"
         else:
             print("root ainda não existe")
-
 #-------------------------------------------------------------------------------------------------------
 class TelaCarregamentoInicial(MDScreen):
     Profissional = None
@@ -689,7 +685,7 @@ class TelaPerfilProfissional(MDScreen):
     def ComunidadeMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "ComunidadeProfissionais"
-#_________________________________________________________________________________________________________________________
+#_______________________________________________________________________________________________________________________
 class TelaAlterarPerfilProfissional(MDScreen):
     ControlePerfil = None
 
@@ -917,7 +913,6 @@ class TelaAlterarPerfilProfissional(MDScreen):
             with open("Imagens/FotoPerfil.png", "wb") as f:
                 f.write(self.imagem_bytes)
 #_________________________________________________________________________________________________________________________
-
 class TelaFavoritosPerfilProfissional(MDScreen):
     
     ControlePerfil = None
@@ -1649,7 +1644,6 @@ class TelaAlunosProfissional(MDScreen):
     def Voltar_Click(self):
         if self.manager:
             self.manager.current = "AlunosProfissional"
-
 #_________________________________________________________________________________________________________________________
 class TelaInformacoesJogosProfissionais(MDScreen):
     Titulo = StringProperty("")
@@ -1785,7 +1779,6 @@ class TelaInformacoesJogosProfissionais(MDScreen):
     def ComunidadeMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "ComunidadeProfissionais"
-
 #_________________________________________________________________________________________________________________________
 class TelaComunidadeProfissionais(MDScreen):
 
@@ -3425,6 +3418,9 @@ class TelaPerfilAluno(MDScreen):
             self.manager.current = "JogoMemoriaDosCores"
         elif jogo == 6:
             self.manager.current = "JogoSomSilaba"
+    
+    def JogoDaTrilha(self):
+        pass
 
 class TelaConquistas(MDScreen):
     def PerfilMDTextButton_Click(self):
@@ -3450,31 +3446,198 @@ class TelaConquistas(MDScreen):
         except Exception as e:
             print("Erro ao ir para próximo slide:", e)
 
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFillRoundFlatIconButton
+from kivy.app import App
+from kivy.properties import NumericProperty
+import time
+import json
+from pathlib import Path
+
+
 class TelaJogoDosSeteErros(MDScreen):
-    def botao_clicado(self, valor ,botao):
-        if valor == 1:
+    # === Propriedades do jogo ===
+    erros_encontrados = NumericProperty(0)
+    total_erros = 7
+
+    # === Dados de desempenho ===
+    id_fase = NumericProperty(1)
+    id_nivel = NumericProperty(1)
+    pontuacao = NumericProperty(0)
+    porcentagem_completada = NumericProperty(0)
+    tempo_inicial = NumericProperty(0)
+    tempo_gasto = NumericProperty(0)
+    acertos = NumericProperty(0)
+    erros = NumericProperty(0)
+    tentativas = NumericProperty(0)
+
+    # === Ao entrar na tela ===
+    def on_enter(self, *args):
+        self.VoltarAoInicio()
+
+        self.dialog_inicial = MDDialog(
+            md_bg_color=(1, 1, 1, 0.7),
+            title="🕵️‍♂️ Jogo dos 7 Erros",
+            text="Encontre os 7 erros entre as imagens! Deseja começar o jogo?",
+            type="custom",
+            radius=[20, 20, 20, 20],
+            auto_dismiss=False,
+            buttons=[
+                MDFillRoundFlatIconButton(
+                    icon="close",
+                    text="Sair",
+                    text_color="white",
+                    md_bg_color=(0.7, 0, 0, 1),
+                    on_release=self.SairDoJogo
+                ),
+                MDFillRoundFlatIconButton(
+                    icon="play",
+                    text="Começar",
+                    text_color="white",
+                    md_bg_color=(0, 0.6, 0.1, 1),
+                    on_release=self.StartJogo
+                ),
+            ],
+        )
+        self.dialog_inicial.title_align = "center"
+        self.dialog_inicial.open()
+
+    # === Reinicia os botões ===
+    def VoltarAoInicio(self):
+        for i in range(1, 8):
+            btn = self.ids.get(f"btn{i}")
+            if btn:
+                btn.text_color = (0.6, 1, 0.6, 0)
+                btn.disabled = False
+
+    # === Inicia o jogo ===
+    def StartJogo(self, *args):
+        try:
+            self.dialog_inicial.dismiss()
+        except Exception:
+            pass
+
+        self.erros_encontrados = 0
+        self.acertos = 0
+        self.erros = 0
+        self.tentativas += 1
+        self.pontuacao = 0
+        self.tempo_inicial = time.time()
+
+        print("🎮 Jogo iniciado! Boa sorte!")
+
+    # === Sai do jogo e volta para o perfil ===
+    def SairDoJogo(self, *args):
+        try:
+            self.dialog_inicial.dismiss()
+            if self.manager:
+                self.manager.current = "PerfilAluno"
+        except Exception:
+            pass
+
+    # === Clique em botão de erro ===
+    def botao_clicado(self, valor, botao):
+        if not botao.disabled:
             botao.disabled = True
-            print("Botão 1 clicado - Erro encontrado!")
-        elif valor == 2:
-            botao.disabled = True
-            print("Botão 2 clicado - Erro encontrado!")
-        elif valor == 3:
-            botao.disabled = True
-            print("Botão 3 clicado - Erro encontrado!")
-        elif valor == 4:
-            botao.disabled = True
-            print("Botão 4 clicado - Erro encontrado!")
-        elif valor == 5:
-            botao.disabled = True
-            print("Botão 5 clicado - Erro encontrado!")
-        elif valor == 6:
-            botao.disabled = True
-            print("Botão 6 clicado - Erro encontrado!")
-        elif valor == 7:
-            botao.disabled = True
-            print("Botão 7 clicado - Erro encontrado!")
+            self.erros_encontrados += 1
+            self.acertos += 1
+            self.pontuacao += 1
+            self.porcentagem_completada = (self.acertos / self.total_erros) * 100
+
+            print(f"✅ Botão {valor} clicado - ({self.erros_encontrados}/{self.total_erros})")
+
+            if self.erros_encontrados >= self.total_erros:
+                self.tempo_gasto = round(time.time() - self.tempo_inicial, 2)
+                self.AbrirDialogoVitoria()
         else:
-            print("Botão inválido.")
+            print(f"⚠️ Botão {valor} já clicado anteriormente.")
+
+    # === Diálogo de vitória ===
+    def AbrirDialogoVitoria(self):
+        self.dialog_vitoria = MDDialog(
+            md_bg_color=(1, 1, 1, 0.7),
+            title="🎉 Parabéns!",
+            text="Você encontrou todos os 7 erros! Deseja jogar novamente?",
+            type="custom",
+            radius=[20, 20, 20, 20],
+            auto_dismiss=False,
+            buttons=[
+                MDFillRoundFlatIconButton(
+                    icon="close",
+                    text="Sair",
+                    text_color="white",
+                    md_bg_color=(0.7, 0, 0, 1),
+                    on_release=self._sair_dialog_vitoria
+                ),
+                MDFillRoundFlatIconButton(
+                    icon="replay",
+                    text="Reiniciar",
+                    text_color="white",
+                    md_bg_color=(0, 0.6, 0.1, 1),
+                    on_release=self._reiniciar_dialog_vitoria
+                ),
+            ],
+        )
+        self.dialog_vitoria.title_align = "center"
+        self.dialog_vitoria.open()
+
+        # === Coleta e exibe os dados ===
+        dados_jogo = {
+            "ID_FASE": self.id_fase,
+            "ID_NIVEL": self.id_nivel,
+            "PONTUACAO": self.pontuacao,
+            "PORCENTAGEM_COMPLETADA": self.porcentagem_completada,
+            "TEMPO_GASTO": self.tempo_gasto,
+            "ACERTOS": self.acertos,
+            "ERROS": self.total_erros - self.acertos,
+            "TENTATIVAS": self.tentativas
+        }
+
+        print("\n📊 DADOS COLETADOS:")
+        for k, v in dados_jogo.items():
+            print(f"{k}: {v}")
+
+        self.salvar_dados(dados_jogo)
+
+    # === Fecha e volta ao perfil ===
+    def _sair_dialog_vitoria(self, *args):
+        try:
+            self.dialog_vitoria.dismiss()
+            if self.manager:
+                self.manager.current = "PerfilAluno"
+        except Exception:
+            pass
+
+    # === Reinicia o jogo ===
+    def _reiniciar_dialog_vitoria(self, *args):
+        try:
+            self.VoltarAoInicio()
+            self.dialog_vitoria.dismiss()
+        except Exception:
+            pass
+
+        self.erros_encontrados = 0
+        self.pontuacao = 0
+        self.acertos = 0
+        self.erros = 0
+        self.porcentagem_completada = 0
+        print("🔄 Jogo reiniciado!")
+
+    # === Botão de voltar ===
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilAluno"
+
+    # === Salvar dados em arquivo JSON ===
+    def salvar_dados(self, dados):
+        Dados =[]
+        DadosJogosControle = DadosJogosController()
+        for k, v in dados.items():
+            Dados.append(v)
+        DadosJogosControle.setNewDadoJogo(Dados)
+        DadosJogosControle.SalvarDado()
+
 
 
 from kivy.clock import Clock
@@ -3509,6 +3672,10 @@ COLOR_MAP = {
 class TelaOrganizeAsCores(MDScreen):
     card_selecionado = None
     fase_atual = NumericProperty(1)
+
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilAluno"
 
     def on_enter(self, *args):
         # Abre diálogo inicial (sem alterar layout/anim)
@@ -3819,6 +3986,10 @@ from kivymd.uix.screen import MDScreen
 
 class TelaSilabaMix(MDScreen):
 
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilAluno"
+
     def on_enter(self, *args):
         """Exibe o diálogo inicial com Play e Sair"""
 
@@ -4068,6 +4239,10 @@ from kivymd.app import MDApp
 
 class TelaJogoDaMemoria(MDScreen):
 
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilAluno"
+
     class FlipCard(MDCard):
         is_front = BooleanProperty(False)
         matched = BooleanProperty(False)
@@ -4304,6 +4479,10 @@ from kivymd.app import MDApp
 
 
 class TelaJogoMemoriaDasCores(MDScreen):
+
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilAluno"
 
     class CardClicavel(MDCard):
         cor_normal = ListProperty([1, 1, 1, 1])
@@ -4550,6 +4729,10 @@ class TelaJogoSomSilaba(MDScreen):
     SilabaCorreta = StringProperty("")
     PalavraCorreta = StringProperty("")
     PalavraFormada = ListProperty([])
+
+    def Voltar_Click(self):
+        if self.manager:
+            self.manager.current = "PerfilAluno"
 
     def on_pre_enter(self, *args):
         # Estrutura: níveis -> fases -> sílabas da fase

@@ -224,6 +224,7 @@
             bold: True
             on_release: root.EntrarButton_Click()
             line_color: 1, 1, 1, 1
+
 <TelaCarregamentoInicial>:
 
 <TelaCadastroProfissional1>:
@@ -1128,7 +1129,6 @@
                                 on_release: root.AlterarPerfilButton_Click()
                 Widget:
 
-
 <TelaFavoritosPerfilProfissional>:
     MDFloatLayout:
         canvas.before:
@@ -1255,8 +1255,6 @@
                             spacing: dp(10)
                     Widget:
                         size_hint_x:0.2
-
-
 
 <TelaAlunosProfissional>:
     MDFloatLayout:
@@ -2044,7 +2042,6 @@
                 Widget:
             BoxLayout:
                 size_hint_y:0.25
-
 
 <TelaInformacaoJogoEspecifico>:
     MDFloatLayout:
@@ -3420,7 +3417,6 @@
 
                 Widget:
 
-
 <TelaAlbumEspecifico>:
     MDFloatLayout:
         canvas.before:
@@ -3481,7 +3477,7 @@
 
                 Widget:
                     size_hint_x:0.3
-
+#-------------------------------------------------------------------------------------------------------------------------------------#
 <TelaLoginAluno>:
     MDFloatLayout:
         canvas.before:
@@ -3678,24 +3674,21 @@
                     height: self.texture_size[1]
 
                 BoxLayout:
-                    size_hint_y: 0.5
-                    Widget:
-                        size_hint_x:0.05
+                    size_hint_y: 0.8
+                    orientation:'vertical'
 
-                    MDFloatingActionButton:
-                        icon: "chevron-left"
-                        md_bg_color: 1, 1, 1, 0.3
-                        icon_color: 1, 1, 1, 1
-                        size_hint_x:0.05
-                        pos_hint: {"center_y": 0.5}
-                        on_release: root.ids.carrossel.load_previous()
+                    Widget:
+                        size_hint_x:0
 
                     BoxLayout:
+                        Widget:
+                            size_hint_x:0.04
+
                         Carousel:
                             id: carrossel
                             direction: "right"
-                            size_hint_y: 0.5
-                            pos_hint: {"center_y": 0.6}
+                            size_hint_y: 2
+                            pos_hint: {"center_y": 0}
 
                             # --- Tela 1 ---
                             BoxLayout:
@@ -4008,24 +4001,42 @@
                                         size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
+                            
+                        Widget:
+                            size_hint_x:0.06
 
+                    MDBoxLayout:
+                        orientation:'horizontal'
 
+                        Widget:
+                            size_hint_x:0.08
 
-                    MDFloatingActionButton:
-                        icon: "chevron-right"
-                        md_bg_color: 1, 1, 1, 0.3
-                        icon_color: 1, 1, 1, 1
-                        size_hint_x:0.05
-                        pos_hint: {"center_y": 0.5}
-                        on_release: root.ids.carrossel.load_next()
+                        MDFloatingActionButton:
+                            icon: "chevron-left"
+                            md_bg_color: 1, 1, 1, 0.3
+                            icon_color: 1, 1, 1, 1
+                            size_hint_x:0.03
+                            pos_hint: {"center_y": -0.3}
+                            on_release: root.ids.carrossel.load_previous()
+                        
+                        Widget:
+                            size_hint_x:0.4
+
+                        MDFloatingActionButton:
+                            icon: "chevron-right"
+                            md_bg_color: 1, 1, 1, 0.3
+                            icon_color: 1, 1, 1, 1
+                            size_hint_x:0.03
+                            pos_hint: {"center_y": -0.3}
+                            on_release: root.ids.carrossel.load_next()
+
+                        Widget:
+                            size_hint_x:0.08
 
                     Widget:
-                        size_hint_x:0.05
-
-
-
+                        size_hint_x:0.04
                 Widget:
-                    size_hint_y:0.3
+                    size_hint_y:0.2
 
 <TelaPerfilAluno>:
     MDFloatLayout:
@@ -4113,8 +4124,13 @@
                             MDCard:
                                 size_hint_y: 0.8
                                 pos_hint: {"center_y": 0.8}  # 🔼 Faz o card subir (0.5 é o centro padrão)
-                                md_bg_color: 0.7, 1, 0.7, 1  # exemplo de cor verde bebê pastel
                                 elevation: 1
+                                on_release:root.JogoDaTrilha()
+                                Image:
+                                    source: 'Imagens/Jogo1.png'
+                                    size_hint: 1, 1
+                                    size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
+                                    pos_hint: {"center_x": 0.5}
                         Widget:
                             size_hint_x:0.3
 
