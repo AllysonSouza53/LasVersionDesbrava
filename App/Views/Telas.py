@@ -53,7 +53,6 @@ from Controllers.AlbumController import AlbumController
 from Helpers.Requerimentos import Escolas, Perfis, Posts, Cidades
 from Banco import Banco
 
-
 class TelaEscolha(MDScreen):
     def EscolhaProfissionalButton_Click(self):
         if self.manager:
@@ -3416,10 +3415,17 @@ class TelaInicialAluno(MDScreen):
         if self.manager:
             self.manager.current = "PerfilAluno"
 
+import json
+from pathlib import Path
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
+from kivy.app import App
+
 class TelaPerfilAluno(MDScreen):
     def PerfilMDTextButton_Click(self):
         pass
-    
+
     def JogosMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "InicialAluno"
@@ -3427,7 +3433,7 @@ class TelaPerfilAluno(MDScreen):
     def ConquistasMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "Conquistas"
-    
+
     def JogosCard_Click(self, jogo):
         if jogo == 1:
             self.manager.current = "JogoDosSeteErros"
@@ -3441,9 +3447,198 @@ class TelaPerfilAluno(MDScreen):
             self.manager.current = "JogoMemoriaDosCores"
         elif jogo == 6:
             self.manager.current = "JogoSomSilaba"
-    
+
+    # ---------------------------
+    # 🔹 Função principal da trilha
+    # ---------------------------
+    from kivymd.uix.dialog import MDDialog
+    from kivymd.uix.button import MDFillRoundFlatIconButton
+    from pathlib import Path
+    import json
+
     def JogoDaTrilha(self):
-        pass
+        """
+        Controla a sequência de jogos do aluno e redireciona para o ponto certo.
+        """
+        try:
+            # === Pega dados do aluno ===
+            tela_carregamento = self.manager.get_screen("CarregamentoInicialAluno")
+            if not tela_carregamento or not tela_carregamento.ControleAluno:
+                print("⚠️ Nenhum aluno logado.")
+                return
+
+            self.ControleAluno = tela_carregamento.ControleAluno
+            re_aluno = str(self.ControleAluno.RE)
+
+            # === Caminho de progresso individual ===
+            caminho_dados = Path(f"dados_jogo_{re_aluno}.json")
+
+            # === Se não existir, cria começando do início ===
+            if not caminho_dados.exists():
+                progresso = {
+                    "re": re_aluno,
+                    "jogo_atual": "sete_erros",
+                    "nivel_atual": 1,
+                    "fase_atual": 1
+                }
+                caminho_dados.write_text(json.dumps(progresso, indent=4))
+            else:
+                progresso = json.loads(caminho_dados.read_text())
+
+            jogo = progresso["jogo_atual"]
+            nivel = progresso["nivel_atual"]
+            fase = progresso["fase_atual"]
+
+            trilha = {
+                "sete_erros": {"fases": 1, "niveis": 1, "proximo": "organize_cores", "tela": "JogoDosSeteErros"},
+                "organize_cores": {"fases": 6, "niveis": 3, "proximo": "silaba_mix", "tela": "OrganizeAsCores"},
+                "silaba_mix": {"fases": 24, "niveis": 3, "proximo": "memoria", "tela": "SilabaMix"},
+                "memoria": {"fases": 6, "niveis": 3, "proximo": "memoria_cores", "tela": "JogoDaMemoria"},
+                "memoria_cores": {"fases": 3, "niveis": 3, "proximo": "som_silaba", "tela": "JogoMemoriaDosCores"},
+                "som_silaba": {"fases": 15, "niveis": 3, "proximo": None, "tela": "JogoSomSilaba"}
+            }
+
+            info = trilha.get(jogo)
+            if not info:
+                print("⚠️ Erro: jogo atual inválido.")
+                return
+
+            print(f"➡ Entrando no jogo: {jogo} | Nível {nivel} | Fase {fase}")
+
+            # === Redireciona para o jogo correspondente ===
+            if self.manager:
+                tela_destino = info["tela"]
+                self.manager.current = tela_destino
+
+                # Define os IDs dentro da tela de jogo (caso existam)
+                tela_jogo = self.manager.get_screen(tela_destino)
+                if hasattr(tela_jogo, "id_fase"):
+                    tela_jogo.id_fase = fase
+                if hasattr(tela_jogo, "id_nivel"):
+                    tela_jogo.id_nivel = nivel
+
+        except Exception as e:
+            print(f"⚠️ Erro em JogoDaTrilha: {e}")
+
+
+    # ---------------------------
+    # 🔹 Função de atualização de progresso
+    # ---------------------------
+    def atualizar_progresso(self):
+        """
+        Atualiza o progresso do jogador ao concluir uma fase.
+        Mostra MDDialog se o jogador concluiu um nível ou jogo.
+        """
+        try:
+            tela_carregamento = self.manager.get_screen("CarregamentoInicialAluno")
+            if not tela_carregamento or not tela_carregamento.ControleAluno:
+                print("⚠️ Nenhum aluno logado para atualizar progresso.")
+                return
+
+            self.ControleAluno = tela_carregamento.ControleAluno
+            re_aluno = str(self.ControleAluno.RE)
+            caminho_dados = Path(f"dados_jogo_{re_aluno}.json")
+
+            if not caminho_dados.exists():
+                print("⚠️ Nenhum progresso encontrado, criando novo arquivo.")
+                self.JogoDaTrilha()
+                return
+
+            progresso = json.loads(caminho_dados.read_text())
+
+            trilha = {
+                "sete_erros": {"fases": 1, "niveis": 1, "proximo": "organize_cores"},
+                "organize_cores": {"fases": 6, "niveis": 3, "proximo": "silaba_mix"},
+                "silaba_mix": {"fases": 24, "niveis": 3, "proximo": "memoria"},
+                "memoria": {"fases": 6, "niveis": 3, "proximo": "memoria_cores"},
+                "memoria_cores": {"fases": 3, "niveis": 3, "proximo": "som_silaba"},
+                "som_silaba": {"fases": 15, "niveis": 3, "proximo": None}
+            }
+
+            jogo = progresso["jogo_atual"]
+            nivel = progresso["nivel_atual"]
+            fase = progresso["fase_atual"]
+            info = trilha.get(jogo)
+
+            if not info:
+                print("⚠️ Erro ao atualizar progresso: jogo inválido.")
+                return
+
+            nivel_concluido = False
+            jogo_concluido = False
+
+            # Incrementa fase
+            fase += 1
+            if fase > info["fases"]:
+                fase = 1
+                nivel += 1
+                nivel_concluido = True
+
+                # Se terminou o último nível
+                if nivel > info["niveis"]:
+                    nivel = 1
+                    jogo = info["proximo"]
+                    jogo_concluido = True
+
+            # Se acabou tudo
+            if not jogo:
+                self._mostrar_dialogo_final("🎉 Parabéns! Você concluiu todos os jogos!")
+                caminho_dados.unlink(missing_ok=True)
+                return
+
+            progresso["jogo_atual"] = jogo
+            progresso["nivel_atual"] = nivel
+            progresso["fase_atual"] = fase
+            caminho_dados.write_text(json.dumps(progresso, indent=4))
+
+            print(f"✅ Progresso atualizado: {jogo} | Nível {nivel} | Fase {fase}")
+
+            # Mostra diálogos conforme situação
+            if jogo_concluido:
+                self._mostrar_dialogo_final("🎮 Você concluiu este jogo! Continue para o próximo!")
+            elif nivel_concluido:
+                self._mostrar_dialogo_final(f"🏁 Parabéns! Você concluiu o nível {nivel - 1}!")
+
+        except Exception as e:
+            print(f"⚠️ Erro em atualizar_progresso: {e}")
+
+
+    # ---------------------------
+    # 🔹 Função auxiliar para exibir o diálogo final
+    # ---------------------------
+    def _mostrar_dialogo_final(self, texto):
+        try:
+            self.dialog_final = MDDialog(
+                title="✨ Conquista!",
+                text=texto,
+                md_bg_color=(1, 1, 1, 0.8),
+                radius=[20, 20, 20, 20],
+                auto_dismiss=False,
+                buttons=[
+                    MDFillRoundFlatIconButton(
+                        text="OK",
+                        icon="check",
+                        text_color="white",
+                        md_bg_color=(0, 0.6, 0.1, 1),
+                        on_release=self._fechar_dialogo_final
+                    )
+                ]
+            )
+            self.dialog_final.title_align = "center"
+            self.dialog_final.open()
+        except Exception as e:
+            print(f"⚠️ Erro ao mostrar diálogo final: {e}")
+
+
+    def _fechar_dialogo_final(self, *args):
+        try:
+            if hasattr(self, "dialog_final"):
+                self.dialog_final.dismiss()
+            if self.manager:
+                self.manager.current = "PerfilAluno"
+        except Exception:
+            pass
+
 
 class TelaConquistas(MDScreen):
 
@@ -3473,6 +3668,12 @@ class TelaConquistas(MDScreen):
         except Exception as e:
             print("Erro ao ir para próximo slide:", e)
 
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFillRoundFlatIconButton
+from kivy.properties import NumericProperty
+import time
+
 class TelaJogoDosSeteErros(MDScreen):
     # === Propriedades do jogo ===
     erros_encontrados = NumericProperty(0)
@@ -3496,8 +3697,10 @@ class TelaJogoDosSeteErros(MDScreen):
             self.ControleAluno = tela_carregamento.ControleAluno
         else:
             self.ControleAluno = None
+
         self.VoltarAoInicio()
 
+        # Diálogo inicial
         self.dialog_inicial = MDDialog(
             md_bg_color=(1, 1, 1, 0.7),
             title="🕵️‍♂️ Jogo dos 7 Erros",
@@ -3602,7 +3805,6 @@ class TelaJogoDosSeteErros(MDScreen):
             ],
         )
         self.dialog_vitoria.title_align = "center"
-        self.dialog_vitoria.open()
 
         # === Coleta e exibe os dados ===
         dados_jogo = {
@@ -3620,11 +3822,14 @@ class TelaJogoDosSeteErros(MDScreen):
         for k, v in dados_jogo.items():
             print(f"{k}: {v}")
 
+        # === Salva e atualiza progresso ===
         self.salvar_dados(dados_jogo)
+        self.dialog_vitoria.open()
 
     # === Fecha e volta ao perfil ===
     def _sair_dialog_vitoria(self, *args):
         try:
+            self.atualizar_progresso_aluno()
             self.dialog_vitoria.dismiss()
             if self.manager:
                 self.manager.current = "PerfilAluno"
@@ -3653,16 +3858,40 @@ class TelaJogoDosSeteErros(MDScreen):
 
     # === Salvar dados em arquivo JSON ===
     def salvar_dados(self, dados):
-        Dados =[]
-        DadosJogosControle = DadosJogosController()
-        self.ControleAluno
-        Dados.append(self.ControleAluno.RE)
-        Dados.append(self.ControleAluno.ProfissionalResponsavel)
-        Dados.append('sete erros')
-        for k, v in dados.items():
-            Dados.append(v)
-        DadosJogosControle.setNewDadoJogo(Dados)
-        DadosJogosControle.SalvarDado()
+        try:
+            DadosJogosControle = DadosJogosController()
+            Dados = []
+
+            # Garantir que o controle do aluno está presente
+            if not hasattr(self, "ControleAluno") or not self.ControleAluno:
+                tela_carregamento = self.manager.get_screen("CarregamentoInicialAluno")
+                self.ControleAluno = tela_carregamento.ControleAluno
+
+            Dados.append(self.ControleAluno.RE)
+            Dados.append(self.ControleAluno.ProfissionalResponsavel)
+            Dados.append("sete erros")
+
+            for k, v in dados.items():
+                Dados.append(v)
+
+            DadosJogosControle.setNewDadoJogo(Dados)
+            DadosJogosControle.SalvarDado()
+            print("💾 Dados salvos com sucesso!")
+
+        except Exception as e:
+            print(f"⚠️ Erro ao salvar dados: {e}")
+
+    # === Atualiza progresso no perfil ===
+    def atualizar_progresso_aluno(self):
+        try:
+            tela_perfil = self.manager.get_screen("PerfilAluno")
+            if hasattr(tela_perfil, "atualizar_progresso"):
+                tela_perfil.atualizar_progresso()
+                print("📈 Progresso atualizado com sucesso!")
+            else:
+                print("⚠️ TelaPerfilAluno não possui método atualizar_progresso().")
+        except Exception as e:
+            print(f"⚠️ Erro ao atualizar progresso: {e}")
 
 COLOR_MAP = {
     "vermelho": (1, 0, 0, 1),
@@ -4008,6 +4237,8 @@ class TelaOrganizeAsCores(MDScreen):
         if self.fase_atual < 6:
             self.fase_atual += 1
             print(f"➡️ Indo para a fase {self.fase_atual}")
+            self.tela_trila = self.manager.get_screen("PerfilAluno")
+            self.tela_trila.atualizar_progresso()
             self.StartJogo()
         else:
             final = MDDialog(
@@ -4318,7 +4549,8 @@ class TelaSilabaMix(MDScreen):
     def ProximaFase(self, *args):
         self.dialog_acerto.dismiss()
         self.fase_atual += 1
-
+        self.tela_trila = self.manager.get_screen("PerfilAluno")
+        self.tela_trila.atualizar_progresso()
         if self.fase_atual < 8:
             self.id_nivel = 1
         elif self.fase_atual < 16:
@@ -4512,6 +4744,8 @@ class TelaJogoDaMemoria(MDScreen):
         self.fases = [
             {"pares": [("Organizar os brinquedos", "Imagens/JogoDaMemoria/Imagem1.png"),
                        ("Guardar os materiais", "Imagens/JogoDaMemoria/Imagem2.png")]},
+            {"pares": [("Dobrar as roupas", "Imagens/JogoDaMemoria/Imagem4.png"),
+                       ("Alimentar o cachorro", "Imagens/JogoDaMemoria/Imagem3.png")],},
             {"pares": [("Organizar os brinquedos", "Imagens/JogoDaMemoria/Imagem1.png"),
                        ("Guardar os materiais", "Imagens/JogoDaMemoria/Imagem2.png"),
                        ("Alimentar o cachorro", "Imagens/JogoDaMemoria/Imagem3.png")]},
@@ -4638,6 +4872,8 @@ class TelaJogoDaMemoria(MDScreen):
         self.fase_atual += 1
         if self.fase_atual >= len(self.fases):
             self.fase_atual = 0
+        self.tela_trila = self.manager.get_screen("PerfilAluno")
+        self.tela_trila.atualizar_progresso()
         self.carregar_fase(self.fase_atual)
         self.iniciar_tempo()
 
@@ -4881,6 +5117,8 @@ class TelaJogoMemoriaDasCores(MDScreen):
             self.nivel_atual = 1
         self.sequencia_atual_index = 0
         self.posicao_seq = 0
+        self.tela_trila = self.manager.get_screen("PerfilAluno")
+        self.tela_trila.atualizar_progresso()
         self.mostrar_dialogo_play()
 
     # ======= AVISO DE ERRO =======
@@ -4931,7 +5169,6 @@ from kivy.properties import StringProperty, NumericProperty, ListProperty
 from Controllers.DadosJogosController import DadosJogosController  # ajuste o caminho se necessário
 import time
 import traceback
-
 
 class TelaJogoSomSilaba(MDScreen):
     Tecla1Texto = StringProperty("")
@@ -5052,7 +5289,8 @@ class TelaJogoSomSilaba(MDScreen):
         """Avança de fase e muda de nível se necessário"""
         self.Fase += 1
         total_fases = len(self.niveis[self.Nivel])
-
+        self.tela_trila = self.manager.get_screen("PerfilAluno")
+        self.tela_trila.atualizar_progresso()
         if self.Fase >= total_fases:
             self.Fase = 0
             self.Nivel += 1
@@ -5149,4 +5387,3 @@ class TelaJogoSomSilaba(MDScreen):
         except Exception as e:
             print("❌ Erro ao salvar dados:")
             traceback.print_exc()
-
