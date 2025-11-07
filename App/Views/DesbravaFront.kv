@@ -1422,387 +1422,367 @@
                     height: self.texture_size[1]
 
                 BoxLayout:
-                    size_hint_y: 0.5
-                    Widget:
-                        size_hint_x:0.05
+                    size_hint_y: 0.8
+                    orientation:'vertical'
 
-                    MDFloatingActionButton:
-                        icon: "chevron-left"
-                        md_bg_color: 1, 1, 1, 0.3
-                        icon_color: 1, 1, 1, 1
-                        size_hint_x:0.05
-                        pos_hint: {"center_y": 0.5}
-                        on_release: root.ids.carrossel.load_previous()
+                    Widget:
+                        size_hint_x:0
 
                     BoxLayout:
+                        Widget:
+                            size_hint_x:0.04
+
                         Carousel:
                             id: carrossel
                             direction: "right"
-                            size_hint_y: 0.5
-                            pos_hint: {"center_y": 0.6}
+                            size_hint_y: 2
+                            pos_hint: {"center_y": 0}
 
                             # --- Tela 1 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
                                     on_release: root.JogosCard_Click(1)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 1'
                                 MDCard:
                                     on_release: root.JogosCard_Click(2)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo2.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 2'
                                 MDCard:
                                     on_release: root.JogosCard_Click(3)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo3.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 3'
                                 MDCard:
                                     on_release: root.JogosCard_Click(4)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo4.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 4'
                                 MDCard:
                                     on_release: root.JogosCard_Click(5)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo5.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 5'
                                 MDCard:
                                     on_release: root.JogosCard_Click(6)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo6.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 6'
 
                             # --- Tela 2 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
                                     on_release: root.JogosCard_Click(6)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo6.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 6'
                                 MDCard:
                                     on_release: root.JogosCard_Click(1)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 1'
                                 MDCard:
                                     on_release: root.JogosCard_Click(2)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo2.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 2'
                                 MDCard:
                                     on_release: root.JogosCard_Click(3)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo3.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 3'
                                 MDCard:
                                     on_release: root.JogosCard_Click(4)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo4.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 4'
                                 MDCard:
                                     on_release: root.JogosCard_Click(5)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo5.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 5'
 
                             # --- Tela 3 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
                                     on_release: root.JogosCard_Click(5)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo5.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 5'
                                 MDCard:
                                     on_release: root.JogosCard_Click(6)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo6.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 6'
                                 MDCard:
                                     on_release: root.JogosCard_Click(1)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 1'
                                 MDCard:
                                     on_release: root.JogosCard_Click(2)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo2.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 2'
                                 MDCard:
                                     on_release: root.JogosCard_Click(3)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo3.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 3'
                                 MDCard:
                                     on_release: root.JogosCard_Click(4)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo4.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 4'
 
                             # --- Tela 4 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
                                     on_release: root.JogosCard_Click(4)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo4.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 4'
                                 MDCard:
                                     on_release: root.JogosCard_Click(5)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo5.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 5'
                                 MDCard:
                                     on_release: root.JogosCard_Click(6)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo6.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 6'
                                 MDCard:
                                     on_release: root.JogosCard_Click(1)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 1'
                                 MDCard:
                                     on_release: root.JogosCard_Click(2)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo2.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 2'
                                 MDCard:
                                     on_release: root.JogosCard_Click(3)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo3.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 3'
 
                             # --- Tela 5 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
                                     on_release: root.JogosCard_Click(3)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo3.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 3'
                                 MDCard:
                                     on_release: root.JogosCard_Click(4)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo4.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 4'
                                 MDCard:
                                     on_release: root.JogosCard_Click(5)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo5.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 5'
                                 MDCard:
                                     on_release: root.JogosCard_Click(6)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo6.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 6'
                                 MDCard:
                                     on_release: root.JogosCard_Click(1)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 1'
                                 MDCard:
                                     on_release: root.JogosCard_Click(2)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo2.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 2'
 
                             # --- Tela 6 ---
                             BoxLayout:
                                 spacing: 10
                                 MDCard:
                                     on_release: root.JogosCard_Click(2)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo2.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 2'
                                 MDCard:
                                     on_release: root.JogosCard_Click(3)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo3.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 3'
                                 MDCard:
                                     on_release: root.JogosCard_Click(4)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo4.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 4'
                                 MDCard:
                                     on_release: root.JogosCard_Click(5)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo5.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 5'
                                 MDCard:
                                     on_release: root.JogosCard_Click(6)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo6.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 6'
                                 MDCard:
                                     on_release: root.JogosCard_Click(1)
+                                    md_bg_color: 0, 0, 0, 0
                                     Image:
                                         source: 'Imagens/Jogo1.png'
-                                        size_hint: None, None
+                                        size_hint: 1, 1
                                         size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
                                         pos_hint: {"center_x": 0.5}
-                                    MDLabel:
-                                        text: 'Jogo 1'
+                            
+                        Widget:
+                            size_hint_x:0.06
 
+                    MDBoxLayout:
+                        orientation:'horizontal'
 
-                    MDFloatingActionButton:
-                        icon: "chevron-right"
-                        md_bg_color: 1, 1, 1, 0.3
-                        icon_color: 1, 1, 1, 1
-                        size_hint_x:0.05
-                        pos_hint: {"center_y": 0.5}
-                        on_release: root.ids.carrossel.load_next()
+                        Widget:
+                            size_hint_x:0.08
+
+                        MDFloatingActionButton:
+                            icon: "chevron-left"
+                            md_bg_color: 1, 1, 1, 0.3
+                            icon_color: 1, 1, 1, 1
+                            size_hint_x:0.03
+                            pos_hint: {"center_y": -0.3}
+                            on_release: root.ids.carrossel.load_previous()
+                        
+                        Widget:
+                            size_hint_x:0.4
+
+                        MDFloatingActionButton:
+                            icon: "chevron-right"
+                            md_bg_color: 1, 1, 1, 0.3
+                            icon_color: 1, 1, 1, 1
+                            size_hint_x:0.03
+                            pos_hint: {"center_y": -0.3}
+                            on_release: root.ids.carrossel.load_next()
+
+                        Widget:
+                            size_hint_x:0.08
 
                     Widget:
-                        size_hint_x:0.05
-
-
-
+                        size_hint_x:0.04
                 Widget:
                     size_hint_y:0.3
 
@@ -1876,12 +1856,14 @@
                         theme_text_color:'Custom'
                         icon_color:1, 1, 1, 1
                         on_release:root.PostarNoFeed()
+                        radius:20
 
                     MDIconButton:
                         icon:'reload'
                         theme_text_color:'Custom'
                         icon_color:1, 1, 1, 1
                         on_release:root.AtualizarFeed()
+                        radius:20
                 Widget:
             BoxLayout:
                 orientation:'horizontal'
@@ -4563,6 +4545,7 @@
                 padding: dp(20)
 
                 Widget:
+                    size_hint_x:0.4
 
                 MDBoxLayout:
                     orientation: 'vertical'
@@ -4593,91 +4576,557 @@
                         MDCarousel:
                             id: carousel
                             size_hint: (0.8, None)
-                            height: dp(320)
-                            pos_hint: {"center_x": 0.5, "center_y": 0.7}
+                            height: dp(600)
+                            pos_hint: {"center_x": 0.5, "center_y": 0.6}
                             loop: True
 
-                            # 🔹 Página 1
-                            ScrollView:
-                                do_scroll_x: False
-                                do_scroll_y: True
-                                MDBoxLayout:
+                            MDBoxLayout:
+                                orientation: 'vertical'
+
+                                MDCard:
                                     orientation: 'vertical'
-                                    size_hint_y: None
-                                    height: self.minimum_height
+                                    size_hint_y: self.height
                                     spacing: dp(15)
                                     padding: dp(20)
+                                    md_bg_color: 0.1, 0.4, 0.3, 1
 
-                                    MDCard:
-                                        orientation: 'vertical'
-                                        size_hint_y: None
-                                        height: dp(120)
-                                        radius: [20]
-                                        md_bg_color: 0.1, 0.6, 0.3, 1
-                                        padding: dp(15)
-                                        MDLabel:
-                                            text: 'Jogo 1'
-                                            halign: 'center'
-                                            theme_text_color: "Custom"
-                                            text_color: 1, 1, 1, 1
-                                            font_size: "20sp"
-                                            bold: True
+                                    MDLabel:
+                                        text: 'Sete Erros'
+                                        font_size: "20sp"
+                                        bold: True
+                                        halign: 'center'
+                                        size_hint_y: 0.2
+                                        text_color: 1, 1, 1, 1
+                                        theme_text_color: 'Custom'
 
-                                    MDCard:
-                                        orientation: 'vertical'
-                                        size_hint_y: None
-                                        height: dp(120)
-                                        radius: [20]
-                                        md_bg_color: 0.1, 0.6, 0.3, 1
-                                        padding: dp(15)
-                                        MDLabel:
-                                            text: 'Jogo 2'
-                                            halign: 'center'
-                                            theme_text_color: "Custom"
-                                            text_color: 1, 1, 1, 1
-                                            font_size: "20sp"
-                                            bold: True
+                                    # 🔹 Página 1
+                                    ScrollView:
+                                        do_scroll_x: False
+                                        do_scroll_y: True
 
-                            # 🔹 Página 2
-                            ScrollView:
-                                do_scroll_x: False
-                                do_scroll_y: True
-                                MDBoxLayout:
+                                        MDBoxLayout:
+                                            orientation: 'vertical'
+                                            size_hint_y: None
+                                            height: self.minimum_height
+                                            spacing: dp(15)
+                                            padding: dp(10)
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 2'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+                                            
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                            MDBoxLayout:
+                                orientation: 'vertical'
+
+                                MDCard:
                                     orientation: 'vertical'
-                                    size_hint_y: None
-                                    height: self.minimum_height
+                                    size_hint_y: self.height
                                     spacing: dp(15)
                                     padding: dp(20)
+                                    md_bg_color: 0.1, 0.4, 0.3, 1
 
-                                    MDCard:
-                                        orientation: 'vertical'
-                                        size_hint_y: None
-                                        height: dp(120)
-                                        radius: [20]
-                                        md_bg_color: 0.1, 0.6, 0.3, 1
-                                        padding: dp(15)
-                                        MDLabel:
-                                            text: 'Jogo 3'
-                                            halign: 'center'
-                                            theme_text_color: "Custom"
-                                            text_color: 1, 1, 1, 1
-                                            font_size: "20sp"
-                                            bold: True
+                                    MDLabel:
+                                        text: 'Sete Erros'
+                                        font_size: "20sp"
+                                        bold: True
+                                        halign: 'center'
+                                        size_hint_y: 0.2
+                                        text_color: 1, 1, 1, 1
+                                        theme_text_color: 'Custom'
 
-                                    MDCard:
-                                        orientation: 'vertical'
-                                        size_hint_y: None
-                                        height: dp(120)
-                                        radius: [20]
-                                        md_bg_color: 0.1, 0.6, 0.3, 1
-                                        padding: dp(15)
-                                        MDLabel:
-                                            text: 'Jogo 4'
-                                            halign: 'center'
-                                            theme_text_color: "Custom"
-                                            text_color: 1, 1, 1, 1
-                                            font_size: "20sp"
-                                            bold: True
+                                    # 🔹 Página 1
+                                    ScrollView:
+                                        do_scroll_x: False
+                                        do_scroll_y: True
+
+                                        MDBoxLayout:
+                                            orientation: 'vertical'
+                                            size_hint_y: None
+                                            height: self.minimum_height
+                                            spacing: dp(15)
+                                            padding: dp(10)
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 2'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+                                            
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
 
                         # 🔸 Botão DIREITA
                         MDFloatingActionButton:
@@ -4687,6 +5136,7 @@
                             on_release: root.carousel_next()
 
                 Widget:
+                    size_hint_x:0.4
 
 <TelaJogoDosSeteErros>:
     MDFloatLayout:
@@ -4981,7 +5431,13 @@
                     orientation:'vertical'
                     id:JogoDaMemoria
 
-
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 0.3
+                        RoundedRectangle:
+                            size: (self.width * 1, self.height * 0.8)
+                            pos: (self.x, self.y + self.height * 0.1)
+                            radius:[15]
                 Widget:
                     size_hint_x:0.2
 
@@ -5215,3 +5671,37 @@
 
                 Widget:
                     size_hint_x: 0.2
+
+<BarraProgresso@MDCard>:
+    progresso: 0  # 0..100
+    cor_base: 1, 1, 1, 1
+    cor_progresso: 0.2, 0.6, 1, 1
+    radius: [20]
+    padding: dp(15)
+    size_hint_y: None
+    height: dp(30)
+    md_bg_color: 0, 0, 0, 0  # transparente para mostrar o canvas
+
+    canvas.before:
+        # Fundo
+        Color:
+            rgba: self.cor_base
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]
+
+        # Barra de progresso (dinâmica - seguro contra None)
+        Color:
+            rgba: self.cor_progresso
+        RoundedRectangle:
+            pos: self.pos
+            size: ((self.width or 0) * ((self.progresso or 0) / 100.0), self.height)
+            radius: [20, 0, 0, 20] if (self.progresso and self.progresso < 100) else [20]
+
+        # Borda
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 2
+            rounded_rectangle: (self.x, self.y, self.width, self.height, 20)
