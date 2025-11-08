@@ -35,6 +35,25 @@ class ProfissionalControler:
         self.NumeroCasa = ''
         self.FotoPerfil = ''
 
+    def AlterarProfissional(self, dados):
+        self.Profissional = Profissional()
+        (
+            self.CPF,
+            self.Nome,
+            self.Usuario,
+            self.Profissao,
+            self.DataNascimento,
+            self.UF,
+            self.Cidade,
+            self.Escola,
+            self.Senha,
+            self.Biografia,
+            self.FotoPerfil
+        ) = dados
+        
+        self.Profissional.setProfissional(dados)
+        self.Profissional.Alterar()
+        
     def getUsuario(self):
         return [
             self.CPF,

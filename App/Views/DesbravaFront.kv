@@ -657,14 +657,14 @@
                             Widget:
 
                             MDCard:
+                                id:imagemperfil
                                 size_hint: None, None
                                 size: dp(120), dp(120)
                                 radius: [dp(60), dp(60), dp(60), dp(60)]  # borda totalmente circular
                                 elevation: 0
                                 padding: 0
-                                FitImage:
-                                    id: PerfilImagem
-                                    source: "Imagens/FotoPerfil.png"
+                                md_bg_color:1,1,1,0
+
 
                             Widget:
 
@@ -865,15 +865,22 @@
                             Widget:
                             BoxLayout:
                                 orientation: 'horizontal'
-                                Widget:
-                                Button:
-                                    id: FotoPerfil
-                                    size_hint: None, None
-                                    size: dp(120), dp(120)
-                                    background_normal: "Imagens/FotoPerfil.png"
-                                    border: (0, 0, 0, 0)
-                                    on_release: root.TrocarImagem()
-                                Widget:
+                                BoxLayout:
+                                    orientation: 'horizontal'
+                                    Widget:
+
+                                    MDCard:
+                                        id:imagemperfil
+                                        size_hint: None, None
+                                        size: dp(120), dp(120)
+                                        radius: [dp(60), dp(60), dp(60), dp(60)]  # borda totalmente circular
+                                        elevation: 0
+                                        padding: 0
+                                        md_bg_color:1,1,1,0
+                                        on_release:root.TrocarImagem()
+
+
+                                    Widget:
 
                             # Usuário
                             BoxLayout:
@@ -4593,6 +4600,1376 @@
 
                                     MDLabel:
                                         text: 'Sete Erros'
+                                        font_size: "20sp"
+                                        bold: True
+                                        halign: 'center'
+                                        size_hint_y: 0.2
+                                        text_color: 1, 1, 1, 1
+                                        theme_text_color: 'Custom'
+
+                                    # 🔹 Página 1
+                                    ScrollView:
+                                        do_scroll_x: False
+                                        do_scroll_y: True
+
+                                        MDBoxLayout:
+                                            orientation: 'vertical'
+                                            size_hint_y: None
+                                            height: self.minimum_height
+                                            spacing: dp(15)
+                                            padding: dp(10)
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 2'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+                                            
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                            MDBoxLayout:
+                                orientation: 'vertical'
+
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint_y: self.height
+                                    spacing: dp(15)
+                                    padding: dp(20)
+                                    md_bg_color: 0.1, 0.4, 0.3, 1
+
+                                    MDLabel:
+                                        text: 'Organize as Cores'
+                                        font_size: "20sp"
+                                        bold: True
+                                        halign: 'center'
+                                        size_hint_y: 0.2
+                                        text_color: 1, 1, 1, 1
+                                        theme_text_color: 'Custom'
+
+                                    # 🔹 Página 1
+                                    ScrollView:
+                                        do_scroll_x: False
+                                        do_scroll_y: True
+
+                                        MDBoxLayout:
+                                            orientation: 'vertical'
+                                            size_hint_y: None
+                                            height: self.minimum_height
+                                            spacing: dp(15)
+                                            padding: dp(10)
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 2'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+                                            
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                            MDBoxLayout:
+                                orientation: 'vertical'
+
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint_y: self.height
+                                    spacing: dp(15)
+                                    padding: dp(20)
+                                    md_bg_color: 0.1, 0.4, 0.3, 1
+
+                                    MDLabel:
+                                        text: 'SilabaMix'
+                                        font_size: "20sp"
+                                        bold: True
+                                        halign: 'center'
+                                        size_hint_y: 0.2
+                                        text_color: 1, 1, 1, 1
+                                        theme_text_color: 'Custom'
+
+                                    # 🔹 Página 1
+                                    ScrollView:
+                                        do_scroll_x: False
+                                        do_scroll_y: True
+
+                                        MDBoxLayout:
+                                            orientation: 'vertical'
+                                            size_hint_y: None
+                                            height: self.minimum_height
+                                            spacing: dp(15)
+                                            padding: dp(10)
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 2'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+                                            
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                            MDBoxLayout:
+                                orientation: 'vertical'
+
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint_y: self.height
+                                    spacing: dp(15)
+                                    padding: dp(20)
+                                    md_bg_color: 0.1, 0.4, 0.3, 1
+
+                                    MDLabel:
+                                        text: 'Tarefas Diarias'
+                                        font_size: "20sp"
+                                        bold: True
+                                        halign: 'center'
+                                        size_hint_y: 0.2
+                                        text_color: 1, 1, 1, 1
+                                        theme_text_color: 'Custom'
+
+                                    # 🔹 Página 1
+                                    ScrollView:
+                                        do_scroll_x: False
+                                        do_scroll_y: True
+
+                                        MDBoxLayout:
+                                            orientation: 'vertical'
+                                            size_hint_y: None
+                                            height: self.minimum_height
+                                            spacing: dp(15)
+                                            padding: dp(10)
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 2'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+                                            
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                            MDBoxLayout:
+                                orientation: 'vertical'
+
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint_y: self.height
+                                    spacing: dp(15)
+                                    padding: dp(20)
+                                    md_bg_color: 0.1, 0.4, 0.3, 1
+
+                                    MDLabel:
+                                        text: 'Memória das Cores'
+                                        font_size: "20sp"
+                                        bold: True
+                                        halign: 'center'
+                                        size_hint_y: 0.2
+                                        text_color: 1, 1, 1, 1
+                                        theme_text_color: 'Custom'
+
+                                    # 🔹 Página 1
+                                    ScrollView:
+                                        do_scroll_x: False
+                                        do_scroll_y: True
+
+                                        MDBoxLayout:
+                                            orientation: 'vertical'
+                                            size_hint_y: None
+                                            height: self.minimum_height
+                                            spacing: dp(15)
+                                            padding: dp(10)
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 2'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+                                            
+                                            MDCard:
+                                                orientation: 'vertical'
+                                                size_hint_y: None
+                                                height: dp(170)
+                                                radius: [20]
+                                                md_bg_color: 0.1, 0.6, 0.3, 1
+                                                padding: dp(20)
+                                                spacing: dp(10)
+                                                elevation: 2
+
+                                                MDLabel:
+                                                    text: 'Nível 1'
+                                                    font_size: "15sp"
+                                                    bold: True
+                                                    halign: 'center'
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+
+                                                # 🔹 Barra 1
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '50%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros1
+                                                        progresso: 50
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 2
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '70%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros2
+                                                        progresso: 70
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                                                # 🔹 Barra 3
+                                                MDBoxLayout:
+                                                    orientation: 'horizontal'
+                                                    size_hint_y: None
+                                                    height: dp(30)
+                                                    spacing: dp(10)
+                                                    valign: 'middle'
+
+                                                    MDLabel:
+                                                        text: '20%'
+                                                        size_hint_x: 0.2
+                                                        halign: 'center'
+                                                        valign: 'middle'
+                                                        theme_text_color: 'Custom'
+                                                        text_color: 1, 1, 1, 1
+
+                                                    BarraProgresso:
+                                                        id: barra_seteerros3
+                                                        progresso: 20
+                                                        cor_progresso: 0.1, 0.6, 0.3, 1
+
+                            MDBoxLayout:
+                                orientation: 'vertical'
+
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint_y: self.height
+                                    spacing: dp(15)
+                                    padding: dp(20)
+                                    md_bg_color: 0.1, 0.4, 0.3, 1
+
+                                    MDLabel:
+                                        text: 'Som Silába'
                                         font_size: "20sp"
                                         bold: True
                                         halign: 'center'

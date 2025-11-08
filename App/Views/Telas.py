@@ -287,27 +287,8 @@ class TelaCarregamentoInicial(MDScreen):
         self.Sessao.setLogin(self.manager)
         self.Profissional = ProfissionalControler()
         self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
-        if os.path.exists('Imagens/FotoPerfil.png'):
-            os.remove('Imagens/FotoPerfil.png')
-        else:
-            pass
-        self.GetFotoPerfil(self.Sessao.usuario)
         if self.manager:
             self.manager.current = "PerfilProfissional"
-
-    def GetFotoPerfil(self, usuario):
-        Perfil = Perfis()
-        UsuarioPerfil = Perfil.GetPorUsuario(usuario)
-        if UsuarioPerfil is None:
-            UsuarioPerfilImagem = Perfil.GetPorUsuario('ADMIN')['imagem']
-            imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
-            with open("App/Imagens/FotoPerfil.png", "wb") as f:
-                f.write(imagem_bytes)
-        else:
-            UsuarioPerfilImagem = UsuarioPerfil['imagem']
-            imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
-            with open("Imagens/FotoPerfil.png", "wb") as f:
-                f.write(imagem_bytes)
 
 class TelaPerfilProfissional(MDScreen):
     Profissional = None
@@ -335,12 +316,34 @@ class TelaPerfilProfissional(MDScreen):
         self.Comentario = ComentarioController()
         self.resposta = self.Post.PesquisarPorUsuario(usuario)
         self.resposta = self.CarregarImagensPosts(self.resposta)
+        self.textura = self.GetFotoPerfil(usuario)
         self.MostrarDados()
         self.ListarPosts()
+
+    def GetFotoPerfil(self, usuario):
+        Perfil = Perfis()
+        UsuarioPerfil = Perfil.GetPorUsuario(usuario)
+        if UsuarioPerfil is None:
+            UsuarioPerfilImagem = Perfil.GetPorUsuario('ADMIN')['imagem']
+            imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
+        else:
+            UsuarioPerfilImagem = UsuarioPerfil['imagem']
+            imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
+        
+        imagem_bytes_io = io.BytesIO(imagem_bytes)
+        return CoreImage(imagem_bytes_io, ext='png').texture
 
     def MostrarDados(self):
         if not self.ControlePerfil:
             return
+        
+        imagem_widget = Image(
+            texture=self.textura
+        )
+
+        self.ids.imagemperfil.clear_widgets()
+        self.ids.imagemperfil.add_widget(imagem_widget)
+
         self.ids.UsuarioPerfilLabel.text = f'@{self.ControlePerfil.Usuario}'
         self.ids.NomePerfilLabel.text = f'Nome: {self.ControlePerfil.Nome}'
         self.ids.CPFPerfilLabel.text = f'CPF: {self.ControlePerfil.CPF}'
@@ -697,24 +700,33 @@ class TelaAlterarPerfilProfissional(MDScreen):
 
         self.file_manager = MDFileManager(
             exit_manager=self.fechar_file_manager,
-            select_path=self.selecionar_imagem,
-            preview=True,  # Mostra miniaturas
+            select_path=self.selecionar_imagem
         )
         # Inicia no diretório padrão (por exemplo, a pasta Imagens)
         import os
         start_dir = os.path.expanduser("~/Pictures")  # ou "~/" para pasta do usuário
 
     def fechar_file_manager(self, *args):
-        """
-        Fecha ou volta o diretório atual do file manager.
-        """
         try:
             self.file_manager.close()
         except Exception as e:
             print(f"Erro ao fechar o FileManager: {e}")
 
+    def GetFotoPerfil(self, usuario):
+        Perfil = Perfis()
+        UsuarioPerfil = Perfil.GetPorUsuario(usuario)
+        if UsuarioPerfil is None:
+            UsuarioPerfilImagem = Perfil.GetPorUsuario('ADMIN')['imagem']
+            imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
+        else:
+            UsuarioPerfilImagem = UsuarioPerfil['imagem']
+            imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
+
+        self.imagem_base64 = base64.b64encode(imagem_bytes).decode("utf-8")
+        imagem_bytes_io = io.BytesIO(imagem_bytes)
+        return CoreImage(imagem_bytes_io, ext='png').texture
+    
     def on_pre_enter(self, *args):
-        self.ids.FotoPerfil.background_normal = "Imagens/FotoPerfil.png"
         tela_carregamento = self.manager.get_screen("CarregamentoInicial")
         if tela_carregamento.Profissional:
             self.ControlePerfil = tela_carregamento.Profissional
@@ -736,11 +748,12 @@ class TelaAlterarPerfilProfissional(MDScreen):
         self.ids.EscolaAlterarTextField.text = f'{self.ControlePerfil.Escola}'
         self.ids.BiografiaAlterarTextField.text = f'{self.ControlePerfil.Biografia}'
         self.ids.SenhaAlterarTextField.text = f'{self.ControlePerfil.Senha}'
-
-
-
-
-        # Limpa cache da imagem
+        self.textura = self.GetFotoPerfil(self.ControlePerfil.Usuario)
+        imagem_widget = Image(
+            texture=self.textura
+        )
+        self.ids.imagemperfil.clear_widgets()
+        self.ids.imagemperfil.add_widget(imagem_widget)
 
     def on_enter(self, *args):
         pass
@@ -865,8 +878,13 @@ class TelaAlterarPerfilProfissional(MDScreen):
         data = io.BytesIO(base64.b64decode(self.imagem_base64))
         textura = CoreImage(data, ext='png').texture
 
-        self.ids.PerfilImagem.texture = textura
-        self.ids.PerfilImagem.souce = ''
+        self.textura= textura
+
+        imagem_widget = Image(
+            texture=self.textura
+        )
+        self.ids.imagemperfil.clear_widgets()
+        self.ids.imagemperfil.add_widget(imagem_widget)
 
         MDDialog(title="Imagem selecionada", text=f"Caminho: {path}").open()
         from kivy.cache import Cache
@@ -874,41 +892,32 @@ class TelaAlterarPerfilProfissional(MDScreen):
         Cache.remove('kv.image', 'Imagens/FotoPerfil.png')
 
     def AlterarPerfilButton_Click(self):
-        # Garante que já existe uma imagem convertida em base64
-        if not hasattr(self, "imagem_base64"):
-            MDDialog(title="Erro", text="Nenhuma imagem foi selecionada.").open()
-            return
-
-        # Atualiza o objeto de controle
-        self.ControlePerfil.FotoPerfil = self.imagem_base64
-
-        # Atualiza no banco/API
+        self.ControlePerfil.FotoPerfil = ''
         Perfil = Perfis()
         if not Perfil.GetPorUsuario(self.ControlePerfil.Usuario):
-            Perfil.Post(self.ControlePerfil.CPF, self.ControlePerfil.Usuario, self.ControlePerfil.FotoPerfil)
+            Perfil.Post(self.ControlePerfil.CPF, self.ControlePerfil.Usuario, self.imagem_base64)
         else:
-            Perfil.Update(self.ControlePerfil.CPF, self.ControlePerfil.Usuario, self.ControlePerfil.FotoPerfil)
+            Perfil.Update(self.ControlePerfil.CPF, self.ControlePerfil.Usuario, self.imagem_base64)
 
         MDDialog(
             title="Sucesso",
-            text="A imagem de perfil foi atualizada!"
+            text="O perfil foi atualizado!"
         ).open()
+
+        self.ControlePerfil.AlterarProfissional([self.ControlePerfil.CPF,
+                                                 self.ids.NomeAlterarTextField.text,
+                                                 self.ids.UsuarioAlterarTextField.text.replace('@', ''),
+                                                 self.ids.ProfissaoAlterarTextField.text,
+                                                 self.ids.DataNascimentoAlterarTextField.text if self.ids.DataNascimentoAlterarTextField.text != '' else None,
+                                                 self.ids.EstadoAlterarTextField.text,
+                                                 self.ids.CidadeAlterarTextField.text,
+                                                 self.ids.EscolaAlterarTextField.text,
+                                                 self.ids.SenhaAlterarTextField.text,
+                                                 self.ids.BiografiaAlterarTextField.text,
+                                                 ''])
         if self.manager:
             self.manager.current = "CarregamentoInicial"
 
-    def GetFotoPerfil(self, usuario):
-        Perfil = Perfis()
-        UsuarioPerfil = Perfil.GetPorUsuario(usuario)
-        if UsuarioPerfil is None:
-            UsuarioPerfilImagem = Perfil.GetPorUsuario('ADMIN')['imagem']
-            self.imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
-            with open("Imagens/FotoPerfil.png", "wb") as f:
-                f.write(self.imagem_bytes)
-        else:
-            UsuarioPerfilImagem = UsuarioPerfil['imagem']
-            self.imagem_bytes = base64.b64decode(UsuarioPerfilImagem)
-            with open("Imagens/FotoPerfil.png", "wb") as f:
-                f.write(self.imagem_bytes)
 
 class TelaFavoritosPerfilProfissional(MDScreen):
     
@@ -3639,10 +3648,12 @@ class TelaPerfilAluno(MDScreen):
         except Exception:
             pass
 
-
 class TelaConquistas(MDScreen):
+    porcentagem = 0
 
     def on_pre_enter(self, *args):
+        self.controledadosjogos = DadosJogosController()
+
         pass
 
     def PerfilMDTextButton_Click(self):

@@ -30,6 +30,65 @@ class Profissional:
         self.Biografia = dados[9]
         self.FotoPerfil = dados[10]
 
+    def Alterar(self):
+        if not self.Nome or not self.Nome.strip():
+            print("Erro: Nome vazio")
+            self.TE.SetErro('Nome vazio!')
+
+        if not self.Usuario or not self.Usuario.strip():
+            print("Erro: Usuario vazio")
+            self.TE.SetErro('Usuario vazio!')
+
+        if not self.Profissao or not self.Profissao.strip():
+            print("Erro: Profissão vazio")
+            self.TE.SetErro('Profissão vazio!')
+
+        if not self.UF or not self.UF.strip():
+            print("Erro: UF vazia")
+            self.TE.SetErro('UF vazia!')
+        elif len(self.UF) != 2:
+            print("Erro: UF inválida, comprimento != 2")
+            self.TE.SetErro('UF invalida!')
+
+        if not self.Cidade or not self.Cidade.strip():
+            print("Erro: Cidade vazia")
+            self.TE.SetErro('Cidade vazia!')
+
+        if not self.Escola or not self.Escola.strip():
+            print("Erro: Escola vazia")
+            self.TE.SetErro('Escola vazia!')
+
+        if not self.Senha or not self.Senha.strip():
+            print("Erro: Senha vazia")
+            self.TE.SetErro('Senha vazia!')
+
+        print("Erros acumulados até aqui:", self.TE.GetErros())
+
+        if self.TE.TemErros():
+            print("Abandonando Salvar porque há erros")
+            return False
+        try:
+            Banco.editar(
+                'PROFISSIONAIS',
+                [
+                    f"Nome = '{self.Nome}'",
+                    f"Usuario = '{self.Usuario}'",
+                    f"Profissao = '{self.Profissao}'",
+                    f"DataNascimento = {self.DataNascimento}",
+                    f"UF = '{self.UF}'",
+                    f"Cidade = '{self.Cidade}'",
+                    f"Escola = '{self.Escola}'",
+                    f"Senha = '{self.Senha}'",
+                    f"Biografia = '{self.Biografia}'",
+                    f"FotoPerfil = '{self.FotoPerfil}'"
+                ],
+                f"CPF = '{self.CPF}'")
+            return True
+        except Exception as e:
+            print("Erro ao editar no banco:", e)
+            self.TE.SetErro(f'Não foi possivel editar. Erro:{e}')
+            return False
+        
     def Salvar(self):
         print("== Iniciando Salvar ==")
         print("Dados recebidos:", self.CPF, self.Nome, self.Usuario, self.Profissao,
