@@ -19,8 +19,8 @@ class FavoritosController:
     def getFavorito(self):
         return [
             self.ID,
-            self.Usuario,
             self.PostID,
+            self.Usuario,
             self.AlbumID
         ]
 
@@ -46,8 +46,10 @@ class FavoritosController:
             resultado = self.Favoritos.Salvar()
             if resultado:
                 return True
+            print(self.Erros.GetErros(), 'nao foi')
             return False
         except Exception as e:
+            print(e, E.GetErros())
             return e
 
     def PesquisarPorUsuario(self, usuario):

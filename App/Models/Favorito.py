@@ -12,8 +12,8 @@ class Favorito:
 
     def setFavorito(self, dados):
         self.ID = dados[0]
-        self.Usuario = dados[1]
-        self.PostID = dados[2]
+        self.PostID = dados[1]
+        self.Usuario = dados[2]
         self.AlbumID = dados[3]
 
     def Salvar(self):
@@ -24,12 +24,13 @@ class Favorito:
         if self.TE.TemErros():
             return False
         try:
-            colunas = "ID_POST,USUARIO,ID_ALBUM"
+            colunas = "ID_POST,USUARIO,NOME_ALBUM"
             valores = [self.PostID,self.Usuario, self.AlbumID]
             Banco.inserir("FAVORITOS", colunas, valores)
             return True
         except Exception as e:
             self.TE.SetErro(f"Não foi possível salvar o favorito. Erro: {e}")
+            print(e, self.TE.GetErros())
             return False
 
     def Pesquisar(self, rotulo, condicao):

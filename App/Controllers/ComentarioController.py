@@ -66,7 +66,7 @@ class ComentarioController:
 
     def ExcluirComentario(self):
         try:
-            self.setComentario(f"IDPOST = {self.IDPost} AND USUARIO = '{self.Usuario}'")
+            self.setComentario(f"ID = {self.ID}")
             self.Comentario.Deletar()
             return True
         except Exception as e:

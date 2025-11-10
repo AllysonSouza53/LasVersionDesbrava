@@ -63,18 +63,19 @@ class Post:
             if not self.ID:
                 self.TE.SetErro("ID do post não definido!")
                 return False
-            Banco.excluir('POSTS', f'ID = {self.ID}')
+            Banco.excluir('POST', f'ID = {self.ID}')
             print("Post deletado com sucesso!")
             return True
         except Exception as e:
             self.TE.SetErro(f"Não foi possível deletar post. Erro: {e}")
+            print(f"Erro ao deletar post: {e}")
             return False
 
     def getPost(self, condicao):
         """
         Busca um post específico e preenche os atributos da instância.
         """
-        Resultado = Banco.consultar('*', "POSTS", condicao)
+        Resultado = Banco.consultar('*', "POST", condicao)
 
         if not Resultado or Resultado is False:
             print("Nenhum post encontrado ou erro na consulta.")

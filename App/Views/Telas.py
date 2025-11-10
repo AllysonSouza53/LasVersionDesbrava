@@ -7,6 +7,7 @@ import random
 from functools import partial
 
 from kivy.app import App
+from kivymd.uix.button import MDRectangleFlatButton
 from kivy.clock import Clock
 from kivy.metrics import dp
 from kivy.animation import Animation
@@ -73,7 +74,9 @@ class TelaLoginProfissionais(MDScreen):
 
     def EntrarButton_Click(self):
         Sessao = LoginController()
-        Sessao.setLogin(self.manager)
+        Sessao.setNewLogin(self.manager)
+        Login = self.manager.get_screen("CarregamentoInicial")
+        Login.carregar_dados(1)
         if self.manager:
             if Sessao.Sessao():
                 self.manager.current = "CarregamentoInicial"
@@ -283,12 +286,20 @@ class TelaCadastroProfissional2(MDScreen):
 class TelaCarregamentoInicial(MDScreen):
     Profissional = None
     def on_enter(self, *args):
-        self.Sessao = LoginController()
-        self.Sessao.setLogin(self.manager)
-        self.Profissional = ProfissionalControler()
-        self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
         if self.manager:
             self.manager.current = "PerfilProfissional"
+    
+    def carregar_dados(self, tela, dados=None):
+        if tela == 1:
+            self.Sessao = LoginController()
+            self.Sessao.setNewLogin(self.manager)
+            self.Profissional = ProfissionalControler()
+            self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
+        else:
+            self.Sessao = LoginController()
+            self.Sessao.setLogin(dados)
+            self.Profissional = ProfissionalControler()
+            self.Profissional.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
 
 class TelaPerfilProfissional(MDScreen):
     Profissional = None
@@ -908,16 +919,18 @@ class TelaAlterarPerfilProfissional(MDScreen):
                                                  self.ids.NomeAlterarTextField.text,
                                                  self.ids.UsuarioAlterarTextField.text.replace('@', ''),
                                                  self.ids.ProfissaoAlterarTextField.text,
-                                                 self.ids.DataNascimentoAlterarTextField.text if self.ids.DataNascimentoAlterarTextField.text != '' else None,
+                                                 self.ids.DataNascimentoAlterarTextField.text if self.ids.DataNascimentoAlterarTextField.text != '' else "NULL",
                                                  self.ids.EstadoAlterarTextField.text,
                                                  self.ids.CidadeAlterarTextField.text,
                                                  self.ids.EscolaAlterarTextField.text,
                                                  self.ids.SenhaAlterarTextField.text,
                                                  self.ids.BiografiaAlterarTextField.text,
                                                  ''])
+        Login = self.manager.get_screen("CarregamentoInicial")
+        Login.carregar_dados(2, [self.ids.UsuarioAlterarTextField.text.replace('@', ''),
+                                 self.ids.SenhaAlterarTextField.text])
         if self.manager:
             self.manager.current = "CarregamentoInicial"
-
 
 class TelaFavoritosPerfilProfissional(MDScreen):
     
@@ -1558,7 +1571,7 @@ class TelaAlunosProfissional(MDScreen):
     aluno_usuario = None
 
     def on_enter(self, *args):
-        self.Sessao.setLogin(self.manager)
+        self.Sessao.setNewLogin(self.manager)
         self.ProfissionalControle.setUsuario(f'USUARIO = "{self.Sessao.usuario}"')
         self.ListarAlunos()
 
@@ -1988,6 +2001,10 @@ class TelaComunidadeProfissionais(MDScreen):
 
     def excluir_post(self, post):
         print(f"🗑️ Excluindo post de {post.get('usuario')}")
+        post_controller = PostController()
+        post_controller.setPost(f'ID = {post.get("id")}')
+        post_controller.ExcluirPost()
+        self.AtualizarFeed()
 
     def abrir_comentarios(self, instance):
         self.instanciacomentario = instance
@@ -2148,6 +2165,7 @@ class TelaComunidadeProfissionais(MDScreen):
         self.abrir_comentarios(instance)
 
     def on_release_buttonfavoritos(self, instance):
+        self.Albuns = AlbumController()
         self.post_id = getattr(instance, "post_id", None)
         print(f"ID do post favoritado: {self.post_id}")
         self.Favoritos.setNewFavorito(self)
@@ -2157,10 +2175,77 @@ class TelaComunidadeProfissionais(MDScreen):
             instance.favoritado = False
             self.Favoritos.Desfavoritar()
         else:
-            instance.icon = "star"
-            instance.icon_color = (1, 0.843, 0, 1)
             instance.favoritado = True
-            self.Favoritos.Favoritar()
+            BoxBotoes = MDBoxLayout(
+                orientation="vertical",
+                padding=dp(20),
+                spacing=dp(10),
+                size_hint_y=None
+            )
+        
+            BoxBotoes.bind(minimum_height=BoxBotoes.setter("height"))
+
+            botao_album = MDCard(
+                size_hint_y=None,
+                height=dp(70),
+                padding=dp(10),
+                orientation="horizontal",
+                spacing=dp(5),
+                md_bg_color=(0.5, 0.5, 0.5, 1),
+                on_release=lambda x: self.DefinirAlbumFavorito(None,instance)
+            )
+
+            botao_album.add_widget(
+                MDLabel(
+                    text='Principal',
+                    text_color=(1, 1, 1, 1)
+                )
+            )
+
+            BoxBotoes.add_widget(botao_album)
+            for album in self.Albuns.ListarAlbumPorUsuario(self.ControlePerfil.Usuario):
+                botao_album = MDCard(
+                    size_hint_y=None,
+                    height=dp(70),
+                    padding=dp(10),
+                    orientation="horizontal",
+                    spacing=dp(5),
+                    md_bg_color=(0.5, 0.5, 0.5, 1),
+                    on_release=lambda x: self.DefinirAlbumFavorito(album['nome'],instance)
+                )
+
+                botao_album.add_widget(
+                    MDLabel(
+                        text=album['nome'],
+                        text_color=(1, 1, 1, 1)
+                    )
+                )
+                BoxBotoes.add_widget(botao_album)
+            
+            ScrollViewAlbuns = ScrollView(
+                do_scroll_x=False, 
+                do_scroll_y=True,
+                size_hint=(1, None),
+                height=dp(300)
+            )
+
+            ScrollViewAlbuns.add_widget(BoxBotoes)
+            self.dialog = MDDialog(title="Selecione o álbum para favoritar o post.",
+                     type="custom",
+                     content_cls=ScrollViewAlbuns,
+                     size_hint_y = 1
+                )
+            self.dialog.open()
+            
+
+    def DefinirAlbumFavorito(self, nome_album=None, instance=None):
+        self.Favoritos.setNewFavorito(self)
+        self.Favoritos.AlbumID = nome_album
+        instance.icon = "star"
+        instance.icon_color = (1, 0.843, 0, 1)
+        self.Favoritos.Favoritar()
+        self.dialog.dismiss()
+
 
     def on_release_Comentarios_button(self):
         try:
@@ -2199,8 +2284,12 @@ class TelaComunidadeProfissionais(MDScreen):
             print(f"Erro ao carregar imagens dos posts: {e}")
             return posts
 
-    def ExcluirComentario(self, post):
-        pass
+    def ExcluirComentario(self, comentario):
+        print(f"🗑️ Excluindo post de {comentario.get('usuario')}")
+        comentario_controller = ComentarioController()
+        comentario_controller.setComentario(f'ID = {comentario.get("ID")}')
+        comentario_controller.ExcluirComentario()
+        self.AtualizarComentarios(self.instanciacomentario)
 
 class TelaPostarNoFeed(MDScreen):
     file_manager = None
@@ -2690,7 +2779,7 @@ class TelaAlunoEspecifico(MDScreen):
     
     def Excluir(self):
         try:
-            self.Aluno.ExcluirAluno(self.AlunoUsuario)
+            self.Aluno.ExcluirAluno()
             if self.manager:
                 self.dialog.dismiss()
                 self.manager.current = "AlunosProfissional"

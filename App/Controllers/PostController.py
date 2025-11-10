@@ -189,4 +189,16 @@ class PostController:
                         print(f"⚠️ Dados incompletos para o post com ID {id}.")
                         pass 
         return lista
+
+    def ExcluirPost(self):
+        try:
+            self.Post.setPost(self.getPost())
+            resultado = self.Post.Deletar()
+            if resultado:
+                return True
+            print(self.Erros.GetErros(), 'teste')
+            return False
+        except Exception as e:
+            print(e, self.Erros.GetErros())
+            return e
         

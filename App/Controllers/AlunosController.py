@@ -123,11 +123,9 @@ class AlunoController:
             print(f'Erro Controller.{e}')
             return self.Erros.GetErros()
         
-    def ExcluirAluno(self, usuario):
+    def ExcluirAluno(self):
         try:
-            self.Usuario = usuario
-            if self.Aluno.getAluno(self.Usuario):
-                self.Aluno.Deletar()
+            if self.Aluno.Deletar():
                 return True
             else:
                 return False
