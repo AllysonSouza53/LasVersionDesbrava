@@ -60,6 +60,16 @@ class PostController:
             return False
         except Exception as e:
             return e
+        
+    def AtualizarPostPorUSuario(self, usuario):
+        try:
+            self.Post.setPost(self.getPost())
+            resultado = self.Post.Atualizar(f"USUARIO = '{usuario}'")
+            if resultado:
+                return True
+        except Exception as e:
+            print(e)
+            return False
 
     import datetime, random
 

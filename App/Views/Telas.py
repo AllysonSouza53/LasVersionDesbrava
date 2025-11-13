@@ -400,20 +400,21 @@ class TelaPerfilProfissional(MDScreen):
                 icon="dots-vertical",
                 size_hint=(None, None),
                 size=(dp(24), dp(24)),
-                pos=(dp(0), dp(5))
+                pos=(dp(0), dp(5)),
+                radius=[20, 20, 20, 20]
             )
 
             # Cria menu
-            menu = MDDropdownMenu(caller=btn_menu, width_mult=4)
-            menu.items = [
+            self.menu = MDDropdownMenu(caller=btn_menu, width_mult=4)
+            self.menu.items = [
                 {
                     "text": "Excluir",
                     "icon": "delete",
-                    "on_release": lambda x=post: (menu.dismiss(), self.excluir_post(x))
+                    "on_release": lambda x=post: (self.menu.dismiss(), self.excluir_post(x))
                 }
             ]
 
-            btn_menu.on_release = menu.open
+            btn_menu.on_release = self.menu.open
 
             box_cabecalho.add_widget(usuario)
             box_cabecalho.add_widget(btn_menu)
@@ -467,6 +468,11 @@ class TelaPerfilProfissional(MDScreen):
 
     def excluir_post(self, post):
         print(f"🗑️ Excluindo post de {post.get('usuario')}")
+        post_controller = PostController()
+        post_controller.setPost(f'ID = {post.get("id")}')
+        post_controller.ExcluirPost()
+        self.menu.dismiss()
+        self.AtualizarFeed()
 
     def abrir_comentarios(self, instance):
         self.instanciacomentario = instance
@@ -512,7 +518,9 @@ class TelaPerfilProfissional(MDScreen):
                     icon="dots-vertical",
                     size_hint=(None, None),
                     size=(dp(24), dp(24)),
-                    pos=(dp(0), dp(0))
+                    pos=(dp(0), dp(0)),
+                    radius=dp(10),
+                    style="custom",
                 )
 
                 btn_menu.theme_icon_color = "Custom"
@@ -696,6 +704,11 @@ class TelaPerfilProfissional(MDScreen):
     def ComunidadeMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "ComunidadeProfissionais"
+
+    def AtualizarFeed(self):
+        self.resposta = self.Post.ListarPosts()
+        self.resposta = self.CarregarImagensPosts(self.resposta)
+        self.ListarPosts()
 
 class TelaAlterarPerfilProfissional(MDScreen):
     ControlePerfil = None
@@ -903,6 +916,7 @@ class TelaAlterarPerfilProfissional(MDScreen):
         Cache.remove('kv.image', 'Imagens/FotoPerfil.png')
 
     def AlterarPerfilButton_Click(self):
+        self.ControlePost = PostController()
         self.ControlePerfil.FotoPerfil = ''
         Perfil = Perfis()
         if not Perfil.GetPorUsuario(self.ControlePerfil.Usuario):
@@ -914,6 +928,8 @@ class TelaAlterarPerfilProfissional(MDScreen):
             title="Sucesso",
             text="O perfil foi atualizado!"
         ).open()
+        self.ControlePost.Usuario = self.ControlePerfil.Usuario
+        print(self.ControlePost.Usuario)
 
         self.ControlePerfil.AlterarProfissional([self.ControlePerfil.CPF,
                                                  self.ids.NomeAlterarTextField.text,
@@ -926,6 +942,9 @@ class TelaAlterarPerfilProfissional(MDScreen):
                                                  self.ids.SenhaAlterarTextField.text,
                                                  self.ids.BiografiaAlterarTextField.text,
                                                  ''])
+
+        self.ControlePost.AtualizarPostPorUSuario(self.ids.UsuarioAlterarTextField.text.replace('@', ''))
+
         Login = self.manager.get_screen("CarregamentoInicial")
         Login.carregar_dados(2, [self.ids.UsuarioAlterarTextField.text.replace('@', ''),
                                  self.ids.SenhaAlterarTextField.text])
@@ -1916,28 +1935,7 @@ class TelaComunidadeProfissionais(MDScreen):
             )
             usuario.bind(texture_size=usuario.setter('size'))
 
-            btn_menu = MDIconButton(
-                icon="dots-vertical",
-                size_hint=(None, None),
-                size=(dp(24), dp(24)),
-                pos=(dp(0), dp(5)),
-                radius=[20, 20, 20, 20]  # <- evita ValueError
-            )
-
-            # Cria menu
-            menu = MDDropdownMenu(caller=btn_menu, width_mult=4)
-            menu.items = [
-                {
-                    "text": "Excluir",
-                    "icon": "delete",
-                    "on_release": lambda x=post: (menu.dismiss(), self.excluir_post(x))
-                }
-            ]
-
-            btn_menu.on_release = menu.open
-
             box_cabecalho.add_widget(usuario)
-            box_cabecalho.add_widget(btn_menu)
             card.add_widget(box_cabecalho)
 
             # Imagem do post
@@ -1998,13 +1996,6 @@ class TelaComunidadeProfissionais(MDScreen):
             box_post.add_widget(card)
             box_post.bind(minimum_height=box_post.setter('height'))
             self.FeedComunidade.add_widget(box_post)
-
-    def excluir_post(self, post):
-        print(f"🗑️ Excluindo post de {post.get('usuario')}")
-        post_controller = PostController()
-        post_controller.setPost(f'ID = {post.get("id")}')
-        post_controller.ExcluirPost()
-        self.AtualizarFeed()
 
     def abrir_comentarios(self, instance):
         self.instanciacomentario = instance

@@ -92,3 +92,11 @@ class Post:
         except Exception as e:
             print(f"Erro ao extrair dados do post: {e}")
             return False
+
+    def Atualizar(self, valor):
+        try:
+            Banco.editar('POST',[valor],f"USUARIO ='{self.Usuario}'")
+            return True
+        except Exception as e:
+            print(e)
+            return False
