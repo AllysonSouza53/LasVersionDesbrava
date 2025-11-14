@@ -3737,6 +3737,8 @@ class TelaConquistas(MDScreen):
                     self.ids.LabelBarra1.text = '100%'
                     self.ids.Barra1.progresso = 100
             elif self.Fases <= 16:
+                self.ids.LabelBarra1.text = '100%'
+                self.ids.Barra1.progresso = 100
                 if self.Fases == 9:
                     self.ids.LabelBarra2.text = '12,5%'
                     self.ids.Barra2.progresso = 12.5
@@ -3762,6 +3764,10 @@ class TelaConquistas(MDScreen):
                     self.ids.LabelBarra2.text = '100%'
                     self.ids.Barra2.progresso = 100
             elif self.Fases <= 24:
+                self.ids.LabelBarra1.text = '100%'
+                self.ids.Barra1.progresso = 100
+                self.ids.LabelBarra2.text = '100%'
+                self.ids.Barra2.progresso = 100
                 if self.Fases == 17:
                     self.ids.LabelBarra3.text = '12,5%'
                     self.ids.Barra3.progresso = 12.5
@@ -3787,6 +3793,12 @@ class TelaConquistas(MDScreen):
                     self.ids.LabelBarra3.text = '100%'
                     self.ids.Barra3.progresso = 100
         elif self.Fases <= 48:
+            self.ids.LabelBarra1.text = '100%'
+            self.ids.Barra1.progresso = 100
+            self.ids.LabelBarra2.text = '100%'
+            self.ids.Barra2.progresso = 100
+            self.ids.LabelBarra3.text = '100%'
+            self.ids.Barra3.progresso = 100
             if self.Fases <= 32:
                 if self.Fases == 25:
                     self.barras[4] = 12.5
