@@ -4599,7 +4599,7 @@
                                     md_bg_color: 0.1, 0.4, 0.3, 1
 
                                     MDLabel:
-                                        text: 'Sete Erros'
+                                        text: 'Organize as Cores'
                                         font_size: "20sp"
                                         bold: True
                                         halign: 'center'
@@ -4646,6 +4646,7 @@
                                                     valign: 'middle'
 
                                                     MDLabel:
+                                                        id:LabelBarra1
                                                         text: f'{0}%'
                                                         size_hint_x: 0.2
                                                         halign: 'center'
@@ -4654,7 +4655,7 @@
                                                         text_color: 1, 1, 1, 1
 
                                                     BarraProgresso:
-                                                        id: barra_seteerros1
+                                                        id: Barra1
                                                         progresso: 0
                                                         cor_progresso: 0.1, 0.6, 0.3, 1
 
@@ -4667,7 +4668,8 @@
                                                     valign: 'middle'
 
                                                     MDLabel:
-                                                        text: '70%'
+                                                        id:LabelBarra2
+                                                        text: '0%'
                                                         size_hint_x: 0.2
                                                         halign: 'center'
                                                         valign: 'middle'
@@ -4675,8 +4677,8 @@
                                                         text_color: 1, 1, 1, 1
 
                                                     BarraProgresso:
-                                                        id: barra_seteerros2
-                                                        progresso: 70
+                                                        id: Barra2
+                                                        progresso: 0
                                                         cor_progresso: 0.1, 0.6, 0.3, 1
 
                                                 # 🔹 Barra 3
@@ -4688,7 +4690,8 @@
                                                     valign: 'middle'
 
                                                     MDLabel:
-                                                        text: '20%'
+                                                        id:LabelBarra3
+                                                        text: '0%'
                                                         size_hint_x: 0.2
                                                         halign: 'center'
                                                         valign: 'middle'
@@ -4696,8 +4699,8 @@
                                                         text_color: 1, 1, 1, 1
 
                                                     BarraProgresso:
-                                                        id: barra_seteerros3
-                                                        progresso: 20
+                                                        id: Barra3
+                                                        progresso: 0
                                                         cor_progresso: 0.1, 0.6, 0.3, 1
 
                                             MDCard:
