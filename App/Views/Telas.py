@@ -3512,6 +3512,11 @@ from kivymd.uix.button import MDFlatButton
 from kivy.app import App
 
 class TelaPerfilAluno(MDScreen):
+
+    def on_pre_enter(self, *args):
+        tela_carregamento = self.manager.get_screen("CarregamentoInicialAluno")
+        self.ControleAluno = tela_carregamento.ControleAluno
+
     def PerfilMDTextButton_Click(self):
         pass
 
@@ -3524,17 +3529,17 @@ class TelaPerfilAluno(MDScreen):
             self.manager.current = "Conquistas"
 
     def JogosCard_Click(self, jogo):
-        if jogo == 1:
+        if jogo == 6:
             self.manager.current = "JogoDosSeteErros"
-        elif jogo == 2:
+        elif jogo == 1:
             self.manager.current = "OrganizeAsCores"
-        elif jogo == 3:
+        elif jogo == 2:
             self.manager.current = "SilabaMix"
         elif jogo == 4:
             self.manager.current = "JogoDaMemoria"
         elif jogo == 5:
             self.manager.current = "JogoMemoriaDosCores"
-        elif jogo == 6:
+        elif jogo == 3:
             self.manager.current = "JogoSomSilaba"
 
     # ---------------------------
@@ -3546,66 +3551,27 @@ class TelaPerfilAluno(MDScreen):
     import json
 
     def JogoDaTrilha(self):
-        """
-        Controla a sequência de jogos do aluno e redireciona para o ponto certo.
-        """
+        self.ControleAluno.setAluno(self.ControleAluno.RE)
+        self.fase_atual = self.ControleAluno.FASETRILHA if self.ControleAluno.FASETRILHA else 1
         try:
-            # === Pega dados do aluno ===
-            tela_carregamento = self.manager.get_screen("CarregamentoInicialAluno")
-            if not tela_carregamento or not tela_carregamento.ControleAluno:
-                print("⚠️ Nenhum aluno logado.")
-                return
-
-            self.ControleAluno = tela_carregamento.ControleAluno
-            re_aluno = str(self.ControleAluno.RE)
-
-            # === Caminho de progresso individual ===
-            caminho_dados = Path(f"dados_jogo_{re_aluno}.json")
-
-            # === Se não existir, cria começando do início ===
-            if not caminho_dados.exists():
-                progresso = {
-                    "re": re_aluno,
-                    "jogo_atual": "sete_erros",
-                    "nivel_atual": 1,
-                    "fase_atual": 1
-                }
-                caminho_dados.write_text(json.dumps(progresso, indent=4))
-            else:
-                progresso = json.loads(caminho_dados.read_text())
-
-            jogo = progresso["jogo_atual"]
-            nivel = progresso["nivel_atual"]
-            fase = progresso["fase_atual"]
-
-            trilha = {
-                "sete_erros": {"fases": 1, "niveis": 1, "proximo": "organize_cores", "tela": "JogoDosSeteErros"},
-                "organize_cores": {"fases": 6, "niveis": 3, "proximo": "silaba_mix", "tela": "OrganizeAsCores"},
-                "silaba_mix": {"fases": 24, "niveis": 3, "proximo": "memoria", "tela": "SilabaMix"},
-                "memoria": {"fases": 6, "niveis": 3, "proximo": "memoria_cores", "tela": "JogoDaMemoria"},
-                "memoria_cores": {"fases": 3, "niveis": 3, "proximo": "som_silaba", "tela": "JogoMemoriaDosCores"},
-                "som_silaba": {"fases": 15, "niveis": 3, "proximo": None, "tela": "JogoSomSilaba"}
-            }
-
-            info = trilha.get(jogo)
-            if not info:
-                print("⚠️ Erro: jogo atual inválido.")
-                return
-
-            print(f"➡ Entrando no jogo: {jogo} | Nível {nivel} | Fase {fase}")
-
-            # === Redireciona para o jogo correspondente ===
-            if self.manager:
-                tela_destino = info["tela"]
-                self.manager.current = tela_destino
-
-                # Define os IDs dentro da tela de jogo (caso existam)
-                tela_jogo = self.manager.get_screen(tela_destino)
-                if hasattr(tela_jogo, "id_fase"):
-                    tela_jogo.id_fase = fase
-                if hasattr(tela_jogo, "id_nivel"):
-                    tela_jogo.id_nivel = nivel
-
+            if self.fase_atual  <= 24:
+                if self.manager:
+                    self.manager.current = "OrganizeAsCores"
+            elif self.fase_atual  <= 47:
+                if self.manager:
+                    self.manager.current = "SilabaMix"
+            elif self.fase_atual  <= 62:
+                if self.manager:
+                    self.manager.current = "JogoSomSilaba"
+            elif self.fase_atual  <= 96:
+                if self.manager:
+                    self.manager.current = "JogoDaMemoria"
+            elif self.fase_atual  <= 99:
+                if self.manager:
+                    self.manager.current = "JogoMemoriaDosCores"
+            elif self.fase_atual  <= 100:
+                if self.manager:
+                    self.manager.current = "JogoDosSeteErros"
         except Exception as e:
             print(f"⚠️ Erro em JogoDaTrilha: {e}")
 
@@ -3729,12 +3695,161 @@ class TelaPerfilAluno(MDScreen):
             pass
 
 class TelaConquistas(MDScreen):
-    porcentagem = 0
+    barras = []
+    ControleAluno = None
 
     def on_pre_enter(self, *args):
-        self.controledadosjogos = DadosJogosController()
+        tela_carregamento = self.manager.get_screen("CarregamentoInicialAluno")
+        if tela_carregamento.ControleAluno:
+            self.ControleAluno = tela_carregamento.ControleAluno
+        else:
+            self.ControleAluno = None
+        self.ControleAluno.setAluno(self.ControleAluno.RE)
+        self.Fases = self.ControleAluno.FASETRILHA if self.ControleAluno.FASETRILHA else 0
+        self.CarregarConquistas()
 
-        pass
+    
+    def CarregarConquistas(self):
+        if self.Fases <= 24:
+            if self.Fases <= 8:
+                if self.Fases == 1:
+                    self.ids.barra_seteerros1.progresso = 12.5
+                elif self.Fases == 2:
+                    self.barras[1] = 25
+                elif self.Fases == 3:
+                    self.barras[1] = 37.5
+                elif self.Fases == 4:
+                    self.barras[1] = 50
+                elif self.Fases == 5:
+                    self.barras[1] = 62.5
+                elif self.Fases == 6:
+                    self.barras[1] = 75
+                elif self.Fases == 7:
+                    self.barras[1] = 87.5
+                elif self.Fases == 8:
+                    self.barras[1] = 100
+            elif self.Fases <= 16:
+                if self.Fases == 9:
+                    self.barras[2] = 12.5
+                elif self.Fases == 10:
+                    self.barras[2] = 25
+                elif self.Fases == 11:
+                    self.barras[2] = 37.5
+                elif self.Fases == 12:
+                    self.barras[2] = 50
+                elif self.Fases == 13:
+                    self.barras[2] = 62.5
+                elif self.Fases == 14:
+                    self.barras[2] = 75
+                elif self.Fases == 15:
+                    self.barras[2] = 87.5
+                elif self.Fases == 16:
+                    self.barras[2] = 100
+            elif self.Fases <= 24:
+                if self.Fases == 17:
+                    self.barras[3] = 12.5
+                elif self.Fases == 18:
+                    self.barras[3] = 25
+                elif self.Fases == 19:
+                    self.barras[3] = 37.5
+                elif self.Fases == 20:
+                    self.barras[3] = 50
+                elif self.Fases == 21:
+                    self.barras[3] = 62.5
+                elif self.Fases == 22:
+                    self.barras[3] = 75
+                elif self.Fases == 23:
+                    self.barras[3] = 87.5
+                elif self.Fases == 24:
+                    self.barras[3] = 100
+        elif self.Fases <= 48:
+            if self.Fases <= 32:
+                if self.Fases == 25:
+                    self.barras[4] = 12.5
+                elif self.Fases == 26:
+                    self.barras[4] = 25
+                elif self.Fases == 27:
+                    self.barras[4] = 37.5
+                elif self.Fases == 28:
+                    self.barras[4] = 50
+                elif self.Fases == 29:
+                    self.barras[4] = 62.5
+                elif self.Fases == 30:
+                    self.barras[4] = 75
+                elif self.Fases == 31:
+                    self.barras[4] = 87.5
+                elif self.Fases == 32:
+                    self.barras[4] = 100
+            elif self.Fases <= 40:
+                if self.Fases == 33:
+                    self.barras[5] = 12.5
+                elif self.Fases == 34:
+                    self.barras[5] = 25
+                elif self.Fases == 35:
+                    self.barras[5] = 37.5
+                elif self.Fases == 36:
+                    self.barras[5] = 50
+                elif self.Fases == 37:
+                    self.barras[5] = 62.5
+                elif self.Fases == 38:
+                    self.barras[5] = 75
+                elif self.Fases == 39:
+                    self.barras[5] = 87.5
+                elif self.Fases == 40:
+                    self.barras[5] = 100
+            elif self.Fases <= 48:
+                if self.Fases == 41:
+                    self.barras[6] = 12.5
+                elif self.Fases == 42:
+                    self.barras[6] = 25
+                elif self.Fases == 43:
+                    self.barras[6] = 37.5
+                elif self.Fases == 44:
+                    self.barras[6] = 50
+                elif self.Fases == 45:
+                    self.barras[6] = 62.5
+                elif self.Fases == 46:
+                    self.barras[6] = 75
+                elif self.Fases == 47:
+                    self.barras[6] = 87.5
+                elif self.Fases == 48:
+                    self.ids.barra_seteerros1.progresso = 100
+        elif self.Fases <= 62:
+            if self.Fases <= 53:
+                if self.Fases == 49:
+                    self.barras[7] = 20
+                elif self.Fases == 50:
+                    self.barras[7] = 40
+                elif self.Fases == 51:
+                    self.barras[7] = 60
+                elif self.Fases == 52:
+                    self.barras[7] = 80
+                elif self.Fases == 53:
+                    self.barras[7] = 100
+            elif self.Fases <= 58:
+                if self.Fases == 54:
+                    self.barras[8] = 20
+                elif self.Fases == 55:
+                    self.barras[8] = 40
+                elif self.Fases == 56:
+                    self.barras[8] = 60
+                elif self.Fases == 57:
+                    self.barras[8] = 80
+                elif self.Fases == 58:
+                    self.barras[8] = 100
+            elif self.Fases <= 62:
+                if self.Fases == 59:
+                    self.barras[9] = 20
+                elif self.Fases == 60:
+                    self.barras[9] = 40
+                elif self.Fases == 61:
+                    self.barras[9] = 60
+                elif self.Fases == 62:
+                    self.barras[9] = 100
+        
+
+                
+
 
     def PerfilMDTextButton_Click(self):
         if self.manager:
@@ -3998,7 +4113,6 @@ COLOR_MAP = {
 
 class TelaOrganizeAsCores(MDScreen):
 
-    
     card_selecionado = None
     fase_atual = NumericProperty(1)
 
@@ -4016,6 +4130,8 @@ class TelaOrganizeAsCores(MDScreen):
     def Voltar_Click(self):
         if self.manager:
             self.manager.current = "PerfilAluno"
+    def Fases(fase):
+        pass
 
     def on_enter(self, *args):
 
@@ -4052,6 +4168,9 @@ class TelaOrganizeAsCores(MDScreen):
         )
         self.dialog_inicial.title_align = "center"
         self.dialog_inicial.open()
+        if self.ControleAluno.setAluno(self.ControleAluno.RE):
+            print("🎮 Jogo iniciado! Boa sorte!")
+            self.fase_atual = self.ControleAluno.FASETRILHA if self.ControleAluno.FASETRILHA else 1
 
     # === Início do jogo ===
     def StartJogo(self, *args):
@@ -4082,15 +4201,28 @@ class TelaOrganizeAsCores(MDScreen):
         self.ids.JogoOrganizarCores.clear_widgets()
 
         # Configurações por fase
-        if self.fase_atual <= 2:
+        if self.fase_atual <= 8:
             num_colunas = 3
             slots_por_coluna = 2
-        elif self.fase_atual <= 4:
+        elif self.fase_atual <= 16:
             num_colunas = 4
-            slots_por_coluna = 3
-        else:
+            slots_por_coluna = 2
+        elif self.fase_atual <= 24:
             num_colunas = 5
-            slots_por_coluna = 4
+            slots_por_coluna = 2
+        else:
+            final = MDDialog(
+                md_bg_color=(1, 1, 1, 0.7),
+                title="🏁 Parabéns!",
+                text="Você concluiu todas as fases desse jogo!",
+                size_hint=(0.8, None),
+                radius=[20, 20, 20, 20],
+                buttons=[MDFlatButton(text="OK", on_release=lambda *a: final.dismiss())],
+            )
+            final.open()
+            if self.manager:
+                self.manager.current = "PerfilAluno"
+            return
 
         CardFundo = MDCard(
             size_hint=(1, 1),
@@ -4281,34 +4413,20 @@ class TelaOrganizeAsCores(MDScreen):
                 print(f"{k}: {v}")
 
             self.salvar_dados(dados_jogo)
-
-            # === Diálogo de acerto ===
-            self.dialog_acerto = MDDialog(
+            self.ControleAluno.FASETRILHA = self.fase_atual + 1
+            self.ControleAluno.Salvar()
+            final = MDDialog(
                 md_bg_color=(1, 1, 1, 0.7),
-                title="🎉 Parabéns!",
-                text=f"Fase {self.fase_atual} completa! Deseja continuar?",
-                type="custom",
+                title="🏁 Parabéns!",
+                text="Você concluiu todas as fases desse jogo!",
+                size_hint=(0.8, None),
                 radius=[20, 20, 20, 20],
-                auto_dismiss=False,
-                buttons=[
-                    MDFillRoundFlatIconButton(
-                        icon="close",
-                        text="Sair",
-                        text_color="white",
-                        md_bg_color=(0.7, 0, 0, 1),
-                        on_release=self._sair_dialog_acerto
-                    ),
-                    MDFillRoundFlatIconButton(
-                        icon="arrow-right",
-                        text="Próxima",
-                        text_color="white",
-                        md_bg_color=(0, 0.6, 0.1, 1),
-                        on_release=self._proxima_dialog_acerto
-                    ),
-                ],
+                buttons=[MDFlatButton(text="OK", on_release=lambda *a: final.dismiss())],
             )
-            self.dialog_acerto.title_align = "center"
-            self.dialog_acerto.open()
+            final.open()
+            if self.manager:
+                self.manager.current = "PerfilAluno"
+
 
     def _sair_dialog_acerto(self, *args):
         try:
@@ -4317,7 +4435,7 @@ class TelaOrganizeAsCores(MDScreen):
             pass
         self.Voltar_Click()
 
-    def _proxima_dialog_acerto(self, *args):
+    '''def _proxima_dialog_acerto(self, *args):
         try:
             self.dialog_acerto.dismiss()
         except Exception:
@@ -4341,7 +4459,7 @@ class TelaOrganizeAsCores(MDScreen):
                 buttons=[MDFlatButton(text="OK", on_release=lambda *a: final.dismiss())],
             )
             final.open()
-
+    '''
     # === Salvamento dos dados ===
     def salvar_dados(self, dados):
         Dados = []
@@ -4423,7 +4541,7 @@ class TelaSilabaMix(MDScreen):
             {"palavra": "ESTUDANTE", "silabas": ["ES", "TU", "DAN", "TE"], "imagem": "Imagem24.png"},
         ]
 
-        self.fase_atual = 0
+        self.fase_atual = self.ControleAluno.FASETRILHA if self.ControleAluno.FASETRILHA else 24
         self.silabas_escolhidas = []
 
         # ==== Diálogo inicial ====
@@ -4459,7 +4577,7 @@ class TelaSilabaMix(MDScreen):
     def StartJogo(self, *args):
         self.dialog_inicial.dismiss()
         self.inicio_tempo = time.time()
-        self.CarregarFase(self.fase_atual)
+        self.CarregarFase(self.fase_atual - 24)
 
     def SairDoJogo(self, *args):
         App.get_running_app().stop()
@@ -4603,8 +4721,13 @@ class TelaSilabaMix(MDScreen):
             print(json.dumps(dados_jogo, indent=4, ensure_ascii=False))
 
             self.salvar_dados(dados_jogo)
-
-            self.dialog_acerto = MDDialog(
+            self.fase_atual += 1
+            self.ControleAluno.FASETRILHA = self.fase_atual
+            self.ControleAluno.Salvar()
+            if self.manager:
+                self.manager.current = "PerfilAluno"
+            
+            ''' self.dialog_acerto = MDDialog(
                 md_bg_color=(0, 0, 0, 0.7),
                 title="🎉 Muito bem!",
                 text="Você acertou! Deseja continuar jogando?",
@@ -4629,7 +4752,7 @@ class TelaSilabaMix(MDScreen):
                 ],
             )
             self.dialog_acerto.title_align = "center"
-            self.dialog_acerto.open()
+            self.dialog_acerto.open()'''
         else:
             self.LabelInstrucao.text = "Monte a palavra correta!"
             self.LabelInstrucao.text_color = (0, 0, 0, 1)
@@ -5330,6 +5453,10 @@ class TelaJogoSomSilaba(MDScreen):
             3: ['BONECA', 'MACACO', 'PETALA', 'PARASOL', 'BANANA']
         }
 
+        self.ControleAluno.setAluno(self.ControleAluno.RE)
+        self.fase_atual = self.ControleAluno.FASETRILHA if self.ControleAluno else 62
+        self.Fase = self.fase_atual - 61
+        self.Nivel = 1
         self.AtualizarFase()
 
     def AtualizarFase(self):
@@ -5357,7 +5484,7 @@ class TelaJogoSomSilaba(MDScreen):
         if sound:
             sound.play()
 
-    def MostrarDialogo(self, titulo, mensagem, proxima_fase=False):
+    '''def MostrarDialogo(self, titulo, mensagem, proxima_fase=False):
         botoes = [
             MDFlatButton(
                 text="PRÓXIMO" if proxima_fase else "OK",
@@ -5369,14 +5496,14 @@ class TelaJogoSomSilaba(MDScreen):
             text=mensagem,
             buttons=botoes,
         )
-        self.dialog.open()
+        self.dialog.open()'''
 
-    def FecharDialogo(self, proxima_fase=False):
+    '''    def FecharDialogo(self, proxima_fase=False):
         self.dialog.dismiss()
         if proxima_fase:
-            self.AvancarFase()
+            self.AvancarFase()'''
 
-    def AvancarFase(self):
+    '''def AvancarFase(self):
         """Avança de fase e muda de nível se necessário"""
         self.Fase += 1
         total_fases = len(self.niveis[self.Nivel])
@@ -5388,9 +5515,9 @@ class TelaJogoSomSilaba(MDScreen):
             if self.Nivel > 3:
                 self.Nivel = 1
                 self.MostrarDialogo("Fim do jogo!", "Você completou todos os níveis!", proxima_fase=False)
-                return
+                return'''
 
-        self.AtualizarFase()
+    '''self.AtualizarFase()'''
 
     def CliqueTecla(self, tecla):
         mapping = {
@@ -5414,10 +5541,11 @@ class TelaJogoSomSilaba(MDScreen):
             if silaba == self.PalavraCorreta:
                 self.acertos += 1
                 self.salvar_dados()
-                self.MostrarDialogo("Acertou!", f"Você escolheu corretamente: {silaba}", proxima_fase=True)
+                self.fase_atual += 1
+                self.ControleAluno.FASETRILHA = self.fase_atual
+                self.ControleAluno.Salvar()
             else:
                 self.erros += 1
-                self.MostrarDialogo("Errou!", "Tente novamente!")
             return
 
         # Nível 2 e 3 – formar palavras
@@ -5427,13 +5555,14 @@ class TelaJogoSomSilaba(MDScreen):
         if not self.PalavraCorreta.startswith(palavra_atual):
             self.erros += 1
             self.PalavraFormada = []
-            self.MostrarDialogo("Errou!", "Você errou a sequência! Tente novamente!")
             return
 
         if palavra_atual == self.PalavraCorreta:
             self.acertos += 1
             self.salvar_dados()
-            self.MostrarDialogo("Acertou!", f"Você formou corretamente: {self.PalavraCorreta}", proxima_fase=True)
+            self.fase_atual += 1
+            self.ControleAluno.FASETRILHA = self.fase_atual
+            self.ControleAluno.Salvar()
 
     # ======================================================
     # === Função padronizada de salvamento de dados ========

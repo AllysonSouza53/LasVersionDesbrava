@@ -17,6 +17,7 @@ class AlunoController:
     Observacao = None
     NivelLeitura = None
     NivelEscrita = None
+    FASETRILHA = None
     app = None
 
     def __init__(self):
@@ -44,6 +45,7 @@ class AlunoController:
         self.Observacao = app.ids.ObservacaoAlunosTextField.text
         self.NivelLeitura = app.ids.NivelLeituraAlunosTextField.text
         self.NivelEscrita = app.ids.NivelEscritaAlunosTextField.text
+        self.FASETRILHA = 1
 
     def getAluno(self):
         return [
@@ -60,7 +62,8 @@ class AlunoController:
             self.Diagnostico,
             self.Observacao,
             self.NivelLeitura,
-            self.NivelEscrita
+            self.NivelEscrita,
+            self.FASETRILHA
         ]
 
     def setAluno(self, RE):
@@ -87,7 +90,8 @@ class AlunoController:
             self.Diagnostico,
             self.Observacao,
             self.NivelLeitura,
-            self.NivelEscrita
+            self.NivelEscrita,
+            self.FASETRILHA
         ) = aluno
         return True
 
@@ -98,7 +102,7 @@ class AlunoController:
         colunas = [
             "RE", "Nome", "Usuario", "Escola", "DataNascimento", "Genero",
             "Turma", "ProfissionalResponsavel", "UF", "Cidade", "Diagnostico",
-            "Observacao", "NivelLeitura", "NivelEscrita"
+            "Observacao", "NivelLeitura", "NivelEscrita", "FASETRILHA"
         ]
         lista_dicionarios = []
         for linha in dados_brutos:

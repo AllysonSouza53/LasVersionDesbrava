@@ -16,6 +16,7 @@ class Aluno:
     Observacao = None
     NivelLeitura = None
     NivelEscrita = None
+    FASETRILHA = None
 
     def __init__(self):
         self.Erros = Erros()
@@ -36,6 +37,7 @@ class Aluno:
         self.Observacao = dados[11] if dados[11] else None
         self.NivelLeitura = dados[12] if dados[12] else None
         self.NivelEscrita = dados[13] if dados[13] else None
+        self.FASETRILHA = dados[14] if dados[14] else None
         print(self.ProfissionalResponsavel)
 
     def getAluno(self, RE):
@@ -60,10 +62,11 @@ class Aluno:
             self.Observacao = Resultado[0][11]
             self.NivelLeitura = Resultado[0][12]
             self.NivelEscrita = Resultado[0][13]
+            self.FASETRILHA = Resultado[0][14]
 
             return [
                 self.RE, self.Nome, self.Usuario, self.Escola, self.DataNascimento, self.Genero, self.Turma, self.ProfissionalResponsavel,
-                self.UF, self.Cidade, self.Diagnostico, self.Observacao, self.NivelLeitura, self.NivelEscrita
+                self.UF, self.Cidade, self.Diagnostico, self.Observacao, self.NivelLeitura, self.NivelEscrita, self.FASETRILHA
             ]
         except Exception as e:
             self.Erros.SetErro(f'Não foi possivel achar realizar essa operação. Erro:{e}')
@@ -119,7 +122,7 @@ class Aluno:
             return False
 
         try:
-            colunas = "RE,NOME,USUARIO,ESCOLA,DATANASCIMENTO,GENERO,TURMA,PROFISSIONALRESPONSAVEL,UF,CIDADE,DIAGNOSTICO,OBSERVACOES,NIVELDELEITURA,NIVELDEESCRITA"
+            colunas = "RE,NOME,USUARIO,ESCOLA,DATANASCIMENTO,GENERO,TURMA,PROFISSIONALRESPONSAVEL,UF,CIDADE,DIAGNOSTICO,OBSERVACOES,NIVELDELEITURA,NIVELDEESCRITA,FASETRILHA"
             valores = [
                 self.RE,
                 self.Nome,
@@ -134,7 +137,8 @@ class Aluno:
                 self.Diagnostico,
                 self.Observacao,
                 self.NivelLeitura,
-                self.NivelEscrita
+                self.NivelEscrita,
+                self.FASETRILHA
             ]
             Banco.inserir("ALUNOS", colunas, valores)
             return True
@@ -158,7 +162,8 @@ class Aluno:
                 f"DIAGNOSTICO = '{self.Diagnostico}'" if self.Diagnostico else "DIAGNOSTICO = NULL",
                 f"OBSERVACOES = '{self.Observacao}'" if self.Observacao else "OBSERVACOES = NULL",
                 f"NIVELDELEITURA = {self.NivelLeitura}" if self.NivelLeitura else "NIVELDELEITURA = NULL",
-                f"NIVELDEESCRITA = {self.NivelEscrita}" if self.NivelEscrita else "NIVELDEESCRITA = NULL"
+                f"NIVELDEESCRITA = {self.NivelEscrita}" if self.NivelEscrita else "NIVELDEESCRITA = NULL",
+                f"FASETRILHA = {self.FASETRILHA}" if self.FASETRILHA else "FASETRILHA = NULL"
             ]
             Banco.editar('ALUNOS', valores, f"RE = {self.RE}")
             return True
