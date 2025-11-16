@@ -3694,197 +3694,93 @@ class TelaPerfilAluno(MDScreen):
         except Exception:
             pass
 
+from kivy.clock import Clock
+
 class TelaConquistas(MDScreen):
-    barras = []
+
     ControleAluno = None
+
+    # CONFIGURAÇÕES DO SISTEMA
+    FASES_POR_JOGO = 24
+    PROGRESSO_POR_FASE = 100  # Cada fase = barra completa
 
     def on_pre_enter(self, *args):
         tela_carregamento = self.manager.get_screen("CarregamentoInicialAluno")
+
         if tela_carregamento.ControleAluno:
             self.ControleAluno = tela_carregamento.ControleAluno
-        else:
-            self.ControleAluno = None
+
         self.ControleAluno.setAluno(self.ControleAluno.RE)
-        self.Fases = self.ControleAluno.FASETRILHA if self.ControleAluno.FASETRILHA else 0
-        self.CarregarConquistas()
 
-    
-    def CarregarConquistas(self):
-        if self.Fases <= 24:
-            if self.Fases <= 8:
-                if self.Fases == 1:
-                    self.ids.LabelBarra1.text = '12,5%'
-                    self.ids.Barra1.progresso = 12.5
-                elif self.Fases == 2:
-                    self.ids.LabelBarra1.text = '25%'
-                    self.ids.Barra1.progresso = 25
-                elif self.Fases == 3:
-                    self.ids.LabelBarra1.text = '37,5%'
-                    self.ids.Barra1.progresso = 37.5
-                elif self.Fases == 4:
-                    self.ids.LabelBarra1.text = '50%'
-                    self.ids.Barra1.progresso = 50
-                elif self.Fases == 5:
-                    self.ids.LabelBarra1.text = '62,5%'
-                    self.ids.Barra1.progresso = 62.5
-                elif self.Fases == 6:
-                    self.ids.LabelBarra1.text = '75%'
-                    self.ids.Barra1.progresso = 75
-                elif self.Fases == 7:
-                    self.ids.LabelBarra1.text = '87,5%'
-                    self.ids.Barra1.progresso = 87.5
-                elif self.Fases == 8:
-                    self.ids.LabelBarra1.text = '100%'
-                    self.ids.Barra1.progresso = 100
-            elif self.Fases <= 16:
-                if self.Fases == 9:
-                    self.ids.LabelBarra2.text = '12,5%'
-                    self.ids.Barra2.progresso = 12.5
-                elif self.Fases == 10:
-                    self.ids.LabelBarra2.text = '25%'
-                    self.ids.Barra2.progresso = 25
-                elif self.Fases == 11:
-                    self.ids.LabelBarra2.text = '37,5%'
-                    self.ids.Barra2.progresso = 37.5
-                elif self.Fases == 12:
-                    self.ids.LabelBarra2.text = '50%'
-                    self.ids.Barra2.progresso = 50
-                elif self.Fases == 13:
-                    self.ids.LabelBarra2.text = '62,5%'
-                    self.ids.Barra2.progresso = 62.5
-                elif self.Fases == 14:
-                    self.ids.LabelBarra2.text = '75%'
-                    self.ids.Barra2.progresso = 75
-                elif self.Fases == 15:
-                    self.ids.LabelBarra2.text = '87,5%'
-                    self.ids.Barra2.progresso = 87.5
-                elif self.Fases == 16:
-                    self.ids.LabelBarra2.text = '100%'
-                    self.ids.Barra2.progresso = 100
-            elif self.Fases <= 24:
-                if self.Fases == 17:
-                    self.ids.LabelBarra3.text = '12,5%'
-                    self.ids.Barra3.progresso = 12.5
-                elif self.Fases == 18:
-                    self.ids.LabelBarra3.text = '25%'
-                    self.ids.Barra3.progresso = 25
-                elif self.Fases == 19:
-                    self.ids.LabelBarra3.text = '37,5%'
-                    self.ids.Barra3.progresso = 37.5
-                elif self.Fases == 20:
-                    self.ids.LabelBarra3.text = '50%'
-                    self.ids.Barra3.progresso = 50
-                elif self.Fases == 21:
-                    self.ids.LabelBarra3.text = '62,5%'
-                    self.ids.Barra3.progresso = 62.5
-                elif self.Fases == 22:
-                    self.ids.LabelBarra3.text = '75%'
-                    self.ids.Barra3.progresso = 75
-                elif self.Fases == 23:
-                    self.ids.LabelBarra3.text = '87,5%'
-                    self.ids.Barra3.progresso = 87.5
-                elif self.Fases == 24:
-                    self.ids.LabelBarra3.text = '100%'
-                    self.ids.Barra3.progresso = 100
-        elif self.Fases <= 48:
-            if self.Fases <= 32:
-                if self.Fases == 25:
-                    self.barras[4] = 12.5
-                elif self.Fases == 26:
-                    self.barras[4] = 25
-                elif self.Fases == 27:
-                    self.barras[4] = 37.5
-                elif self.Fases == 28:
-                    self.barras[4] = 50
-                elif self.Fases == 29:
-                    self.barras[4] = 62.5
-                elif self.Fases == 30:
-                    self.barras[4] = 75
-                elif self.Fases == 31:
-                    self.barras[4] = 87.5
-                elif self.Fases == 32:
-                    self.barras[4] = 100
-            elif self.Fases <= 40:
-                if self.Fases == 33:
-                    self.barras[5] = 12.5
-                elif self.Fases == 34:
-                    self.barras[5] = 25
-                elif self.Fases == 35:
-                    self.barras[5] = 37.5
-                elif self.Fases == 36:
-                    self.barras[5] = 50
-                elif self.Fases == 37:
-                    self.barras[5] = 62.5
-                elif self.Fases == 38:
-                    self.barras[5] = 75
-                elif self.Fases == 39:
-                    self.barras[5] = 87.5
-                elif self.Fases == 40:
-                    self.barras[5] = 100
-            elif self.Fases <= 48:
-                if self.Fases == 41:
-                    self.barras[6] = 12.5
-                elif self.Fases == 42:
-                    self.barras[6] = 25
-                elif self.Fases == 43:
-                    self.barras[6] = 37.5
-                elif self.Fases == 44:
-                    self.barras[6] = 50
-                elif self.Fases == 45:
-                    self.barras[6] = 62.5
-                elif self.Fases == 46:
-                    self.barras[6] = 75
-                elif self.Fases == 47:
-                    self.barras[6] = 87.5
-                elif self.Fases == 48:
-                    self.ids.barra_seteerros1.progresso = 100
-        elif self.Fases <= 62:
-            if self.Fases <= 53:
-                if self.Fases == 49:
-                    self.barras[7] = 20
-                elif self.Fases == 50:
-                    self.barras[7] = 40
-                elif self.Fases == 51:
-                    self.barras[7] = 60
-                elif self.Fases == 52:
-                    self.barras[7] = 80
-                elif self.Fases == 53:
-                    self.barras[7] = 100
-            elif self.Fases <= 58:
-                if self.Fases == 54:
-                    self.barras[8] = 20
-                elif self.Fases == 55:
-                    self.barras[8] = 40
-                elif self.Fases == 56:
-                    self.barras[8] = 60
-                elif self.Fases == 57:
-                    self.barras[8] = 80
-                elif self.Fases == 58:
-                    self.barras[8] = 100
-            elif self.Fases <= 62:
-                if self.Fases == 59:
-                    self.barras[9] = 20
-                elif self.Fases == 60:
-                    self.barras[9] = 40
-                elif self.Fases == 61:
-                    self.barras[9] = 60
-                elif self.Fases == 62:
-                    self.barras[9] = 100
-        
+        # Fase absoluta do aluno (1, 2, 3, ..., 73, ...)
+        self.Fases = self.ControleAluno.FASETRILHA or 1
 
-                
+        # Espera os widgets existirem
+        Clock.schedule_once(self.CarregarConquistas, 0)
 
+
+    def CarregarConquistas(self, *args):
+
+        fase_atual = int(self.Fases)
+
+        # A barra correspondente à fase é EXATAMENTE o número da fase
+        indice_barra = fase_atual
+
+        # ===============================
+        # ATUALIZA TODAS AS BARRAS
+        # ===============================
+
+        # Aqui não sabemos quantas existem no KV,
+        # então tentamos até dar erro, e então paramos.
+        i = 1
+        while True:
+
+            nome_label = f"LabelBarra{i}"
+            nome_barra = f"Barra{i}"
+
+            # Se não existe mais barras, paramos
+            if nome_label not in self.ids or nome_barra not in self.ids:
+                break
+
+            # 🔹 Barras anteriores → 100%
+            if i < indice_barra:
+                self.ids[nome_label].text = "100%"
+                self.ids[nome_barra].progresso = 100
+
+            # 🔹 Barra atual → 100%
+            elif i == indice_barra:
+                self.ids[nome_label].text = "100%"
+                self.ids[nome_barra].progresso = 100
+
+            # 🔹 Barras futuras → 0%
+            else:
+                self.ids[nome_label].text = "0%"
+                self.ids[nome_barra].progresso = 0
+
+            i += 1
+
+        print(f"Fase atual: {fase_atual}")
+        print(f"Barra atual: {indice_barra}")
+        print(f"Total de barras encontradas: {i-1}")
+
+    # ===============================
+    # BOTÕES DO RODAPÉ
+    # ===============================
 
     def PerfilMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "PerfilAluno"
-    
+
     def JogosMDTextButton_Click(self):
         if self.manager:
             self.manager.current = "InicialAluno"
 
     def ConquistasMDTextButton_Click(self):
         pass
+
+    # ===============================
+    # CAROUSEL (SE EXISTIR NO KV)
+    # ===============================
 
     def carousel_prev(self):
         try:
