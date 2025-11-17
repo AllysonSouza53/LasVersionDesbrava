@@ -4113,14 +4113,18 @@
 
                             MDCard:
                                 size_hint_y: 0.8
-                                pos_hint: {"center_y": 0.8}  # 🔼 Faz o card subir (0.5 é o centro padrão)
-                                elevation: 1
+                                width: dp(600) 
+                                pos_hint: {"center_y": 0.8}
+                                elevation: 0
                                 on_release:root.JogoDaTrilha()
+                                md_bg_color:1,1,1,0
+
                                 Image:
-                                    source: 'Imagens/Jogo1.png'
-                                    size_hint: 1, 1
-                                    size: app.resp.Size_x_Image_Perfil, app.resp.Size_y_Image_Perfil
-                                    pos_hint: {"center_x": 0.5}
+                                    id: imgjogo
+                                    source: f'Imagens/PerfilAluno/imgjogo1.png'
+                                    allow_stretch: True
+                                    keep_ratio: False
+                                    size_hint_x: 1
                         Widget:
                             size_hint_x:0.3
 
