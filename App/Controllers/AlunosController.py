@@ -45,7 +45,7 @@ class AlunoController:
         self.Observacao = app.ids.ObservacaoAlunosTextField.text
         self.NivelLeitura = app.ids.NivelLeituraAlunosTextField.text
         self.NivelEscrita = app.ids.NivelEscritaAlunosTextField.text
-        self.FASETRILHA = 1
+        self.FASETRILHA = 0
 
     def getAluno(self):
         return [

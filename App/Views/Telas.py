@@ -3557,10 +3557,10 @@ class TelaPerfilAluno(MDScreen):
             if self.fase_atual  <= 24:
                 if self.manager:
                     self.manager.current = "OrganizeAsCores"
-            elif self.fase_atual  <= 47:
+            elif self.fase_atual  <= 48:
                 if self.manager:
                     self.manager.current = "SilabaMix"
-            elif self.fase_atual  <= 62:
+            elif self.fase_atual  <= 72:
                 if self.manager:
                     self.manager.current = "JogoSomSilaba"
             elif self.fase_atual  <= 96:
@@ -3720,6 +3720,7 @@ class TelaConquistas(MDScreen):
 
 
     def CarregarConquistas(self, *args):
+        print(self.ids.keys())
 
         fase_atual = int(self.Fases)
 
@@ -3733,7 +3734,7 @@ class TelaConquistas(MDScreen):
         # Aqui não sabemos quantas existem no KV,
         # então tentamos até dar erro, e então paramos.
         i = 1
-        while True:
+        while i <= indice_barra:
 
             nome_label = f"LabelBarra{i}"
             nome_barra = f"Barra{i}"
@@ -5349,28 +5350,37 @@ class TelaJogoSomSilaba(MDScreen):
                 ['BA', 'TE', 'CU', 'MA', 'VA', 'SI', 'JA', 'LI'],
                 ['LU', 'RA', 'PO', 'ME', 'DI', 'FE', 'NO', 'TI'],
                 ['GA', 'RE', 'SU', 'NA', 'VI', 'PI', 'JO', 'LE'],
-                ['CA', 'MU', 'DO', 'SA', 'TA', 'KI', 'VO', 'XE']
+                ['CA', 'MU', 'DO', 'SA', 'TA', 'KI', 'VO', 'XE'],
+                ['SA', 'LO', 'ME', 'TI', 'FA', 'NU', 'PE', 'RI'],
+                ['TO', 'PA', 'BE', 'LU', 'GI', 'ZA', 'CO', 'RI'],
+                ['LA', 'FO', 'NE', 'PI', 'DA', 'RU', 'SE', 'MO']
             ],
             2: [  # Nível 2 – palavras de 2 sílabas
                 ['PA', 'BA', 'CA', 'SA', 'TO', 'LA', 'GA', 'TA'],  # pato
                 ['BA', 'PA', 'LO', 'MA', 'RI', 'PO', 'BO', 'NO'],  # bolo
                 ['GA', 'TO', 'BE', 'BE', 'LU', 'PA', 'PI', 'CA'],  # gato
                 ['MA', 'CA', 'CO', 'PI', 'BA', 'SA', 'LA', 'SO'],  # casa
-                ['BO', 'LE', 'CA', 'RO', 'LE', 'LA', 'SO', 'PA']   # bola
+                ['BO', 'LE', 'CA', 'RO', 'LE', 'LA', 'SO', 'PA'],   # bola
+                ['CAL', 'DA', 'DO', 'RA', 'MO', 'NE', 'TA', 'LI'],  # calda
+                ['PI', 'PA', 'TO', 'LA', 'MO', 'NE', 'CA', 'DO'],   # capa
+                ['SO', 'LA', 'DO', 'RA', 'ME', 'TA', 'PI', 'CA' ]   # sola
             ],
             3: [  # Nível 3 – palavras de 3 sílabas
                 ['BO', 'NE', 'RA', 'PI', 'LI', 'CA', 'TA', 'RA'],  # boneca
                 ['CA', 'MA', 'PE', 'RA', 'PI', 'PO', 'CO', 'NA'],  # macaco
                 ['GA', 'PE', 'XI', 'TA', 'TO', 'PA', 'RA', 'LA'],  # pétala
                 ['PA', 'COL', 'SOL', 'LU', 'TO', 'MOL', 'RA', 'ME'],  # parasol
-                ['BA', 'FI', 'NA', 'TI', 'ME', 'RA', 'SO', 'NA']   # banana
+                ['BA', 'FI', 'NA', 'TI', 'ME', 'RA', 'SO', 'NA'],   # banana
+                ['PÁ', 'NE', 'RO', 'LI', 'TA', 'SSA', 'PI', 'SO'],  # pássaro
+                ['MA', 'CA', 'CO', 'LI', 'TA', 'RÃO', 'PI', 'SA'],   # casarão
+                ['PA', 'TA', 'LHA', 'MO', 'NE', 'ÇO', 'RI', 'SO']   # Palhaço
             ]
         }
 
         self.palavras_por_nivel = {
-            1: ['PA', 'TE', 'LU', 'GA', 'SA'],
-            2: ['PATO', 'BOLO', 'GATO', 'CASA', 'BOLA'],
-            3: ['BONECA', 'MACACO', 'PETALA', 'PARASOL', 'BANANA']
+            1: ['PA', 'TE', 'LU', 'GA', 'SA', 'TI', 'BE', 'LA'],
+            2: ['PATO', 'BOLO', 'GATO', 'CASA', 'BOLA', 'CALDA', 'CAPA', 'SOLA'],
+            3: ['BONECA', 'MACACO', 'PETALA', 'PARASOL', 'BANANA', 'PÁSSARO', 'CASARÃO', 'PALHAÇO']
         }
 
         self.ControleAluno.setAluno(self.ControleAluno.RE)
@@ -5403,41 +5413,6 @@ class TelaJogoSomSilaba(MDScreen):
         sound = SoundLoader.load(f"Audios/SomSilaba/{silaba}.mp3")
         if sound:
             sound.play()
-
-    '''def MostrarDialogo(self, titulo, mensagem, proxima_fase=False):
-        botoes = [
-            MDFlatButton(
-                text="PRÓXIMO" if proxima_fase else "OK",
-                on_release=lambda x: self.FecharDialogo(proxima_fase)
-            )
-        ]
-        self.dialog = MDDialog(
-            title=titulo,
-            text=mensagem,
-            buttons=botoes,
-        )
-        self.dialog.open()'''
-
-    '''    def FecharDialogo(self, proxima_fase=False):
-        self.dialog.dismiss()
-        if proxima_fase:
-            self.AvancarFase()'''
-
-    '''def AvancarFase(self):
-        """Avança de fase e muda de nível se necessário"""
-        self.Fase += 1
-        total_fases = len(self.niveis[self.Nivel])
-        self.tela_trila = self.manager.get_screen("PerfilAluno")
-        self.tela_trila.atualizar_progresso()
-        if self.Fase >= total_fases:
-            self.Fase = 0
-            self.Nivel += 1
-            if self.Nivel > 3:
-                self.Nivel = 1
-                self.MostrarDialogo("Fim do jogo!", "Você completou todos os níveis!", proxima_fase=False)
-                return'''
-
-    '''self.AtualizarFase()'''
 
     def CliqueTecla(self, tecla):
         mapping = {
