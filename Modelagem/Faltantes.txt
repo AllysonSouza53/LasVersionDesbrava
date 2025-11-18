@@ -1,0 +1,15 @@
+Alunos:
+	1 Trilha do jogo
+	2 colocar regras dos jogos os cards
+Profissionais:
+	4 formatos de texto e DropsDows:(
+		Alterar Perfil Profissional,
+		Adicionar Alunos,
+		Alterar Alunos,
+	)
+	5 ScrollView na legenda e limite de letras
+	2 Comunidade Multimidia
+	2 Perfil do terceiro
+
+Geral:
+	9 Carregamento aluno

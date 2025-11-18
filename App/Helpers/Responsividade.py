@@ -149,17 +149,17 @@ class Responsividade(EventDispatcher):
 
 
         if height < 500:
-            self.Pos_y_Label_1 = 0.64
-            self.Pos_y_Label_2 = 0.54
-            self.Pos_y_CPFCadastroLabel = 0.71
-            self.Pos_y_NomeCompletoCadastroLabel = 0.61
-            self.Pos_y_UsuarioCadastroLabel = 0.51
-            self.Pos_y_ProsissaoCadastroLabel = 0.41
-            self.Pos_y_EscolaCadastroProfissionalLabel = 0.51
-            self.Pos_y_CidadeCadastroProfissionaisLabel = 0.61
-            self.Pos_y_UFCadastroProfissionaisLabel = 0.71
-            self.Pos_y_SenhaCadastroProfissionaisLabel = 0.41
-            self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.31
+            self.Pos_y_Label_1 = 0.7
+            self.Pos_y_Label_2 = 0.6
+            self.Pos_y_CPFCadastroLabel = 0.8
+            self.Pos_y_NomeCompletoCadastroLabel = 0.7
+            self.Pos_y_UsuarioCadastroLabel = 0.6
+            self.Pos_y_ProsissaoCadastroLabel = 0.5
+            self.Pos_y_EscolaCadastroProfissionalLabel = 0.6
+            self.Pos_y_CidadeCadastroProfissionaisLabel = 0.7
+            self.Pos_y_UFCadastroProfissionaisLabel = 0.8
+            self.Pos_y_SenhaCadastroProfissionaisLabel = 0.4
+            self.Pos_y_ConfirmarSenhaCadastroProfissionaisLabel = 0.3
             self.Pos_y_Image_Perfil = 0.5
             self.Size_y_Logo_inter = 200
         elif height <900:

@@ -146,7 +146,7 @@
             id:'VoltarEscolhaButton'
             text: "Voltar"
             icon: "arrow-left"
-            md_bg_color: 0.0, 0.4, 0.0, 1
+            md_bg_color: 0.0, 0.4, 0.0, 0
             font_size: "18sp"
             bold: True
             on_release: root.VoltarEscolhaButton_Click()
@@ -155,7 +155,7 @@
             pos_hint: {"right": 0.98, "top": 0.98}
             text_color: 1, 1, 1, 1
             icon_color: 1, 1, 1, 1
-            line_color: 1, 1, 1, 1
+            line_color: 1, 1, 1, 0
 
         MDLabel:
             text:app.resp.Text_Title
@@ -226,6 +226,24 @@
             line_color: 1, 1, 1, 1
 
 <TelaCarregamentoInicial>:
+    MDFloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                source: 'Imagens/Fundo.jpeg'
+                size: self.size
+                pos: self.pos
+
+        AnchorLayout:
+            anchor_y: 'center'
+            anchor_x: 'center'
+
+            # Só adiciona o widget Image, sem canvas
+            Image:
+                source: 'Imagens/Logo.png'
+                size_hint: None, None
+                size: 300, 300
 
 <TelaCadastroProfissional1>:
     MDFloatLayout:
@@ -260,7 +278,7 @@
                 id: 'VoltarLoginButton'
                 text: "Voltar"
                 icon: "arrow-left"
-                md_bg_color: 0.0, 0.4, 0.0, 1
+                md_bg_color: 0.0, 0.4, 0.0, 0
                 font_size: "18sp"
                 bold: True
                 on_release: root.VoltarEscolhaButton_Click()
@@ -269,7 +287,7 @@
                 pos_hint: {"right": 0.98, "top": 0.98}
                 text_color: 1, 1, 1, 1
                 icon_color: 1, 1, 1, 1
-                line_color: 1, 1, 1, 1
+                line_color: 1, 1, 1, 0
 
             MDLabel:
                 text:'Cadastre-se um Profissional!'
