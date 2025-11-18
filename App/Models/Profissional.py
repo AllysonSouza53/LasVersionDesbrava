@@ -38,6 +38,9 @@ class Profissional:
         if not self.Usuario or not self.Usuario.strip():
             print("Erro: Usuario vazio")
             self.TE.SetErro('Usuario vazio!')
+        elif self.Usuario != self.Pesquisar('USUARIO',f'CPF = {self.CPF}'):
+            if self.Pesquisar('USUARIO',f'USUARIO = {self.Usuario}'):
+                self.TE.SetErro('Erro: Usuario existente')
 
         if not self.Profissao or not self.Profissao.strip():
             print("Erro: Profissão vazio")
@@ -65,7 +68,7 @@ class Profissional:
         print("Erros acumulados até aqui:", self.TE.GetErros())
 
         if self.TE.TemErros():
-            print("Abandonando Salvar porque há erros")
+            print("Abandonando Atualizar porque há erros")
             return False
         try:
             Banco.editar(
@@ -200,7 +203,7 @@ class Profissional:
 
     def getUsuario(self, condicao):
         Resultado = Banco.consultar('*',"PROFISSIONAIS", condicao)
-
+        print(Resultado)
         # Se não houver resultado ou vier False, evita erro
         if not Resultado or Resultado is False:
             self.TE.SetErro(f'Não foi possivel encontar Aluno')

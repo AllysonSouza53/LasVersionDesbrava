@@ -1084,8 +1084,7 @@
                                     halign: 'left'
                                     size_hint_y: None
                                     height: self.texture_size[1]
-                                TextInput:
-                                    multiline:True
+                                MDTextField:
                                     id: BiografiaAlterarTextField
                                     hint_text: "Fale mais sobre você"
                                     mode: "round"
@@ -1096,8 +1095,6 @@
                                     text_color_normal: 0, 0, 0, 1
                                     text_color_focus: 0, 0, 0, 1
                                     cursor_color: 0, 0, 0, 1
-                                    size_hint_y:None
-                                    height:40
 
                             BoxLayout:
                                 orientation: 'vertical'
@@ -1134,7 +1131,7 @@
                                     size_hint_y: None
                                     height: self.texture_size[1]
                                 MDTextField:
-                                    id: EmailCadastroTextField
+                                    id: ConfirmarSenhaCadastroTextField
                                     hint_text: "Digite sua nova senha novamente"
                                     mode: "round"
                                     size_hint_x: 1

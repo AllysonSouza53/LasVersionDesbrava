@@ -824,6 +824,7 @@ class TelaAlterarPerfilProfissional(MDScreen):
         self.ids.EscolaAlterarTextField.text = f'{self.ControlePerfil.Escola}'
         self.ids.BiografiaAlterarTextField.text = f'{self.ControlePerfil.Biografia}'
         self.ids.SenhaAlterarTextField.text = f'{self.ControlePerfil.Senha}'
+        self.ids.ConfirmarSenhaCadastroTextField.text = f'{self.ControlePerfil.Senha}'
         self.textura = self.GetFotoPerfil(self.ControlePerfil.Usuario)
         imagem_widget = Image(
             texture=self.textura
@@ -831,7 +832,7 @@ class TelaAlterarPerfilProfissional(MDScreen):
         self.ids.imagemperfil.clear_widgets()
         self.ids.imagemperfil.add_widget(imagem_widget)
 
-    def formatar_data_para_textinput(self, data_banco):
+    def formatar_data_para_textinput(self,  data_banco):
         """
         Recebe a data do banco (pode ser string 'YYYY-MM-DD', '0000-00-00'
         ou 'data.time(YYYY-MM-DD)') e retorna no formato 'DD/MM/YYYY' para exibir no TextInput.
@@ -1013,6 +1014,10 @@ class TelaAlterarPerfilProfissional(MDScreen):
         Cache.remove('kv.image', 'Imagens/FotoPerfil.png')
 
     def AlterarPerfilButton_Click(self):
+
+        if self.ids.SenhaAlterarTextField.text != self.ids.ConfirmarSenhaCadastroTextField.text:
+            return
+        
         self.ControlePost = PostController()
         self.ControlePerfil.FotoPerfil = ''
         Perfil = Perfis()
