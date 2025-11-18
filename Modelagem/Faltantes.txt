@@ -8,8 +8,8 @@ Profissionais:
 		Alterar Alunos,
 	)
 	5 ScrollView na legenda e limite de letras
-	2 Comunidade Multimidia
 	2 Perfil do terceiro
+	dialog post
 
 Geral:
 	9 Carregamento aluno

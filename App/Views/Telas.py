@@ -817,7 +817,8 @@ class TelaAlterarPerfilProfissional(MDScreen):
         self.ids.UsuarioAlterarTextField.text = f'@{self.ControlePerfil.Usuario}'
         self.ids.NomeAlterarTextField.text = f'{self.ControlePerfil.Nome}'
         self.ids.ProfissaoAlterarTextField.text = f'{self.ControlePerfil.Profissao}'
-        self.ids.DataNascimentoAlterarTextField.text = f'{self.ControlePerfil.DataNascimento}'
+        data_formatada = self.formatar_data_para_textinput(self.ControlePerfil.DataNascimento)
+        self.ids.DataNascimentoAlterarTextField.text = f'{data_formatada}'
         self.ids.EstadoAlterarTextField.text = f'{self.ControlePerfil.UF}'
         self.ids.CidadeAlterarTextField.text = f'{self.ControlePerfil.Cidade}'
         self.ids.EscolaAlterarTextField.text = f'{self.ControlePerfil.Escola}'
@@ -830,6 +831,31 @@ class TelaAlterarPerfilProfissional(MDScreen):
         self.ids.imagemperfil.clear_widgets()
         self.ids.imagemperfil.add_widget(imagem_widget)
 
+    def formatar_data_para_textinput(self, data_banco):
+        """
+        Recebe a data do banco (pode ser string 'YYYY-MM-DD', '0000-00-00'
+        ou 'data.time(YYYY-MM-DD)') e retorna no formato 'DD/MM/YYYY' para exibir no TextInput.
+        """
+        if not data_banco:
+            return ''  # vazio se None ou string vazia
+
+        data_str = str(data_banco).strip()
+
+        # remover 'data.time(' e ')' se existir
+        if data_str.startswith("data.time(") and data_str.endswith(")"):
+            data_str = data_str[10:-1]
+
+        # verificar se é uma data válida
+        if data_str == '0000-00-00':
+            return ''
+
+        try:
+            ano, mes, dia = data_str.split('-')
+            return f'{dia}/{mes}/{ano}'
+        except ValueError:
+            # caso venha algo inesperado
+            return ''
+            
     def on_enter(self, *args):
         pass
 
@@ -896,7 +922,6 @@ class TelaAlterarPerfilProfissional(MDScreen):
             MDDropdownMenu(caller=instancia, items=menu_items).open()
         else:
             print('erro')
-
 
     def CidadeAlterarProfissional_ItensClick(self, text_item):
         self.ids.CidadeAlterarTextField.text = text_item
@@ -1002,18 +1027,27 @@ class TelaAlterarPerfilProfissional(MDScreen):
         ).open()
         self.ControlePost.Usuario = self.ControlePerfil.Usuario
         print(self.ControlePost.Usuario)
+        
+        data_texto = self.ids.DataNascimentoAlterarTextField.text.strip()
+        if data_texto != '':
+            dia, mes, ano = [x.strip() for x in data_texto.split('/')]
+            data_formatada = f'{ano}-{mes}-{dia}'
+        else:
+            data_formatada = "NULL"
 
-        self.ControlePerfil.AlterarProfissional([self.ControlePerfil.CPF,
-                                                 self.ids.NomeAlterarTextField.text,
-                                                 self.ids.UsuarioAlterarTextField.text.replace('@', ''),
-                                                 self.ids.ProfissaoAlterarTextField.text,
-                                                 self.ids.DataNascimentoAlterarTextField.text if self.ids.DataNascimentoAlterarTextField.text != '' else "NULL",
-                                                 self.ids.EstadoAlterarTextField.text,
-                                                 self.ids.CidadeAlterarTextField.text,
-                                                 self.ids.EscolaAlterarTextField.text,
-                                                 self.ids.SenhaAlterarTextField.text,
-                                                 self.ids.BiografiaAlterarTextField.text,
-                                                 ''])
+        self.ControlePerfil.AlterarProfissional([
+            self.ControlePerfil.CPF,
+            self.ids.NomeAlterarTextField.text,
+            self.ids.UsuarioAlterarTextField.text.replace('@', ''),
+            self.ids.ProfissaoAlterarTextField.text,
+            data_formatada,
+            self.ids.EstadoAlterarTextField.text,
+            self.ids.CidadeAlterarTextField.text,
+            self.ids.EscolaAlterarTextField.text,
+            self.ids.SenhaAlterarTextField.text,
+            self.ids.BiografiaAlterarTextField.text,
+            ''
+        ])
 
         self.ControlePost.AtualizarPostPorUSuario(self.ids.UsuarioAlterarTextField.text.replace('@', ''))
         Login = self.manager.get_screen("CarregamentoInicial")
@@ -1021,6 +1055,24 @@ class TelaAlterarPerfilProfissional(MDScreen):
                                  self.ids.SenhaAlterarTextField.text])
         if self.manager:
             self.manager.current = "CarregamentoInicial"
+    
+    def DataNascimentoAlunosTextField_Active(self, instancia):
+        # Remove tudo que não for número
+        puro = "".join(ch for ch in instancia.text if ch.isdigit())
+        puro = puro[:8]  # Limita a 8 dígitos (DDMMAAAA)
+
+        novo = ""
+        for i, d in enumerate(puro):
+            novo += d
+            # Adiciona "/" após o dia e mês
+            if i == 1 or i == 3:
+                if len(puro) > i + 1:
+                    novo += '/'
+
+        # Atualiza o texto formatado
+        if instancia.text != novo:
+            instancia.text = novo
+            Clock.schedule_once(lambda dt: instancia.do_cursor_movement('cursor_end'))
 
 class TelaFavoritosPerfilProfissional(MDScreen):
     

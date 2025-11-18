@@ -74,7 +74,7 @@ class Profissional:
                     f"Nome = '{self.Nome}'",
                     f"Usuario = '{self.Usuario}'",
                     f"Profissao = '{self.Profissao}'",
-                    f"DataNascimento = {self.DataNascimento}",
+                    f"DataNascimento = '{self.DataNascimento}'",
                     f"UF = '{self.UF}'",
                     f"Cidade = '{self.Cidade}'",
                     f"Escola = '{self.Escola}'",
