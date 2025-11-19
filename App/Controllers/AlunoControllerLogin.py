@@ -19,6 +19,5 @@ class LoginAlunoController:
             return Usuario.Logar()
         except Exception as e:
             return e
-
     def Desconectar(self):
         return

@@ -3927,7 +3927,7 @@ class TelaAlbumEspecifico(MDScreen):
         if self.manager:
             self.manager.current = "FavoritosPerfilProfissional"
 
-#----------------------------------Alunos----------------------------------#
+#----------------------------------Alunos-------------------------------------------------------------------------------------------#
 
 class TelaLoginAluno(MDScreen):
     ControleLoginAluno = None
