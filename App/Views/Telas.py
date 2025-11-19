@@ -6,6 +6,7 @@ import base64
 import random
 from functools import partial
 
+from plyer import filechooser
 from PIL import Image as ImagemPIL
 from PIL import ImageDraw
 import io, base64
@@ -93,10 +94,26 @@ class TelaLoginProfissionais(MDScreen):
         Sessao = LoginController()
         Sessao.setNewLogin(self.manager)
         Login = self.manager.get_screen("CarregamentoInicial")
-        Login.carregar_dados(1)
         if self.manager:
             if Sessao.Sessao():
                 self.manager.current = "CarregamentoInicial"
+                Login.carregar_dados(1)
+            else:   
+                if isinstance(Sessao.erros, list):
+                    texto = "\n".join(Sessao.erros)
+                elif isinstance(Sessao.erros, str):
+                    texto = list(Sessao.erros)  # já é uma string completa
+                else:
+                    texto = "Erro desconhecido durante o cadastro."
+
+                print(texto)
+                dialog = MDDialog(
+                    title="Erro no Cadastro",
+                    text=texto,
+                    type="alert"
+                )
+
+                dialog.open()
 
 class TelaCadastroProfissional1(MDScreen):
     def VoltarEscolhaButton_Click(self):
@@ -297,6 +314,15 @@ class TelaCadastroProfissional2(MDScreen):
             controle.setCadastro(self.manager)
             if controle.Cadastar():
                 self.manager.current = "LoginProfissional"
+            else:   
+                texto = "\n".join(controle.erros) if controle.erros else "Erro desconhecido durante o cadastro."
+                dialog = MDDialog(
+                    title="Erro no Cadastro",
+                    text=texto,
+                    type="alert"
+                )
+
+                dialog.open()
         else:
             print("root ainda não existe")
 
@@ -764,29 +790,6 @@ class TelaPerfilProfissional(MDScreen):
 class TelaAlterarPerfilProfissional(MDScreen):
     ControlePerfil = None
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # Cria o gerenciador de arquivos
-        self.abrir_file_manager()
-
-    def abrir_file_manager(self):
-        from kivymd.uix.filemanager import MDFileManager
-        from kivymd.toast import toast
-
-        self.file_manager = MDFileManager(
-            exit_manager=self.fechar_file_manager,
-            select_path=self.selecionar_imagem
-        )
-        # Inicia no diretório padrão (por exemplo, a pasta Imagens)
-        import os
-        start_dir = os.path.expanduser("~/Pictures")  # ou "~/" para pasta do usuário
-
-    def fechar_file_manager(self, *args):
-        try:
-            self.file_manager.close()
-        except Exception as e:
-            print(f"Erro ao fechar o FileManager: {e}")
-
     def GetFotoPerfil(self, usuario):
         Perfil = Perfis()
         UsuarioPerfil = Perfil.GetPorUsuario(usuario)
@@ -967,14 +970,46 @@ class TelaAlterarPerfilProfissional(MDScreen):
         self.ids.ProfissaoAlterarTextField.text = text_item
 
     def TrocarImagem(self):
-        initial_path = "/" if Window.system_size[0] > 0 else "."
-        self.file_manager.show(initial_path)
+        filechooser.open_file(on_selection=self.selecionar_imagem)
 
-    def selecionar_imagem(self, path):
-        self.fechar_file_manager()
-        
-        # abre a imagem original
-        imagem = ImagemPIL.open(path).convert("RGBA")
+    def selecionar_imagem(self, selection):
+        # nada selecionado
+        if not selection:
+            return
+
+        path = selection[0]
+
+        # === DEBUG PARA ENTENDER O PROBLEMA ===
+        print("\n====== DEBUG SELEÇÃO DE IMAGEM ======")
+        print("SELECTION:", selection)
+        print("RAW PATH:", repr(path))
+        print("IS FILE?:", os.path.isfile(path))
+        print("=====================================\n")
+
+        # verifica se o caminho é realmente um arquivo
+        if not os.path.isfile(path):
+            MDDialog(title="Erro", text="O item selecionado não é um arquivo válido.").open()
+            return
+
+        # verifica extensão suportada
+        ext = path.split(".")[-1].lower()
+        extensoes_permitidas = ("png", "jpg", "jpeg", "bmp", "gif")
+
+        if ext not in extensoes_permitidas:
+            MDDialog(title="Erro", text="Formato de imagem não suportado. Use PNG ou JPG.").open()
+            return
+
+        # tenta abrir a imagem
+        try:
+            imagem = ImagemPIL.open(path).convert("RGBA")
+
+        except UnidentifiedImageError:
+            MDDialog(title="Erro", text="Não foi possível abrir a imagem. Arquivo inválido.").open()
+            return
+
+        except Exception as e:
+            MDDialog(title="Erro", text=f"Falha ao abrir a imagem: {e}").open()
+            return
 
         # garante que seja quadrada: pega o menor lado
         tamanho = min(imagem.size)
@@ -982,35 +1017,44 @@ class TelaAlterarPerfilProfissional(MDScreen):
         top = (imagem.height - tamanho) // 2
         right = left + tamanho
         bottom = top + tamanho
+
         imagem_cortada = imagem.crop((left, top, right, bottom))
+
+        print(f"TAMANHO: {tamanho} | SIZE ORIGINAL: {imagem.size}")
+
+        if tamanho <= 2:
+            MDDialog(title="Erro", text="Imagem muito pequena ou inválida.").open()
+            return
 
         # cria máscara circular
         mascara = ImagemPIL.new("L", (tamanho, tamanho), 0)
-        draw = ImageDraw.Draw(mascara)  # <- aqui é correto
+        draw = ImageDraw.Draw(mascara)
         draw.ellipse((0, 0, tamanho, tamanho), fill=255)
 
-        # aplica máscara
+        # aplica a máscara
         imagem_circular = ImagemPIL.new("RGBA", (tamanho, tamanho))
         imagem_circular.paste(imagem_cortada, (0, 0), mask=mascara)
 
-        # converte para bytes e depois para base64
+        # converte para base64
         buffer = io.BytesIO()
         imagem_circular.save(buffer, format="PNG")
         buffer.seek(0)
+
         self.imagem_base64 = base64.b64encode(buffer.read()).decode("utf-8")
 
-        # cria textura para exibir no Kivy
+        # cria textura para o Kivy
         self.textura = CoreImage(io.BytesIO(base64.b64decode(self.imagem_base64)), ext='png').texture
 
-        imagem_widget = Image(
-            texture=self.textura
-        )
+        imagem_widget = Image(texture=self.textura)
+
+        # atualiza o widget no layout
         self.ids.imagemperfil.clear_widgets()
         self.ids.imagemperfil.add_widget(imagem_widget)
 
         MDDialog(title="Imagem selecionada", text=f"Caminho: {path}").open()
-        from kivy.cache import Cache
 
+        # limpa cache para atualizar preview
+        from kivy.cache import Cache
         Cache.remove('kv.image', 'Imagens/FotoPerfil.png')
 
     def AlterarPerfilButton_Click(self):
@@ -2444,29 +2488,45 @@ class TelaComunidadeProfissionais(MDScreen):
     def CarregarImagensPosts(self, posts):
         try:
             ListaPostsHelper = Posts()
-            posts_no_banco = ListaPostsHelper.Get()  # pega todos os posts do banco
+            posts_no_banco = ListaPostsHelper.Get()
 
-            # Cria um dicionário de imagens pelo id do post
+            def decode_texture(imagem_b64):
+                try:
+                    raw = base64.b64decode(imagem_b64)
+                    data = io.BytesIO(raw)
+
+                    # tenta decodificar em vários formatos
+                    for formato in ("png", "jpg", "jpeg"):
+                        try:
+                            data.seek(0)
+                            return CoreImage(data, ext=formato).texture
+                        except:
+                            pass
+
+                    print("⚠ Formato desconhecido")
+                    return None
+
+                except Exception as e:
+                    print("Erro ao decodificar imagem:", e)
+                    return None
+
             imagens_dict = {}
             for post_banco in posts_no_banco:
                 imagem_b64 = post_banco.get('imagem', None)
                 textura = None
+
                 if imagem_b64 and imagem_b64 not in ("NULL", "null", ""):
-                    try:
-                        data = io.BytesIO(base64.b64decode(imagem_b64))
-                        textura = CoreImage(data, ext='png').texture
-                    except Exception as e:
-                        print(f"Erro ao decodificar imagem do post {post_banco.get('id', '')}: {e}")
+                    textura = decode_texture(imagem_b64)
+
                 imagens_dict[post_banco['id']] = textura
 
-            # Atualiza os posts originais com a textura correta
             for post in posts:
                 post['imagem_obj'] = imagens_dict.get(post.get('id'), None)
 
             return posts
 
         except Exception as e:
-            print(f"Erro ao carregar imagens dos posts: {e}")
+            print("Erro ao carregar imagens:", e)
             return posts
 
     def ExcluirComentario(self, comentario):
@@ -2487,10 +2547,6 @@ class TelaPostarNoFeed(MDScreen):
     ProfissionalControle = None
 
     def on_enter(self, *args):
-        self.file_manager = MDFileManager(
-            exit_manager=self.fechar_file_manager,
-            select_path=self.selecionar_imagem
-        )
         self.Vizualizacao = self.ids.vizualizacao
         self.MidiaPostarTextField = self.ids.MidiaPostarTextField
         self.LegendaPostarTextField = self.ids.LegendaPostarTextField
@@ -2501,12 +2557,13 @@ class TelaPostarNoFeed(MDScreen):
         else:
             self.ProfissionalControle = None
 
-    def fechar_file_manager(self, *args):
-        self.file_manager.close()
 
-    def selecionar_imagem(self, path):
-        """Chamado quando o usuário escolhe uma imagem no file manager"""
-        self.fechar_file_manager()
+    def selecionar_imagem(self, selection):
+        # nada selecionado
+        if not selection:
+            return
+
+        path = selection[0]
 
         try:
             with open(path, "rb") as f:
@@ -2515,22 +2572,22 @@ class TelaPostarNoFeed(MDScreen):
             # Converte para base64
             self.imagem_base64 = base64.b64encode(imagem_bytes).decode("utf-8")
 
-            # Descobre extensão real do arquivo
+            # Descobre extensão
             _, ext = os.path.splitext(path)
             ext = ext.replace(".", "").lower()
             if ext not in ["png", "jpg", "jpeg"]:
-                ext = "png"  # fallback
+                ext = "png"
 
-            # Decodifica textura
+            # Decodifica para textura
             data = io.BytesIO(base64.b64decode(self.imagem_base64))
             self.textura = CoreImage(data, ext=ext).texture
 
-            # Limpa e ajusta área de visualização
+            # limpa visualização
             self.Vizualizacao.clear_widgets()
             self.Vizualizacao.size_hint_y = None
-            self.Vizualizacao.height = dp(500)  # altura fixa para área da imagem
+            self.Vizualizacao.height = dp(500)
 
-            # Cria card envolvente
+            # Card da imagem
             card = MDCard(
                 size_hint=(0.85, None),
                 height=dp(480),
@@ -2542,40 +2599,38 @@ class TelaPostarNoFeed(MDScreen):
                 md_bg_color=(0, 0, 0, 0.5),
             )
 
+            # Botão remover imagem
             BotaoRetirar = MDIconButton(
-                icon = 'close-circle',
-                theme_icon_color = "Custom",
-                icon_color = (1, 1, 1, 1),
-                on_release=lambda x: self.remover_imagem()
+                icon="close-circle",
+                theme_icon_color="Custom",
+                icon_color=(1, 1, 1, 1),
+                on_release=lambda x: self.remover_imagem(),
+                radius = [20,20,20,20]
             )
-
             card.add_widget(BotaoRetirar)
 
+            # Imagem normal, sem arredondar
             imagem_widget = Image(
                 texture=self.textura,
                 allow_stretch=True,
                 keep_ratio=True,
                 size_hint=(0.80, 0.80),
-                pos_hint={"center_x": 0.5, "center_y": 0.5},
+                pos_hint={"center_x": 0.5, "center_y": 0.5}
             )
-
             card.add_widget(imagem_widget)
 
-
+            # adiciona o card na visualização
             self.Vizualizacao.add_widget(card)
-            self.MidiaPostarTextField.text = str(path)
+
+            self.MidiaPostarTextField.text = path
             MDDialog(title="Imagem selecionada", text=f"Caminho: {path}").open()
 
         except Exception as e:
             print(f"Erro ao processar imagem selecionada: {e}")
             MDDialog(title="Erro", text=f"Não foi possível carregar a imagem.\n{e}").open()
 
-    def MidiaPostarTextField_Focus(self, *args):
-        self.SelecionarImagem()
-
-    def SelecionarImagem(self):
-        initial_path = "/" if Window.system_size[0] > 0 else "."
-        self.file_manager.show(initial_path)
+    def MidiaPostarTextField_Focus(self):
+        filechooser.open_file(on_selection=self.selecionar_imagem)
 
     def remover_imagem(self):
         self.Vizualizacao.clear_widgets()
@@ -2778,6 +2833,27 @@ class TelaAdicionarAluno(MDScreen):
 
     def NivelEscritaAlunosTextField_ItensClick(self, text_item):
         self.ids.NivelEscritaAlunosTextField.text = text_item
+    
+    def GeneroAlunosProfissionaisTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    'Masculino',
+                    'Feminino',
+                    'Outro',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.GeneroAlunosProfissionaisTextField_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def GeneroAlunosProfissionaisTextField_ItensClick(self, text_item):
+        self.ids.GeneroAlunosTextField.text = text_item
 
     from kivy.clock import Clock
 
@@ -2801,16 +2877,18 @@ class TelaAdicionarAluno(MDScreen):
 
     def AdicionarAlunos_Click(self):
         try:
-            print("IDs disponíveis:", self.ids.keys())
-            print(self.ControleProfissional.CPF)
             self.AlunoControle.setCadastro(self)
-            print("Aluno:", self.AlunoControle.getAluno())
-            self.AlunoControle.Salvar()
-            if self.manager:
-                self.manager.current = "AlunosProfissional"
+
+            if self.AlunoControle.Salvar():
+                MDDialog(title="Sucesso", text="Aluno adicionado com sucesso!").open()
+                if self.manager:
+                    self.manager.current = "AlunosProfissional"
+            else:
+                MDDialog(title="Erro", text=f"Falha ao adicionar aluno. {'\n'.join(self.AlunoControle.erros)}").open()
+                return
         except Exception as e:
             print("Erro ao adicionar aluno:", e)
-
+    
 class TelaAlunoEspecifico(MDScreen):
     RA = StringProperty("")
     NOME = StringProperty("")
@@ -3046,6 +3124,26 @@ class TelaAlterarAlunoProfissional(MDScreen):
     NIVELDELEITURA = StringProperty("")
     NIVELDEESCRITA = StringProperty("")
 
+    def GeneroAlunosProfissionaisTextField_Focus(self,instancia,focus):
+            if focus:
+                self.itens = [
+                    'Masculino',
+                    'Feminino',
+                    'Outro',
+                ]
+                menu_items = [
+                    {
+                        "text": f'{index}',
+                        "on_release": lambda x=f'{index}': self.GeneroAlunosProfissionaisTextField_ItensClick(x)
+                    } for index in self.itens
+                ]
+
+                MDDropdownMenu(caller=instancia, items=menu_items).open()
+            else:
+                print('erro')
+
+    def GeneroAlunosProfissionaisTextField_ItensClick(self, text_item):
+        self.ids.GeneroAlunosTextField.text = text_item
 
     def on_pre_enter(self, *args):
         tela_carregamento = self.manager.get_screen("CarregamentoInicial")
@@ -3245,11 +3343,16 @@ class TelaAlterarAlunoProfissional(MDScreen):
     def AlterarAlunos_Click(self):
         try:
             self.AlunoControle.setCadastro(self)
-            self.AlunoControle.Salvar()
-            if self.manager:
-                self.manager.current = "AlunosProfissional"
+
+            if self.AlunoControle.Salvar():
+                MDDialog(title="Sucesso", text="Aluno adicionado com sucesso!").open()
+                if self.manager:
+                    self.manager.current = "AlunosProfissional"
+            else:
+                MDDialog(title="Erro", text=f"Falha ao adicionar aluno. {'\n'.join(self.AlunoControle.erros)}").open()
+                return
         except Exception as e:
-            print("Erro ao alterar aluno:", e)
+            print("Erro ao adicionar aluno:", e)
     
 class TelaAlbumEspecifico(MDScreen):
     ControlePerfil = None

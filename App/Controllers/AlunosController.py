@@ -19,6 +19,7 @@ class AlunoController:
     NivelEscrita = None
     FASETRILHA = None
     app = None
+    erros = None
 
     def __init__(self):
         self.Erros = Erros()
@@ -34,7 +35,7 @@ class AlunoController:
         self.Nome = app.ids.NomeAlunosTextField.text
         self.Usuario = app.ids.UsuarioAlunosTextField.text
         listadata = app.ids.DataNascimentoAlunosTextField.text.split('/')
-        self.DataNascimento = f'{listadata[2]}-{listadata[1]}-{listadata[0]}'
+        self.DataNascimento = f'{listadata[2]}-{listadata[1]}-{listadata[0]}' if app.ids.DataNascimentoAlunosTextField.text else ''
         self.Genero = app.ids.GeneroAlunosTextField.text
         self.Turma = app.ids.TurmaAlunosTextField.text
         self.ProfissionalResponsavel = app.ControleProfissional.CPF
@@ -114,14 +115,18 @@ class AlunoController:
         try:
             if not self.Aluno.getAluno(self.RE):
                 self.Aluno.setAluno(self.getAluno())
-                print('Cadastro')
-                self.Aluno.Cadastrar()
-                return None
+                if self.Aluno.Cadastrar():
+                    print('Cadastra')
+                    return True
+                self.erros = self.Aluno.Erros.GetErros()
+                return False
             else:
                 self.Aluno.setAluno(self.getAluno())
-                self.Aluno.Atualizar()
-                print('Atualiza')
-                return None
+                if self.Aluno.Atualizar():
+                    print('Atualiza')
+                    return True
+                self.erros = self.Aluno.Erros.GetErros()
+                return False
         except Exception as e:
             self.Erros.SetErro(f'Não foi possivel salvar aluno. Erro{e}')
             print(f'Erro Controller.{e}')

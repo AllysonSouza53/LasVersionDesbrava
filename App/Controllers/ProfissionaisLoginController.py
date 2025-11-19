@@ -3,6 +3,7 @@ from Models.ProfissionalLogin import Login
 class LoginController:
     usuario = None
     senha = None
+    erros = None
 
     def setNewLogin(self,app):
         self.usuario = app.get_screen("LoginProfissional").ids.lbl_ProfissionalUsuario.text
@@ -19,7 +20,10 @@ class LoginController:
     def Sessao(self):
         try:
             Usuario = Login(self.getLogin())
-            return Usuario.Logar()
+            if Usuario.Logar():
+                return True
+            self.erros = Usuario.Erros.GetErros()
+            return False
         except Exception as e:
             return e
 

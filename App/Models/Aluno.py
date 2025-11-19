@@ -41,7 +41,7 @@ class Aluno:
         print(self.ProfissionalResponsavel)
 
     def getAluno(self, RE):
-        Resultado = Banco.consultar('*','ALUNOS',f"RE = {RE}")
+        Resultado = Banco.consultar('*','ALUNOS',f"RE = {RE}") if RE else None
         if not Resultado or Resultado is False:
             self.Erros.SetErro('Aluno não encontrado')
             print(self.Erros.GetErros())
@@ -76,12 +76,17 @@ class Aluno:
         self.Erros.LimpeErros()
         if not self.RE:
             self.Erros.SetErro('O resgistro não deve ser vazio')
+        elif len(self.RE) != 10:
+            self.Erros.SetErro('O registro deve conter 10 caracteres')
 
         if not self.Nome:
             self.Erros.SetErro('O nome não deve ser vazio')
 
         if not self.Usuario:
             self.Erros.SetErro('O usuario não deve ser vazio')
+        elif self.Usuario != self.Pesquisar('USUARIO',f'RE = {self.RE}'):
+            if self.Pesquisar('USUARIO',f"USUARIO = '{self.Usuario}'"):
+                self.Erros.SetErro('Erro: Usuario existente')
 
         if not self.Escola:
             self.Erros.SetErro('A escola não pode ser vazia')
@@ -91,6 +96,8 @@ class Aluno:
 
         if not self.Genero:
             self.Erros.SetErro('O gênero não pode ser vazio')
+        elif self.Genero not in ['Masculino', 'Feminino', 'Outro']:
+            self.Erros.SetErro('Gênero inválido. Escolha entre Masculino, Feminino ou Outro.')
 
         if not self.Turma:
             self.Erros.SetErro('A turma não pode ser vazia')
@@ -148,6 +155,51 @@ class Aluno:
             return False
 
     def Atualizar(self):
+        self.Erros.LimpeErros()
+        if not self.RE:
+            self.Erros.SetErro('O resgistro não deve ser vazio')
+        elif len(self.RE) != 10:
+            self.Erros.SetErro('O registro deve conter 10 caracteres')
+
+        if not self.Nome:
+            self.Erros.SetErro('O nome não deve ser vazio')
+
+        if not self.Usuario:
+            self.Erros.SetErro('O usuario não deve ser vazio')
+        elif self.Usuario != self.Pesquisar('USUARIO',f'RE = {self.RE}'):
+            if self.Pesquisar('USUARIO',f"USUARIO = '{self.Usuario}'"):
+                self.Erros.SetErro('Erro: Usuario existente')
+
+        if not self.Escola:
+            self.Erros.SetErro('A escola não pode ser vazia')
+
+        if not self.DataNascimento:
+            self.Erros.SetErro('A data de nascimento não pode ser vazia')
+
+        if not self.Genero:
+            self.Erros.SetErro('O gênero não pode ser vazio')
+        elif self.Genero not in ['Masculino', 'Feminino', 'Outro']:
+            self.Erros.SetErro('Gênero inválido. Escolha entre Masculino, Feminino ou Outro.')
+
+        if not self.Turma:
+            self.Erros.SetErro('A turma não pode ser vazia')
+
+        if not self.ProfissionalResponsavel:
+            self.Erros.SetErro('O profissional responsável não pode ser vazio')
+
+        if not self.UF:
+            self.Erros.SetErro('A UF não pode ser vazia')
+        elif len(self.UF) != 2:
+            self.Erros.SetErro('UF inválida, deve conter 2 caracteres')
+
+        if not self.Cidade:
+            self.Erros.SetErro('A cidade não pode ser vazia')
+
+        # Se houver erros acumulados, não tenta salvar
+        if self.Erros.TemErros():
+            print("Erros encontrados:", self.Erros.GetErros())
+            return False
+        
         try:
             valores = [
                 f"NOME = '{self.Nome}'",

@@ -16,6 +16,7 @@ class ProfissionalControler:
     Biografia = None
     NumeroCasa = None
     FotoPerfil = None
+    erros = None
 
     def __init__(self):
         self.Erros = E()
@@ -99,6 +100,7 @@ class ProfissionalControler:
             resultado = self.Profissional.Salvar()
             if resultado:
                 return True
+            self.erros = self.Profissional.TE.GetErros()
             return False
         except Exception as e:
             return e

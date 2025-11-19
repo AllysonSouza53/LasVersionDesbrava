@@ -6,9 +6,7 @@ class Erros:
         self._errors.append(msg)
 
     def GetErros(self) -> str:
-        if not self._errors:
-            return ''
-        return f"{self._errors}"
+        return self._errors
 
     def TemErros(self) -> bool:
         if self._errors:

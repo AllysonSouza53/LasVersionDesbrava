@@ -12,14 +12,21 @@ class Login:
 
     def Logar(self):
         try:
+            usuario = None
+            self.Erros.LimpeErros()
+            usuario = Banco.consultar('USUARIO', 'PROFISSIONAIS', f"USUARIO ='{self.usuario}'")
+            senha = Banco.consultar('SENHA', 'PROFISSIONAIS', f"USUARIO ='{self.usuario}' AND SENHA = '{self.senha}'")
+            print(usuario , senha)
             if not self.usuario:
                 self.Erros.SetErro('Usuario obrigatório')
-            elif self.usuario != Banco.consultar('USUARIO', 'PROFISSIONAIS', f"USUARIO ='{self.usuario}'")[0][0]:
+            elif usuario == []:
+                print(usuario)
+                print(self.usuario)
                 self.Erros.SetErro('Usuario não cadastrado! Cadastra-se')
 
-            if not self .senha:
+            if not self.senha:
                 self.Erros.SetErro('Senha obrigatória!')
-            elif self.senha != Banco.consultar('SENHA', 'PROFISSIONAIS', f"SENHA ='{self.senha}'")[0][0]:
+            elif senha == []:
                 self.Erros.SetErro('Senha incorreta')
 
             if self.Erros.TemErros():
@@ -28,5 +35,5 @@ class Login:
                 return True
 
         except Exception as e:
-            self.Erros.SetErro(f'Error:{e}')
+            self.Erros.SetErro(f'Erro no logar:{e}')
             return False

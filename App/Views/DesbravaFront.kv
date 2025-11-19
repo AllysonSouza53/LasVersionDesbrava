@@ -2399,15 +2399,16 @@
                                     height: self.texture_size[1]
                                 MDTextField:
                                     id: GeneroAlunosTextField
-                                    hint_text: "Digite o gênero do aluno"
+                                    hint_text: "Selecione o Genero do aluno"
                                     mode: "round"
                                     size_hint_x: 1
                                     pos_hint: {"center_x": 0.5}
                                     line_color_normal: 0, 0, 0, 0.5
                                     line_color_focus: 0.72, 0.53, 0.04, 1
-                                    text_color_normal: 0, 0, 0, 1
-                                    text_color_focus: 0, 0, 0, 1
-                                    cursor_color: 0, 0, 0, 1
+                                    text_color_normal:0,0,0,1
+                                    text_color_focus:0,0,0,1
+                                    cursor_color:0,0,0,1
+                                    on_focus:root.GeneroAlunosProfissionaisTextField_Focus(self, self.focus)
 
                             # TURMA
                             BoxLayout:
@@ -3204,15 +3205,16 @@
                                     height: self.texture_size[1]
                                 MDTextField:
                                     id: GeneroAlunosTextField
-                                    hint_text: "Digite o gênero do aluno"
+                                    hint_text: "Selecione o Genero do aluno"
                                     mode: "round"
                                     size_hint_x: 1
                                     pos_hint: {"center_x": 0.5}
                                     line_color_normal: 0, 0, 0, 0.5
                                     line_color_focus: 0.72, 0.53, 0.04, 1
-                                    text_color_normal: 0, 0, 0, 1
-                                    text_color_focus: 0, 0, 0, 1
-                                    cursor_color: 0, 0, 0, 1
+                                    text_color_normal:0,0,0,1
+                                    text_color_focus:0,0,0,1
+                                    cursor_color:0,0,0,1
+                                    on_focus:root.GeneroAlunosProfissionaisTextField_Focus(self, self.focus)
 
                             # TURMA
                             BoxLayout:

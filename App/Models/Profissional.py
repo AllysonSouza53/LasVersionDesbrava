@@ -39,7 +39,7 @@ class Profissional:
             print("Erro: Usuario vazio")
             self.TE.SetErro('Usuario vazio!')
         elif self.Usuario != self.Pesquisar('USUARIO',f'CPF = {self.CPF}'):
-            if self.Pesquisar('USUARIO',f'USUARIO = {self.Usuario}'):
+            if self.Pesquisar('USUARIO',f"USUARIO = '{self.Usuario}'"):
                 self.TE.SetErro('Erro: Usuario existente')
 
         if not self.Profissao or not self.Profissao.strip():
@@ -70,6 +70,7 @@ class Profissional:
         if self.TE.TemErros():
             print("Abandonando Atualizar porque há erros")
             return False
+        
         try:
             Banco.editar(
                 'PROFISSIONAIS',
@@ -77,7 +78,7 @@ class Profissional:
                     f"Nome = '{self.Nome}'",
                     f"Usuario = '{self.Usuario}'",
                     f"Profissao = '{self.Profissao}'",
-                    f"DataNascimento = '{self.DataNascimento}'",
+                    f"DataNascimento = {self.DataNascimento}",
                     f"UF = '{self.UF}'",
                     f"Cidade = '{self.Cidade}'",
                     f"Escola = '{self.Escola}'",
@@ -131,6 +132,9 @@ class Profissional:
         if not self.Usuario or not self.Usuario.strip():
             print("Erro: Usuario vazio")
             self.TE.SetErro('Usuario vazio!')
+        elif self.Usuario != self.Pesquisar('USUARIO',f'CPF = {self.CPF}'):
+            if self.Pesquisar('USUARIO',f"USUARIO = '{self.Usuario}'"):
+                self.TE.SetErro('Erro: Usuario existente')
 
         if not self.Profissao or not self.Profissao.strip():
             print("Erro: Profissão vazio")
